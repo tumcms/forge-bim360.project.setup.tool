@@ -80,6 +80,14 @@ namespace BimProjectSetupCommon.Helpers
                                 row[colIndex++] = value;
                             }
                         }
+
+                        //Test if last entry is bugged and replace
+                        //Hotfix works for now 
+                        if (row.ItemArray[12] == null)
+                        {
+                            row.ItemArray[12] = "";
+                        }
+
                         result.Rows.Add(row);
                     }
                     lineIndex++;
