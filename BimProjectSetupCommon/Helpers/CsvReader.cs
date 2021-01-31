@@ -80,7 +80,15 @@ namespace BimProjectSetupCommon.Helpers
                         {
                             if (colIndex < result.Columns.Count)
                             {
-                                row[colIndex++] = value;
+                                if (value == "\"")
+                                {
+                                    row[colIndex++] = "";
+                                }
+                                else
+                                {
+                                    row[colIndex++] = value;
+                                }
+                                
                             }
                         }
 
@@ -231,7 +239,7 @@ namespace BimProjectSetupCommon.Helpers
 
                     if (isFirstTimeCompany)
                     {
-                        Util.LogError($"Each company must have a company trade assinged to it. See row number {i + 2} in the CSV-File.\n");
+                        Util.LogError($"Each company must have a company trade assigned to it. See row number {i + 2} in the CSV-File.\n");
                         isError = true;
                     }
                 }
