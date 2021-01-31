@@ -22,6 +22,7 @@ using System.Data;
 using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Windows.Forms.Layout;
 using NLog;
 using Autodesk.Forge.BIM360.Serialization;
 
@@ -53,6 +54,7 @@ namespace BimProjectSetupCommon.Helpers
                         continue;
                     }
 
+                    // load header
                     if (lineIndex == 0)
                     {
                         foreach (string value in values)
@@ -68,6 +70,7 @@ namespace BimProjectSetupCommon.Helpers
                             result.Columns.Add(col);
                         }
                     }
+                    // load data
                     else
                     {
                         DataRow row = result.NewRow();
@@ -79,6 +82,23 @@ namespace BimProjectSetupCommon.Helpers
                             {
                                 row[colIndex++] = value;
                             }
+                        }
+
+                        // check if the current row has the same length as the imported header
+                        var lenHeader = result.Columns.Count;
+                        var lenCurrentRow = row.ItemArray.Length;
+
+                        if (lenHeader - lenCurrentRow != 0)
+                        {
+                            var e = new Exception("Error in CSV File. Length of provided header and current row does not match. ");
+                            throw e;
+                        }
+
+                        //Test if last entry is bugged and replace
+                        //Hotfix works for now 
+                        if (row.ItemArray[lenCurrentRow -1].GetType() != "".GetType())
+                        {
+                            row[lenCurrentRow - 1] = "";
                         }
 
                         result.Rows.Add(row);
@@ -361,9 +381,7 @@ namespace BimProjectSetupCommon.Helpers
                 prevChar = c;
             }
             value = value.Trim();
-
-            //Test for bug fix
-            if (0 <= value.Length)
+            if (0 < value.Length)
             {
                 values.Add(value);
             }
