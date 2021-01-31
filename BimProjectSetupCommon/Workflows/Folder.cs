@@ -210,16 +210,25 @@ namespace BimProjectSetupCommon.Workflow
                         Util.LogInfo("Waiting for project's folders to be created...");
 
                         Thread.Sleep(5000);
+
+                        // query the BIM360 hubs API and check if the current project already owns the requested folders
+                        Util.LogInfo("Query BIM360 and check of current project already contains folders.");
                         topFolderRes = GetTopFolders(orgProj.id);
+
+                        if (topFolderRes.data == null)
+                        {
+                            Console.Write("stop here");
+                        }
 
                         if (CustomRootFoldersExist(topFolderRes))
                         {
+                            Util.LogInfo("All CustomRootFolders exist already. ");  // ToDo: please check if this log message relates with the intention of the method
                             break;
                         }
                     }
                     if (!CustomRootFoldersExist(topFolderRes))
                     {
-                        Util.LogError($"There was a problem retrievieng root folders for project {orgProj.name}. The program has been stopped. Try running the program again.");
+                        Util.LogError($"There was a problem retrieving root folders for project {orgProj.name}. The program has been stopped. Try running the program again.");
                         throw new ApplicationException($"Stopping the program... You can see the log file for more information.");
                     }
                 }
