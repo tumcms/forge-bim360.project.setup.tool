@@ -81,13 +81,6 @@ namespace BimProjectSetupCommon.Helpers
                             }
                         }
 
-                        //Test if last entry is bugged and replace
-                        //Hotfix works for now 
-                        if (row.ItemArray[12] == null)
-                        {
-                            row.ItemArray[12] = "";
-                        }
-
                         result.Rows.Add(row);
                     }
                     lineIndex++;
@@ -368,7 +361,9 @@ namespace BimProjectSetupCommon.Helpers
                 prevChar = c;
             }
             value = value.Trim();
-            if (0 < value.Length)
+
+            //Test for bug fix
+            if (0 <= value.Length)
             {
                 values.Add(value);
             }
