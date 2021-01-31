@@ -114,6 +114,7 @@ namespace Autodesk.Forge.BIM360
             Urls["projects_users"] = "bim360/admin/v1/" + regionBasedUrl + "projects/{ProjectId}/users";
             Urls["projects_projectId_users"] = "hq/v1/" + regionBasedUrl + "accounts/{AccountId}/projects/{ProjectId}/users";
             Urls["projects_projectId_users_import"] = "hq/v2/" + regionBasedUrl + "accounts/{AccountId}/projects/{ProjectId}/users/import";
+            Urls["projects_projectId_user_patch"] = "hq/v2/" + regionBasedUrl + "accounts/{AccountId}/projects/{ProjectId}/users/{UserId}";
             Urls["projects_projectId_industryRoles"] = "hq/v2/" + regionBasedUrl + "accounts/{AccountId}/projects/{ProjectId}/industry_roles";
             Urls["companies"] = "hq/v1/" + regionBasedUrl + "accounts/{AccountId}/companies";
             Urls["companies_import"] = "hq/v1/" + regionBasedUrl + "accounts/{AccountId}/companies/import";
