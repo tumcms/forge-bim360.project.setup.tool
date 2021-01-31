@@ -78,9 +78,6 @@ namespace BimProjectSetupCommon.Helpers
 
                         foreach (string value in values)
                         {
-
-                            Console.WriteLine(colIndex.ToString() + value);
-
                             if (colIndex < result.Columns.Count)
                             {
                                 row[colIndex++] = value;
