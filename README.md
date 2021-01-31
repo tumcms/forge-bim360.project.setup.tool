@@ -12,11 +12,8 @@
 
 
 # Description
-Command line tool to setup BIM 360 projects, services, users, it includes the following functionalities:
-- Create Projects based on CSV input file
-- Copy Projects with folders structure from a template project(supporting copy role permission)
-- Activate project services by adding project admin
-- Import users to project as admin or normal user
+Command line tool to setup BIM 360 projects, services, users based on the forked BIM360-project-setup-tool. 
+This version got extended by TUM CMS to provide a all-in-one solution to create and maintain several projects inside the BIM360 environment. 
 
 ### Custom functionalities based on CSV input file:
  - Create projects with custom folder structure
@@ -26,17 +23,26 @@ Command line tool to setup BIM 360 projects, services, users, it includes the fo
  - Add folder permissions to roles
  - Upload multiple files from local folders to BIM360 folders
 
-# Thumbnail
-![thumbnail](/thumbnail.gif)
-
 # Prerequisites
 - Visual Studio: Either Community (Windows) or Code (Windows, MacOS).
 - .NET Framework basic knowledge with C#
 
 # Running locally
-- For using this sample, you need an Autodesk developer credentials. Visit the [Forge Developer Portal](https://developer.autodesk.com), sign up for an account, then [create an app](https://developer.autodesk.com/myapps/create). 
+- For using this sample, you need an Autodesk developer credentials. 
+    Visit the [Forge Developer Portal](https://developer.autodesk.com), sign up for an account, then [create an app](https://developer.autodesk.com/myapps/create). 
 - Connect your Forge App to a Specific BIM 360 Account, follow the [tutorial](https://forge.autodesk.com/en/docs/bim360/v1/tutorials/getting-started/get-access-to-account/)
-- Download the repository, open `BimProjectSetupTool.sln` Solution on Visual Studio. The build process should download the required packages (**Autodesk.Forge** and dependencies). Compile and build the project, run it, please check the [User Guide](BIM360-ProjectSetupTool-UsageGuide.pdf) for all the details about usage and preparation of csv files.
+- Download the repository, open `BimProjectSetupTool.sln` Solution on Visual Studio. 
+    The build process should download the required packages (**Autodesk.Forge** and dependencies). 
+    Compile and build the project, run it, please check the [User Guide](BIM360-ProjectSetupTool-UsageGuide.pdf) for all the details about usage and preparation of csv files.
+
+## For advanced users 
+If you want to debug or run from Visual Studio instead of using the batch file, we recommend to set commandline-args inside the debug properties. 
+You can use the following snippet and insert your credentials accordingly: 
+
+`-c "<YOUR-FORGE-CLIENT-ID>" -s "<YOUR-FORGE-CLIENT-SECRET>" -a "<YOUR-BIM360-APP-KEY>" -p ".\sample\BIM360_Custom_Template.csv" -h "<YOURMAIL@mail.com>" -f ".\sample" -t "," -z "," -e "UTF-8" -d "yyyy-MM-dd" `
+
+Please check out the user guide for detailed explanations. 
+
 
 # Tutorial video for Custom.bat
 
@@ -47,21 +53,29 @@ Command line tool to setup BIM 360 projects, services, users, it includes the fo
 - Go to **.bin/Debug/sample** folder
 - Edit the **Custom.bat** file and add your details
 - There are two files **BIM360_Custom_Template**, one is a CSV-File and the other one an Excel-File
-- You can edit the Excel-File for your purpose and save it as CSV-File. You can also directy change the CSV-File. Remeber: **the program uses only the CSV-File, so be sure to have the information saved in this file before starting the program**.
+- You can edit the Excel-File for your purpose and save it as CSV-File. 
+    You can also directy change the CSV-File. 
+    Remember: **the program uses only the CSV-File, so be sure to have the information saved in this file before starting the program**.
 - After changing the BIM360_Custom_Template run the **Custom.bat** file
-- For information on what the program has done you can go to **.bin/Debug/Log** folder read the log files. **logImportant.txt** should be always checked as it provides information of default values or skipped parameters.
-- You will see an error if the CSV-File was not correctly populated. Specific information about the error will be printed on the console and will be saved in the log files.
+- For information on what the program has done you can go to **.bin/Debug/Log** folder read the log files. 
+    **logImportant.txt** should be always checked as it provides information of default values or skipped parameters.
+- You will see an error if the CSV-File was not correctly populated. 
+    Specific information about the error will be printed on the console and will be saved in the log files.
 - For every run of the program the log files will be deleted so you can't see old log files, just the last ones.
 
 # Important notes on Custom.bat
 - If you just want to add users to a project delete all the information in the columns from "root_folder" to "role_permission", but don't delete the columns.
-- After running the programm it is still possible to add new information in the CSV-File and run the program again. Everything is checked and only the new information will be updated in BIM360.
+- After running the programm it is still possible to add new information in the CSV-File and run the program again. 
+    Everything is checked and only the new information will be updated in BIM360.
 
 ### Requirements on the CSV-File
 If don't use the international version of Excel, there could be a problem by exporting the Excel sheet as a CSV-File.
 
 The template should always be used as a reference. Here are the requirements:
-- All required columns must be presented in the CSV-File. The required columns are in the template file. The only exception are the 'level_' columns. You can have more or less than 3 levels of sub folders, which are currently defined in the template file.
+- All required columns must be presented in the CSV-File. 
+    The required columns are in the template file. 
+    The only exception are the 'level_' columns. 
+    You can have more or less than 3 levels of sub folders, which are currently defined in the template file.
 - The order of the columns must be the same as in the template file.
 - The first row must be a populated row (must include a project).
 - An emty row must exist before each new project (without the first one).
@@ -157,7 +171,10 @@ Note: These template files used in the scripts are just samples which are define
 # Tips & Tricks
 - At least one path to an input file must be provided with the -p, -x or -u options;
 - Special care must be taken when editing the file in Microsoft Excel:
-    1. Make sure that Excel does not alter the date formatting to the System format on the machine which the file is edited. By default the dd/MM/YYYY is used in the CSV to format the date. When the Windows system uses a different time/date format, this sometimes causes Excel to save the date to the default Windows system format. This format can be changed in Configuration Panel | Regional Settings
+    1. Make sure that Excel does not alter the date formatting to the System format on the machine which the file is edited. 
+    By default the dd/MM/YYYY is used in the CSV to format the date. 
+    When the Windows system uses a different time/date format, this sometimes causes Excel to save the date to the default Windows system format. 
+    This format can be changed in Configuration Panel | Regional Settings
     2. Make sure the .CSV file is formatted in UTF-8 code.
     3. Open the file in a text editor such as Notepad++ after it was saved to ensure the above two points.
 - Logging can be configured in the Nlog.config file. Further information can be found here: https://github.com/nlog/NLog/wiki/Configuration-file.
@@ -194,3 +211,4 @@ This sample is licensed under the terms of the [MIT License](http://opensource.o
 # Written by
 - Oliver Scharpf, Global Consulting Delivery team, Autodesk.
 - Reviewed and maintained by Zhong Wu [@johnonsoftware](https://twitter.com/johnonsoftware), [Forge Partner Development](http://forge.autodesk.com)
+- Extended by TUM CMS
