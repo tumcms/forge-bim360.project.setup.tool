@@ -33,10 +33,23 @@ namespace BimProjectSetupCommon.Workflow
         {
             DataController.InitializeAllProjects();
         }
+        /// <summary>
+        /// Loads the data provided in the custom CSV template into a DataTable
+        /// </summary>
+        /// <returns></returns>
         public DataTable CustomGetDataFromCsv()
         {
             return CsvReader.CustomReadDataFromCSV();
         }
+
+        /// <summary>
+        /// Creates a project from custom DataTable
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="row"></param>
+        /// <param name="projectName"></param>
+        /// <param name="projectProcess"></param>
+        /// <returns></returns>
         public List<BimProject> CustomCreateProject(DataTable table, int row, string projectName, ProjectWorkflow projectProcess)
         {
             Util.LogInfo("\nCreating project: " + projectName + "\n");
@@ -53,6 +66,9 @@ namespace BimProjectSetupCommon.Workflow
 
             return updatedProjects;
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public void CreateProjectsProcess()
         {
             try
@@ -73,6 +89,9 @@ namespace BimProjectSetupCommon.Workflow
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void UpdateProjectsProcess()
         {
             try
@@ -92,6 +111,10 @@ namespace BimProjectSetupCommon.Workflow
                 Log.Error(ex);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projects"></param>
         public void ArchiveProjectsProcess(List<BimProject> projects)
         {
             try
@@ -103,6 +126,11 @@ namespace BimProjectSetupCommon.Workflow
                 Log.Error(ex);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="includeService"></param>
+        /// <param name="bimProjects"></param>
         public void ExportProjectsToCsv(bool includeService, List<BimProject> bimProjects = null)
         {
             if (includeService == true)
@@ -121,19 +149,38 @@ namespace BimProjectSetupCommon.Workflow
                 CsvExporter.ExportProjectsCsv(bimProjects);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public List<BimProject> GetAllProjects()
         {
             return DataController.AllProjects;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public List<string> GetIndustryRoles()
         {
             return DataController.GetIndustryRoles();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public List<Hub> GetHubs()
         {
             return DataController.Hubs;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projId"></param>
+        /// <returns></returns>
         public string GetProjectServiceTypes(string projId)
         {
             BimProject project = DataController.GetProjectWithServiceById(projId);
@@ -144,6 +191,10 @@ namespace BimProjectSetupCommon.Workflow
             }
             return _serviceTypes;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
         private void CreateProjects()
         {
             Log.Info("");
@@ -174,6 +225,10 @@ namespace BimProjectSetupCommon.Workflow
             }
             CsvExporter.WriteResults(DataController._projectTable, _options, _options.FilePath);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
         private void UpdateProjects()
         {
             Log.Info("");
@@ -216,6 +271,11 @@ namespace BimProjectSetupCommon.Workflow
             }
             CsvExporter.WriteResults(DataController._projectTable, _options, _options.FilePath);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projects"></param>
         private void ArchiveProjects(List<BimProject> projects)
         {
             Log.Info("");
@@ -231,6 +291,12 @@ namespace BimProjectSetupCommon.Workflow
                 DataController.ArchiveProject(project);
             }
         }
+
+        /// <summary>
+        /// Validates the given input data to prevent insufficient API calls afterwards
+        /// </summary>
+        /// <param name="proj"></param>
+        /// <returns></returns>
         private bool CheckRequiredParams(BimProject proj)
         {
             bool isNull = string.IsNullOrEmpty(proj.name) || string.IsNullOrEmpty(proj.project_type) || string.IsNullOrEmpty(proj.value)
@@ -238,6 +304,13 @@ namespace BimProjectSetupCommon.Workflow
 
             return !isNull;
         }
+
+        /// <summary>
+        /// Validates the given input data to prevent insufficient API calls afterwards
+        /// </summary>
+        /// <param name="proj"></param>
+        /// <param name="row"></param>
+        /// <returns></returns>
         private bool CheckRequiredParams(BimProject proj, DataRow row)
         {
             bool isNull = string.IsNullOrEmpty(proj.name) || string.IsNullOrEmpty(proj.project_type) || string.IsNullOrEmpty(proj.value)

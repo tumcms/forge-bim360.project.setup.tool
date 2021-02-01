@@ -9,6 +9,7 @@ using BimProjectSetupCommon.Helpers;
 using Autodesk.Forge.BIM360.Serialization;
 using Autodesk.Forge.BIM360;
 using System.Runtime.Remoting.Messaging;
+using BimProjectSetupAPI.Workflows;
 
 namespace CustomBIMFromCSV
 {

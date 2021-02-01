@@ -37,7 +37,9 @@ namespace BimProjectSetupCommon.Workflow
         private BimProjectsApi _projectApi = null;
         private BimProjectFoldersApi _foldersApi = null;
         private Dictionary<string, List<NestedFolder>> folderStructures = new Dictionary<string, List<NestedFolder>>();
-        private Dictionary<string, List<IndustryRole>> _projectToRolesDict = new Dictionary<string, List<IndustryRole>>();
+
+        private Dictionary<string, List<IndustryRole>> _projectToRolesDict =
+            new Dictionary<string, List<IndustryRole>>();
 
         public FolderWorkflow(AppOptions options) : base(options)
         {
@@ -49,27 +51,30 @@ namespace BimProjectSetupCommon.Workflow
             DataController.InitializeAccountUsers();
             DataController.InitializeHubs();
         }
+
         public List<NestedFolder> CustomGetFolderStructure(BimProject project)
         {
             return CustomExtractFolderStructure(project);
         }
+
         public string CustomCreateFolder(string projId, string parentFolderId, string newFolderName)
         {
             return _foldersApi.CustomCreateFolder(projId, parentFolderId, newFolderName);
         }
-        public bool CustomAssignPermissionToFolder(string projectId, string folderId, List<FolderPermission> folderPermissions)
+
+        public bool CustomAssignPermissionToFolder(string projectId, string folderId,
+            List<FolderPermission> folderPermissions)
         {
             return _foldersApi.CustomAssignPermission(projectId, folderId, folderPermissions);
         }
 
-        public void CustomUploadFile(string projectId, string folderId,  string filePath)
+        public void CustomUploadFile(string projectId, string folderId, string filePath)
         {
             Util.LogInfo("Uploading file " + System.IO.Path.GetFileName(filePath) + "...");
 
             string objectId = _foldersApi.CustomCreateStorageLocation(projectId, folderId, filePath);
             _foldersApi.CustomUploadFile(objectId, filePath);
             _foldersApi.CustomCreateFirstVersion(projectId, folderId, objectId, filePath);
-
         }
 
         public List<string> CustomGetExistingFileNames(string projectId, string folderId)
@@ -131,6 +136,7 @@ namespace BimProjectSetupCommon.Workflow
             {
                 newProj.service_types = newProj.service_types.Replace("insight,", "");
             }
+
             newProj.name = newProjName;
             //newProj.updateName = true;
 
@@ -139,13 +145,15 @@ namespace BimProjectSetupCommon.Workflow
 
         private bool CheckRequiredParams(BimProject proj)
         {
-            bool isNull = string.IsNullOrEmpty(proj.name) || string.IsNullOrEmpty(proj.project_type) || string.IsNullOrEmpty(proj.value)
-                || string.IsNullOrEmpty(proj.currency);
+            bool isNull = string.IsNullOrEmpty(proj.name) || string.IsNullOrEmpty(proj.project_type) ||
+                          string.IsNullOrEmpty(proj.value)
+                          || string.IsNullOrEmpty(proj.currency);
 
             return !isNull;
         }
 
-        public void CopyFoldersProcess(BimProject orgProj, BimProject newProj, string adminEmail, List<string> roles = null)
+        public void CopyFoldersProcess(BimProject orgProj, BimProject newProj, string adminEmail,
+            List<string> roles = null)
         {
             List<string> roleIds = new List<string>();
             HqUser admin = new HqUser();
@@ -162,9 +170,11 @@ namespace BimProjectSetupCommon.Workflow
             {
                 if (false == CheckRequiredParams(newProj))
                 {
-                    Log.Error("One of the required parameters is missing. Required are: Name, Project Type, Value, Currency, Start date, End date");
+                    Log.Error(
+                        "One of the required parameters is missing. Required are: Name, Project Type, Value, Currency, Start date, End date");
                     Log.Error("End procesing for this project");
                 }
+
                 ExtractFolderStructure(orgProj);
                 newProj.include_name_to_request_body = true;
 
@@ -178,6 +188,7 @@ namespace BimProjectSetupCommon.Workflow
                         CopyProjectFolders(orgProj, newProjId, admin.uid);
                     }
                 }
+
                 Log.Info("");
                 Log.Info("FOLDER COPY WORKFLOW finished for " + newProj.name);
             }
@@ -205,7 +216,7 @@ namespace BimProjectSetupCommon.Workflow
                     Util.LogInfo("No top folders retrieved.");
 
                     // Wait until new project's folders are created
-                    for(int i=0; i<6; i++)
+                    for (int i = 0; i < 6; i++)
                     {
                         Util.LogInfo("Waiting for project's folders to be created...");
 
@@ -215,25 +226,25 @@ namespace BimProjectSetupCommon.Workflow
                         Util.LogInfo("Query BIM360 and check of current project already contains folders.");
                         topFolderRes = GetTopFolders(orgProj.id);
 
-                        if (topFolderRes.data == null)
-                        {
-                            Console.Write("stop here");
-                        }
-
                         if (CustomRootFoldersExist(topFolderRes))
                         {
-                            Util.LogInfo("All CustomRootFolders exist already. ");  // ToDo: please check if this log message relates with the intention of the method
+                            Util.LogInfo(
+                                "All CustomRootFolders exist already. "); // ToDo: please check if this log message relates with the intention of the method
                             break;
                         }
                     }
+
                     if (!CustomRootFoldersExist(topFolderRes))
                     {
-                        Util.LogError($"There was a problem retrieving root folders for project {orgProj.name}. The program has been stopped. Try running the program again.");
-                        throw new ApplicationException($"Stopping the program... You can see the log file for more information.");
+                        Util.LogError(
+                            $"There was a problem retrieving root folders for project {orgProj.name}. The program has been stopped. Try running the program again.");
+                        throw new ApplicationException(
+                            $"Stopping the program... You can see the log file for more information.");
                     }
                 }
 
-                Util.LogInfo("- retrieving sub-folders for 'Plans' and 'Project Files' folder. This could take a while..");
+                Util.LogInfo(
+                    "- retrieving sub-folders for 'Plans' and 'Project Files' folder. This could take a while..");
                 // Iterate root folders
                 foreach (Folder folder in topFolderRes.data)
                 {
@@ -247,21 +258,24 @@ namespace BimProjectSetupCommon.Workflow
                         existingFolderStructure.Add(rootWithChildrenFolder);
                     }
                 }
+
                 folderStructures[orgProj.name] = existingFolderStructure;
 
                 return existingFolderStructure;
-
-            } else
+            }
+            else
             {
                 throw new ApplicationException($"");
             }
         }
+
         private bool CustomRootFoldersExist(TopFolderResponse topFolderRes)
         {
             if (topFolderRes.data == null)
             {
                 return false;
             }
+
             bool plansExist = false;
             bool projectFilesExist = false;
             for (int i = 0; i < topFolderRes.data.Length; i++)
@@ -270,12 +284,14 @@ namespace BimProjectSetupCommon.Workflow
                 {
                     plansExist = true;
                 }
+
                 if (topFolderRes.data[i].attributes.name.ToLower() == "project files")
                 {
                     projectFilesExist = true;
                 }
             }
-            if(!plansExist || !projectFilesExist)
+
+            if (!plansExist || !projectFilesExist)
             {
                 return false;
             }
@@ -284,7 +300,8 @@ namespace BimProjectSetupCommon.Workflow
                 return true;
             }
         }
-            private void ExtractFolderStructure(BimProject orgProj)
+
+        private void ExtractFolderStructure(BimProject orgProj)
         {
             if (folderStructures.ContainsKey(orgProj.name))
             {
@@ -320,14 +337,16 @@ namespace BimProjectSetupCommon.Workflow
                         existingFolderStructure.Add(rootWithChildrenFolder);
                     }
                 }
-                folderStructures[orgProj.name] = existingFolderStructure;
 
+                folderStructures[orgProj.name] = existingFolderStructure;
             }
         }
+
         private HqUser GetAdminUser(string email)
         {
             return DataController.AccountUsers.Find(x => x.email == email);
         }
+
         private TopFolderResponse GetTopFolders(string projId)
         {
             IRestResponse response = _hubsApi.GetTopFolders(projId);
@@ -335,6 +354,7 @@ namespace BimProjectSetupCommon.Workflow
 
             return content;
         }
+
         private bool CreateProject(BimProject orgProj, BimProject newProj, out string newProjId)
         {
             newProjId = DataController.AddProject(newProj);
@@ -343,10 +363,13 @@ namespace BimProjectSetupCommon.Workflow
                 Log.Error("- error occured during project creation");
                 return false;
             }
+
             Log.Info("- new project id: " + newProjId);
             return true;
         }
-        private bool ActivateProject(string newProjId, HqUser admin, List<string> roleIds = null, string accountId = null)
+
+        private bool ActivateProject(string newProjId, HqUser admin, List<string> roleIds = null,
+            string accountId = null)
         {
             Log.Info("");
             Log.Info("Project activation process started.");
@@ -385,12 +408,15 @@ namespace BimProjectSetupCommon.Workflow
                 {
                     DataController.AllProjects.Find(x => x.id == newProjId).status = Status.active;
                 }
+
                 Log.Info($"- project activation succeed.");
                 return true;
             }
+
             Log.Error($"- project activation failed. Code: {res.StatusCode}\t message: {res.ErrorMessage}");
             return false;
         }
+
         private void CopyProjectFolders(BimProject orgProj, string newProjId, string uid)
         {
             Log.Info("");
@@ -412,6 +438,7 @@ namespace BimProjectSetupCommon.Workflow
                     retry++;
                     if (retry > 20) break;
                 } while (newTopFoldersRes.data == null);
+
                 if (retry > 20) break;
             } while (newTopFoldersRes.data.Where(x => x.attributes.name == "Project Files").ToList().Count < 1);
 
@@ -427,7 +454,8 @@ namespace BimProjectSetupCommon.Workflow
             {
                 if (folderStructures.ContainsKey(orgProj.name))
                 {
-                    NestedFolder existingRootFolder = folderStructures[orgProj.name].Find(x => x.name == newRootFolder.attributes.name);
+                    NestedFolder existingRootFolder = folderStructures[orgProj.name]
+                        .Find(x => x.name == newRootFolder.attributes.name);
                     if (existingRootFolder != null)
                     {
                         // Without below, access to the project is forbidden...
@@ -436,11 +464,14 @@ namespace BimProjectSetupCommon.Workflow
 
                         // assign permission to root folder first
                         Log.Info("- assigning role permissions to root folder: " + newRootFolder.attributes.name);
-                        bool res = _foldersApi.AssignPermission(newProjId, newRootFolder.id, existingRootFolder.permissions, uid);
+                        bool res = _foldersApi.AssignPermission(newProjId, newRootFolder.id,
+                            existingRootFolder.permissions, uid);
                         if (!res)
-                            Log.Warn($"Failed to assgn role permissions to root folder: {newRootFolder.attributes.name}.");
+                            Log.Warn(
+                                $"Failed to assgn role permissions to root folder: {newRootFolder.attributes.name}.");
 
-                        Log.Info("- copying the subfolders(including folder permission of role) of root folder: " + newRootFolder.attributes.name);
+                        Log.Info("- copying the subfolders(including folder permission of role) of root folder: " +
+                                 newRootFolder.attributes.name);
                         foreach (NestedFolder childFolder in existingRootFolder.childrenFolders)
                         {
                             // Recursively create new child folders
@@ -450,6 +481,7 @@ namespace BimProjectSetupCommon.Workflow
                 }
             }
         }
+
         private void RecursivelyCreateFolder(string projId, string uid, string parentFolderId, NestedFolder newFolder)
         {
             Log.Info("-- copying child folder: " + newFolder.name);
@@ -461,7 +493,8 @@ namespace BimProjectSetupCommon.Workflow
                 if (retryCounter < 10)
                 {
                     retryCounter++;
-                    Log.Warn($"Error occured while creating the folder: {newFolder.name}. Retrying ({retryCounter.ToString()}/10)");
+                    Log.Warn(
+                        $"Error occured while creating the folder: {newFolder.name}. Retrying ({retryCounter.ToString()}/10)");
                     RecursivelyCreateFolder(projId, uid, parentFolderId, newFolder);
                 }
                 else
@@ -475,10 +508,10 @@ namespace BimProjectSetupCommon.Workflow
                 retryCounter = 0; // Reset the counter
                 Log.Info("-- assigning role permission to folder: " + newFolder.name);
                 // assign permission to the new created folder
-                bool res = _foldersApi.AssignPermission(projId, newFolderId, newFolder.permissions, uid );
-                if( !res )
+                bool res = _foldersApi.AssignPermission(projId, newFolderId, newFolder.permissions, uid);
+                if (!res)
                     Log.Warn($"Failed to assgn role permissions to the new created folder: {newFolder.name}.");
-          
+
                 if (newFolder.childrenFolders.Count > 0)
                 {
                     foreach (NestedFolder childFolder in newFolder.childrenFolders)
@@ -488,21 +521,26 @@ namespace BimProjectSetupCommon.Workflow
                 }
             }
         }
+
         private List<IndustryRole> GetRolesForProject(string projectName)
         {
             List<IndustryRole> result = null;
             if (false == _projectToRolesDict.TryGetValue(projectName, out result))
             {
-                BimProject project = DataController.AllProjects.FirstOrDefault(p => p.name != null && p.name.Equals(projectName));
+                BimProject project =
+                    DataController.AllProjects.FirstOrDefault(p => p.name != null && p.name.Equals(projectName));
                 if (project == null)
                 {
                     throw new ApplicationException($"No projects found for name '{projectName}'");
                 }
+
                 result = DataController.GetProjectRoles(project.id);
                 _projectToRolesDict.Add(projectName, result);
             }
+
             return result;
         }
+
         private List<string> GetIndustryRoleIds(string projectName, List<string> roles)
         {
             if (roles == null)
@@ -530,6 +568,7 @@ namespace BimProjectSetupCommon.Workflow
 
             return roleIds != null ? roleIds : null;
         }
+
         private List<string> GetIndustryRoleIds(BimProject proj, List<string> roles, string accountId)
         {
             BimProjectsApi _projectsApi = new BimProjectsApi(GetToken, _options);
@@ -563,7 +602,9 @@ namespace BimProjectSetupCommon.Workflow
         }
 
         #region Copy project hub to hub
-        public void CopyProjectToTargetHubProcess(BimProject orgProj, string targetAccountId, string adminEmail, List<string> roles = null)
+
+        public void CopyProjectToTargetHubProcess(BimProject orgProj, string targetAccountId, string adminEmail,
+            List<string> roles = null)
         {
             Log.Info("");
             Log.Info("============================================================");
@@ -606,6 +647,7 @@ namespace BimProjectSetupCommon.Workflow
                     {
                         status = ActivateProject(newProjId, admin, roleIds, targetAccountId);
                     } while (status == false);
+
                     if (status)
                     {
                         if (folderStructures.ContainsKey(orgProj.name))
@@ -614,6 +656,7 @@ namespace BimProjectSetupCommon.Workflow
                         }
                     }
                 }
+
                 Log.Info("");
                 Log.Info("HUB2HUB PROJECT COPY WORKFLOW finished for " + orgProj.name);
             }
@@ -622,6 +665,7 @@ namespace BimProjectSetupCommon.Workflow
                 Log.Error(ex);
             }
         }
+
         private HqUser GetAdminUserFromTargetHub(string email, string accountId)
         {
             if (_options == null)
@@ -634,6 +678,7 @@ namespace BimProjectSetupCommon.Workflow
             _userApi.GetAccountUsers(out result, accountId);
             return result.Find(x => x.email == email);
         }
+
         private bool CreateProjectFromTargetHub(BimProject proj, string accountId, out string newProjId)
         {
             newProjId = DataController.AddProject(proj, accountId);
@@ -642,12 +687,15 @@ namespace BimProjectSetupCommon.Workflow
                 Log.Error("- error occured during project creation");
                 return false;
             }
+
             Log.Info("- new project id: " + newProjId);
             return true;
         }
+
         #endregion
 
         #region Response Handler
+
         internal static bool ActivateProjectResponseHandler(IRestResponse response, string id, int rowIndex = -1)
         {
             LogResponse(response);
@@ -662,14 +710,17 @@ namespace BimProjectSetupCommon.Workflow
                         return false;
                     }
                 }
+
                 // Update data in the data controller
                 DataController.AllProjects.Find(x => x.id == r.success_items[0].project_id).status = Status.active;
                 Log.Info($"- project activation succeed.");
                 return true;
             }
+
             Log.Error($"- project activation failed. Code: {response.StatusCode}\t message: {response.ErrorMessage}");
             return false;
         }
+
         internal static void LogResponse(IRestResponse response)
         {
             Log.Info($"- status code: {response.StatusCode}");
@@ -679,6 +730,7 @@ namespace BimProjectSetupCommon.Workflow
                 Log.Error($"- error exception: {response.ErrorException}");
             }
         }
+
         #endregion
     }
 }

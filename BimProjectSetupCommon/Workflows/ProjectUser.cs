@@ -18,22 +18,25 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Data;
-using RestSharp;
-using Newtonsoft.Json;
+using System.Linq;
 using Autodesk.Forge.BIM360;
 using Autodesk.Forge.BIM360.Serialization;
+using BimProjectSetupCommon;
 using BimProjectSetupCommon.Helpers;
-using System.Windows.Forms;
+using BimProjectSetupCommon.Workflow;
+using Newtonsoft.Json;
+using RestSharp;
 
-namespace BimProjectSetupCommon.Workflow
+namespace BimProjectSetupAPI.Workflows
 {
     public class ProjectUserWorkflow : BaseWorkflow
     {
         private BimProjectsApi _projectsApi = null;
 
-        private Dictionary<string, List<IndustryRole>> _projectToRolesDict = new Dictionary<string, List<IndustryRole>>();
+        private Dictionary<string, List<IndustryRole>> _projectToRolesDict =
+            new Dictionary<string, List<IndustryRole>>();
+
         private Dictionary<string, BimProject> _nameToProjectMap = new Dictionary<string, BimProject>();
 
         public ProjectUserWorkflow(AppOptions options) : base(options)
@@ -42,6 +45,7 @@ namespace BimProjectSetupCommon.Workflow
             DataController.InitializeAllProjects();
             DataController.InitializeAccountUsers();
         }
+
         public List<HqUser> CustomGetAllProjectUsers(string projectId)
         {
             List<HqUser> result = new List<HqUser>();
@@ -49,10 +53,12 @@ namespace BimProjectSetupCommon.Workflow
 
             return result;
         }
-        public List<HqUser> CustomUpdateProjectUsers(DataTable table, int startRow, List<BimCompany> companies, BimProject project, ProjectUserWorkflow projectUserProcess)
+
+        public List<HqUser> CustomUpdateProjectUsers(DataTable table, int startRow, List<BimCompany> companies,
+            BimProject project, ProjectUserWorkflow projectUserProcess)
         {
             Util.LogInfo("\nRetrieving existing members from project.");
-            List<HqUser>  projectUsers = projectUserProcess.CustomGetAllProjectUsers(project.id);
+            List<HqUser> projectUsers = projectUserProcess.CustomGetAllProjectUsers(project.id);
 
             Util.LogInfo("Adding members to project.");
             List<ProjectUser> _projectUsers = CustomGetUsers(table, projectUsers, companies, project.name, startRow);
@@ -71,11 +77,13 @@ namespace BimProjectSetupCommon.Workflow
             List<HqUser> updatedProjectUsers = projectUserProcess.CustomGetAllProjectUsers(project.id);
             return updatedProjectUsers;
         }
+
         public void AddProjectUsersFromCsvProcess()
         {
             try
             {
-                DataController._projcetUserTable = CsvReader.ReadDataFromCSV(DataController._projcetUserTable, DataController._options.ProjectUserFilePath);
+                DataController._projcetUserTable = CsvReader.ReadDataFromCSV(DataController._projcetUserTable,
+                    DataController._options.ProjectUserFilePath);
 
                 if (false == _options.TrialRun)
                 {
@@ -92,6 +100,7 @@ namespace BimProjectSetupCommon.Workflow
                 HandleError(ex);
             }
         }
+
         public void AddProjectUsersProcess(List<ProjectUser> _projectUsers)
         {
             try
@@ -108,6 +117,7 @@ namespace BimProjectSetupCommon.Workflow
                     {
                         return;
                     }
+
                     user.pm_access = GetAccessLevel(user.pm_access);
                     user.docs_access = GetAccessLevel(user.docs_access);
                     if (user.company_id == null)
@@ -131,7 +141,8 @@ namespace BimProjectSetupCommon.Workflow
         {
             try
             {
-                DataController._projcetUserTable = CsvReader.ReadDataFromCSV(DataController._projcetUserTable, DataController._options.ProjectUserFilePath);
+                DataController._projcetUserTable = CsvReader.ReadDataFromCSV(DataController._projcetUserTable,
+                    DataController._options.ProjectUserFilePath);
 
                 if (false == _options.TrialRun)
                 {
@@ -171,9 +182,11 @@ namespace BimProjectSetupCommon.Workflow
                 var users = _projectUsers.Where(u => u.project_name.Equals(name));
                 if (users == null || users.Any() == false)
                 {
-                    Log.Warn($"- no valid users found for project {name} - skipping this project and continue with next");
+                    Log.Warn(
+                        $"- no valid users found for project {name} - skipping this project and continue with next");
                     continue;
                 }
+
                 var project = DataController.AllProjects.FirstOrDefault(p => p.name != null && p.name.Equals(name));
 
                 if (users.Count() < 50)
@@ -193,39 +206,46 @@ namespace BimProjectSetupCommon.Workflow
                 }
             }
         }
-     private static void CustomAddServicesFromIndustryRole(ProjectUser user, List<IndustryRole> roles)
+
+        private static void CustomAddServicesFromIndustryRole(ProjectUser user, List<IndustryRole> roles)
         {
             user.services = new Services();
-            foreach(IndustryRole role in roles)
+            foreach (IndustryRole role in roles)
             {
-                if (role.services.document_management.access_level == RolesAccessLevel.user && user.services.document_management == null)
+                if (role.services.document_management.access_level == RolesAccessLevel.user &&
+                    user.services.document_management == null)
                 {
-                    user.services.document_management = new DocumentManagement() { access_level = AccessLevel.user };
+                    user.services.document_management = new DocumentManagement() {access_level = AccessLevel.user};
                 }
 
-                if (role.services.project_administration.access_level == RolesAccessLevel.user && user.services.project_administration == null)
+                if (role.services.project_administration.access_level == RolesAccessLevel.user &&
+                    user.services.project_administration == null)
                 {
-                    user.services.project_administration = new ProjectAdministration() { access_level = AccessLevel.user };
+                    user.services.project_administration = new ProjectAdministration()
+                        {access_level = AccessLevel.user};
                 }
 
                 if (role.services.document_management.access_level == RolesAccessLevel.admin)
                 {
-                    user.services.document_management = new DocumentManagement() { access_level = AccessLevel.admin };
+                    user.services.document_management = new DocumentManagement() {access_level = AccessLevel.admin};
                 }
 
                 if (role.services.project_administration.access_level == RolesAccessLevel.admin)
                 {
-                    user.services.project_administration = new ProjectAdministration() { access_level = AccessLevel.admin };
+                    user.services.project_administration = new ProjectAdministration()
+                        {access_level = AccessLevel.admin};
                 }
             }
-            
+
             if (user.services.project_administration != null && user.services.document_management != null)
             {
-                if (user.services.project_administration.access_level == AccessLevel.admin && user.services.document_management.access_level == AccessLevel.user)
+                if (user.services.project_administration.access_level == AccessLevel.admin &&
+                    user.services.document_management.access_level == AccessLevel.user)
                 {
-                    Util.LogImportant($"Not possible to have admin access to 'Project Admin' and at the same time user access to 'Document Management'. " +
+                    Util.LogImportant(
+                        $"Not possible to have admin access to 'Project Admin' and at the same time user access to 'Document Management'. " +
                         $"Document management access for user '{user.email}' upgraded to admin.");
-                    user.services.document_management = new DocumentManagement() { access_level = AccessLevel.admin };
+                    user.services.document_management = new DocumentManagement() {access_level = AccessLevel.admin};
                 }
             }
 
@@ -233,18 +253,20 @@ namespace BimProjectSetupCommon.Workflow
             {
                 if (user.services.document_management.access_level == AccessLevel.admin)
                 {
-                    Util.LogImportant($"Not possible to have admin access to 'Document Management' without having admin access to 'Project Admin'. " +
-                    $"'Document Management' access for user {user.email} downgraded to user.");
+                    Util.LogImportant(
+                        $"Not possible to have admin access to 'Document Management' without having admin access to 'Project Admin'. " +
+                        $"'Document Management' access for user {user.email} downgraded to user.");
                 }
-                
             }
 
             if (user.services.document_management == null && user.services.project_administration == null)
             {
-                Util.LogImportant($"No document_management or project_administration for role. Default access_level for user '{user.email}': document_management: user");
-                user.services.document_management = new DocumentManagement() { access_level = AccessLevel.user };
+                Util.LogImportant(
+                    $"No document_management or project_administration for role. Default access_level for user '{user.email}': document_management: user");
+                user.services.document_management = new DocumentManagement() {access_level = AccessLevel.user};
             }
         }
+
         private void PatchUser(List<ProjectUser> _projectUsers)
         {
             if (_projectUsers == null || _projectUsers.Count < 1)
@@ -267,9 +289,11 @@ namespace BimProjectSetupCommon.Workflow
                 var users = _projectUsers.Where(u => u.project_name.Equals(name));
                 if (users == null || users.Any() == false)
                 {
-                    Log.Warn($"- no valid users found for project {name} - skipping this project and continue with next");
+                    Log.Warn(
+                        $"- no valid users found for project {name} - skipping this project and continue with next");
                     continue;
                 }
+
                 var project = DataController.AllProjects.FirstOrDefault(p => p.name != null && p.name.Equals(name));
                 foreach (ProjectUser projectUser in users)
                 {
@@ -277,7 +301,8 @@ namespace BimProjectSetupCommon.Workflow
                     if (CheckUserId(projectUser.email, out hqUser))
                     {
                         Log.Info($"- updating user {projectUser.email}");
-                        IRestResponse response = _projectsApi.PatchUser(project.id, hqAdmin.uid, hqUser.id, projectUser);
+                        IRestResponse response =
+                            _projectsApi.PatchUser(project.id, hqAdmin.uid, hqUser.id, projectUser);
                         ProjectUserPatchResponseHandler(response);
                     }
                     else
@@ -287,23 +312,26 @@ namespace BimProjectSetupCommon.Workflow
                 }
             }
         }
-        
+
         private static void AddServices(ProjectUser user)
         {
             // normal user
             user.services = new Services();
-            user.services.document_management = new DocumentManagement() { access_level = AccessLevel.user };
+            user.services.document_management = new DocumentManagement() {access_level = AccessLevel.user};
 
             // admin user?
-            if (user.docs_access != null && user.docs_access.Equals("admin", StringComparison.InvariantCultureIgnoreCase))
+            if (user.docs_access != null &&
+                user.docs_access.Equals("admin", StringComparison.InvariantCultureIgnoreCase))
             {
-                user.services.document_management = new DocumentManagement() { access_level = AccessLevel.admin };
+                user.services.document_management = new DocumentManagement() {access_level = AccessLevel.admin};
             }
+
             if (user.pm_access != null && user.pm_access.Equals("admin", StringComparison.InvariantCultureIgnoreCase))
             {
-                user.services.project_administration = new ProjectAdministration() { access_level = AccessLevel.admin };
+                user.services.project_administration = new ProjectAdministration() {access_level = AccessLevel.admin};
             }
         }
+
         private static string GetCompanyId(object v)
         {
             string compId = null;
@@ -315,8 +343,10 @@ namespace BimProjectSetupCommon.Workflow
                 {
                     if (comps.Count() > 1)
                     {
-                        throw new ApplicationException($"Multiple companies found for name {compName}. Cannot identify company id!");
+                        throw new ApplicationException(
+                            $"Multiple companies found for name {compName}. Cannot identify company id!");
                     }
+
                     if (comps.Count() == 1)
                     {
                         compId = comps.First().id;
@@ -327,9 +357,12 @@ namespace BimProjectSetupCommon.Workflow
                     throw new ApplicationException($"No company ID could be found for company name {compName}");
                 }
             }
+
             return compId;
         }
-        private List<ProjectUser> CustomGetUsers(DataTable table, List<HqUser> projectUsers, List<BimCompany> companies, string projectName, int startRow)
+
+        private List<ProjectUser> CustomGetUsers(DataTable table, List<HqUser> projectUsers, List<BimCompany> companies,
+            string projectName, int startRow)
         {
             List<ProjectUser> resultUsers = new List<ProjectUser>();
 
@@ -346,6 +379,7 @@ namespace BimProjectSetupCommon.Workflow
                 {
                     break;
                 }
+
                 // Continue if no user at this row
                 if (string.IsNullOrEmpty(table.Rows[row]["user_email"].ToString()))
                 {
@@ -353,19 +387,22 @@ namespace BimProjectSetupCommon.Workflow
                 }
 
                 // Check if user with same email already in csv
-                if (!string.IsNullOrEmpty(table.Rows[row]["user_email"].ToString()) && allUserEmailsInCsv.Contains(table.Rows[row]["user_email"].ToString()))
+                if (!string.IsNullOrEmpty(table.Rows[row]["user_email"].ToString()) &&
+                    allUserEmailsInCsv.Contains(table.Rows[row]["user_email"].ToString()))
                 {
                     // Check if user with same email but with multiple rows with 'industry_role' or 'company'
                     if (!string.IsNullOrEmpty(table.Rows[row]["industry_role"].ToString()))
                     {
-                        Util.LogImportant($"User with email '{table.Rows[row]["user_email"]}' already exists with other " +
+                        Util.LogImportant(
+                            $"User with email '{table.Rows[row]["user_email"]}' already exists with other " +
                             $"'industry_role' values. Only the first values for each user will be taken. See row number {row + 2} in the CSV-File.");
                     }
 
                     // Check if user with same email but with multiple rows with 'industry_role' or 'company'
                     if (!string.IsNullOrEmpty(table.Rows[row]["company"].ToString()))
                     {
-                        Util.LogImportant($"User with email '{table.Rows[row]["user_email"]}' already exists with other " +
+                        Util.LogImportant(
+                            $"User with email '{table.Rows[row]["user_email"]}' already exists with other " +
                             $"'company' values. Only the first values for each user will be taken. See row number {row + 2} in the CSV-File.");
                     }
                 }
@@ -376,7 +413,8 @@ namespace BimProjectSetupCommon.Workflow
                 }
 
                 // Continue if user with the same email already exists
-                if (!string.IsNullOrEmpty(table.Rows[row]["user_email"].ToString()) && existingUsers.Contains(table.Rows[row]["user_email"].ToString()))
+                if (!string.IsNullOrEmpty(table.Rows[row]["user_email"].ToString()) &&
+                    existingUsers.Contains(table.Rows[row]["user_email"].ToString()))
                 {
                     continue;
                 }
@@ -386,7 +424,8 @@ namespace BimProjectSetupCommon.Workflow
                 if (!string.IsNullOrEmpty(companyName) && !existingCompanies.Contains(companyName.ToLower()))
                 {
                     Util.LogImportant($"Something went wrong. Company with name: "
-                        + companyName + $" was not found. User with email: {table.Rows[row]["user_email"]} should be assigned to this company.");
+                                      + companyName +
+                                      $" was not found. User with email: {table.Rows[row]["user_email"]} should be assigned to this company.");
                 }
 
                 BimCompany company = companies.Find(x => x.name.ToLower() == companyName.ToLower());
@@ -394,7 +433,7 @@ namespace BimProjectSetupCommon.Workflow
                 // Check if user with same email has already been added
                 bool isUserAdded = false;
                 ProjectUser projectUser = resultUsers.Find(x => x.email == table.Rows[row]["user_email"].ToString());
-                if(projectUser != null)
+                if (projectUser != null)
                 {
                     isUserAdded = true;
                     continue;
@@ -405,6 +444,7 @@ namespace BimProjectSetupCommon.Workflow
                 // Add only if user had not been added already
                 if (user != null && !isUserAdded) resultUsers.Add(user);
             }
+
             return resultUsers;
         }
 
@@ -429,6 +469,7 @@ namespace BimProjectSetupCommon.Workflow
 
             return existingCompanies;
         }
+
         private List<ProjectUser> GetUsers(DataTable table)
         {
             if (table == null)
@@ -459,16 +500,17 @@ namespace BimProjectSetupCommon.Workflow
                 var user = GetUserForRow(row, projectName);
                 if (user != null) users.Add(user);
             }
+
             return users;
         }
+
         private ProjectUser CustomGetUserForRow(DataRow row, string projectName, BimCompany company)
         {
-            
             ProjectUser user = new ProjectUser();
 
             user.project_name = projectName;
             user.email = Util.GetStringOrNull(row["user_email"]);
-            if(company != null)
+            if (company != null)
             {
                 user.company_id = company.id;
             }
@@ -484,8 +526,9 @@ namespace BimProjectSetupCommon.Workflow
                 user.industry_roles = GetIndustryRoleIds(projectName, Util.GetStringOrNull(row["industry_role"]));
                 List<IndustryRole> roles = GetRolesForProject(projectName);
 
-                List<string> industryRoles = GetIndustryRoleNames(projectName, Util.GetStringOrNull(row["industry_role"]));
-                foreach(string userRole in industryRoles)
+                List<string> industryRoles =
+                    GetIndustryRoleNames(projectName, Util.GetStringOrNull(row["industry_role"]));
+                foreach (string userRole in industryRoles)
                 {
                     IndustryRole role = roles.Find(x => x.name.ToLower() == userRole.ToLower());
                     if (role != null)
@@ -494,9 +537,10 @@ namespace BimProjectSetupCommon.Workflow
                     }
                     else
                     {
-                        Util.LogImportant($"Industry role '{userRole}' was not found in project! Skipping this role for user '{user.email}'.");
+                        Util.LogImportant(
+                            $"Industry role '{userRole}' was not found in project! Skipping this role for user '{user.email}'.");
                     }
-                }   
+                }
             }
 
             CustomAddServicesFromIndustryRole(user, currRole);
@@ -505,8 +549,10 @@ namespace BimProjectSetupCommon.Workflow
             {
                 Util.LogImportant($"No email available for user - something went wrong!");
             }
+
             return user;
         }
+
         private ProjectUser GetUserForRow(DataRow row, string projectName)
         {
             ProjectUser user = new ProjectUser();
@@ -523,23 +569,29 @@ namespace BimProjectSetupCommon.Workflow
             {
                 throw new ApplicationException($"No email available for user - check CSV files!");
             }
+
             return user;
         }
+
         public List<IndustryRole> GetRolesForProject(string projectName)
         {
             List<IndustryRole> result = null;
             if (false == _projectToRolesDict.TryGetValue(projectName, out result))
             {
-                BimProject project = DataController.AllProjects.FirstOrDefault(p => p.name != null && p.name.Equals(projectName));
+                BimProject project =
+                    DataController.AllProjects.FirstOrDefault(p => p.name != null && p.name.Equals(projectName));
                 if (project == null)
                 {
                     throw new ApplicationException($"No project found for name '{projectName}'");
                 }
+
                 result = DataController.GetProjectRoles(project.id);
                 _projectToRolesDict.Add(projectName, result);
             }
+
             return result;
         }
+
         private List<string> GetIndustryRoleIds(string projectName, List<string> userRoles)
         {
             List<IndustryRole> roles = GetRolesForProject(projectName);
@@ -556,11 +608,11 @@ namespace BimProjectSetupCommon.Workflow
                 {
                     result.Add(role.id);
                 }
-
             }
 
             return result != null ? result : null;
         }
+
         private List<string> GetIndustryRoleNames(string projectName, object userRoles)
         {
             List<IndustryRole> roles = GetRolesForProject(projectName);
@@ -582,6 +634,7 @@ namespace BimProjectSetupCommon.Workflow
 
             return result != null ? result : null;
         }
+
         private List<string> GetIndustryRoleIds(string projectName, object userRoles)
         {
             List<IndustryRole> roles = GetRolesForProject(projectName);
@@ -608,6 +661,7 @@ namespace BimProjectSetupCommon.Workflow
 
             return result != null ? result : null;
         }
+
         private static string GetAccessLevel(object v)
         {
             string s = Util.GetStringOrNull(v);
@@ -616,19 +670,24 @@ namespace BimProjectSetupCommon.Workflow
                 s = s.ToLower();
                 if (!s.Equals("admin") && !s.Equals("user"))
                 {
-                    throw new ApplicationException($"Invalid input data for access provided: '{s}' Only allowed values: 'admin' or 'user' ");
+                    throw new ApplicationException(
+                        $"Invalid input data for access provided: '{s}' Only allowed values: 'admin' or 'user' ");
                 }
             }
+
             return s;
         }
+
         private bool CheckAdminEmail(string adminEmail, out HqUser HqAdmin)
         {
-            HqAdmin = DataController.AccountUsers.FirstOrDefault(u => u.email != null && u.email.Equals(adminEmail, StringComparison.InvariantCultureIgnoreCase));
+            HqAdmin = DataController.AccountUsers.FirstOrDefault(u =>
+                u.email != null && u.email.Equals(adminEmail, StringComparison.InvariantCultureIgnoreCase));
             if (HqAdmin == null)
             {
                 Log.Error($"Error initializing account admin user {adminEmail}");
                 return false;
             }
+
             return true;
         }
 
@@ -646,10 +705,12 @@ namespace BimProjectSetupCommon.Workflow
         }
 
         #region Response Handler
+
         internal static void ProjectUsersResponseHandler(List<IRestResponse> responses)
         {
             foreach (IRestResponse response in responses) ProjectUserResponseHandler(response);
         }
+
         internal static void ProjectUserResponseHandler(IRestResponse response)
         {
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -672,7 +733,8 @@ namespace BimProjectSetupCommon.Workflow
                     {
                         if (si.status == Status.active)
                         {
-                            DataController.AllProjects.FirstOrDefault(p => p.id == si.project_id).status = Status.active;
+                            DataController.AllProjects.FirstOrDefault(p => p.id == si.project_id).status =
+                                Status.active;
                         }
                     }
                 }
@@ -682,6 +744,7 @@ namespace BimProjectSetupCommon.Workflow
                 LogResponse(response);
             }
         }
+
         internal static void ProjectUserPatchResponseHandler(IRestResponse response)
         {
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -708,11 +771,13 @@ namespace BimProjectSetupCommon.Workflow
                 LogResponse(response);
             }
         }
+
         internal static void HandleError(Exception e)
         {
             Log.Error(e.Message);
             Log.Error(e);
         }
+
         internal static void LogResponse(IRestResponse response)
         {
             Log.Info($"- status Code: {response.StatusCode}");
@@ -722,13 +787,16 @@ namespace BimProjectSetupCommon.Workflow
                 Log.Error($"- error Exception: {response.ErrorException}");
             }
         }
+
         #endregion
 
         #region CSV Export
+
         public void ExportUsersCsv()
         {
             CsvExporter.ExportUsersCsvTemplate();
         }
+
         #endregion
     }
 }

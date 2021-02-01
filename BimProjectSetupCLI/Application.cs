@@ -19,6 +19,7 @@
 using NLog;
 using System;
 using System.Reflection;
+using BimProjectSetupAPI.Workflows;
 using BimProjectSetupCommon;
 using BimProjectSetupCommon.Workflow;
 
