@@ -158,7 +158,6 @@ namespace Autodesk.Forge.BIM360
         public IRestResponse PostUsersImport(string projectId, string userId, List<ProjectUser> users, string accountId = null)
         {
             var request = new RestRequest(Method.POST);
-            //request.Resource = "hq/v2/accounts/{AccountId}/projects/{ProjectId}/users/import";
             request.Resource = Urls["projects_projectId_users_import"];
             if(accountId == null)
             {

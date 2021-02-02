@@ -202,9 +202,10 @@ namespace BimProjectSetupCommon.Workflow
         {
 
             // check if current project is activated
-            HqUser admin = GetAdminUser("s.esser@tum.de");
-            var activated = ActivateProject(orgProj.id, admin);
-
+            var roleIds = GetIndustryRoleIds(orgProj.name, null);
+            var admin = GetAdminUser("s.esser@tum.de");
+            var activated= ActivateProject(orgProj.id, admin, roleIds);
+            
             
             if (!folderStructures.ContainsKey(orgProj.name))
             {
@@ -394,7 +395,6 @@ namespace BimProjectSetupCommon.Workflow
             user.email = admin.email;
 
             users.Add(user);
-
             IRestResponse res = _projectApi.PostUsersImport(newProjId, admin.uid, users, accountId);
 
             if (res.StatusCode == System.Net.HttpStatusCode.OK)
@@ -409,7 +409,7 @@ namespace BimProjectSetupCommon.Workflow
                         {
                             foreach (var error in item.errors)
                             {
-                                Log.Error(error.message);
+                                Log.Error("\t" + error.message);
                             }
                             
                         }
@@ -430,7 +430,7 @@ namespace BimProjectSetupCommon.Workflow
             Log.Error($"- project activation failed. Code: {res.StatusCode}\t message: {res.ErrorMessage}");
             return false;
         }
-
+        
         private void CopyProjectFolders(BimProject orgProj, string newProjId, string uid)
         {
             Log.Info("");
