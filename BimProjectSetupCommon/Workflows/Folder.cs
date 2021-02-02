@@ -200,6 +200,12 @@ namespace BimProjectSetupCommon.Workflow
 
         private List<NestedFolder> CustomExtractFolderStructure(BimProject orgProj)
         {
+
+            // check if current project is activated
+            HqUser admin = GetAdminUser("s.esser@tum.de");
+            var activated = ActivateProject(orgProj.id, admin);
+
+            
             if (!folderStructures.ContainsKey(orgProj.name))
             {
                 List<NestedFolder> existingFolderStructure = new List<NestedFolder>();
@@ -398,7 +404,15 @@ namespace BimProjectSetupCommon.Workflow
                 {
                     if (r.failure_items.Count() > 0)
                     {
-                        Log.Error($"- roject activation failed.");
+                        Log.Error($"- project activation failed.");
+                        foreach (var item in r.failure_items)
+                        {
+                            foreach (var error in item.errors)
+                            {
+                                Log.Error(error.message);
+                            }
+                            
+                        }
                         return false;
                     }
                 }
