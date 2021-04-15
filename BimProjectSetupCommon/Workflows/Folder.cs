@@ -203,7 +203,7 @@ namespace BimProjectSetupCommon.Workflow
 
             // check if current project is activated
             var roleIds = GetIndustryRoleIds(orgProj.name, null);
-            var admin = GetAdminUser("s.esser@tum.de");
+            var admin = GetAdminUser("stefan.1995.huber@tum.de");
             var activated= ActivateProject(orgProj.id, admin, roleIds);
             
             
@@ -357,6 +357,16 @@ namespace BimProjectSetupCommon.Workflow
         private TopFolderResponse GetTopFolders(string projId)
         {
             IRestResponse response = _hubsApi.GetTopFolders(projId);
+
+            //error message if project couldn´t reache 
+            if (!response.IsSuccessful)
+            {
+                Util.LogError($"Project can not be activated!\n" +
+                    $"Rename the Project and try again!\n");
+                throw new Exception($"Project can not be activated!\n" +
+                    $"Rename the Project and try again!\n");
+            }
+
             TopFolderResponse content = JsonConvert.DeserializeObject<TopFolderResponse>(response.Content);
 
             return content;
