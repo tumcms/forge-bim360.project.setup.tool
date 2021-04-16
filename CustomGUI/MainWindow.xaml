@@ -1,0 +1,181 @@
+﻿<Window x:Class="CustomGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CustomGUI"
+        mc:Ignorable="d"
+        Title="CustomGUI" Height="350" Width="900"
+        MinHeight="250" MinWidth="700"
+        >
+    <Grid>
+        
+        
+        <TabControl>
+        <TabItem Header="CSV Toolkit">
+            <Grid Background="#FFE5E5E5">
+                <TextBlock HorizontalAlignment="Left" 
+                           VerticalAlignment="Top" 
+                           Margin="40,27,0,0" 
+                           Text="Import CSV Data:" 
+                           TextWrapping="Wrap" 
+                           FontSize="16" 
+                           FontWeight="Bold"/>
+
+                <TextBox x:Name="csvpath" 
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Top" 
+                         Margin="207,31,0,0"
+                         Text="C:\Users\Example1\example.csv"
+                         TextWrapping="Wrap"
+                         Width="400" 
+                         GotKeyboardFocus="csvpath_GotKeyboardFocus"/>
+
+                <Button x:Name="buttonimport" 
+                        Content="Import" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Top" 
+                        Margin="633,30,0,0" 
+                        Click="buttonimport_Click" 
+                        Height="20" Width="50"/>
+
+                <TextBlock HorizontalAlignment="Left"
+                           VerticalAlignment="Top" 
+                           Margin="40,77,0,0" 
+                           Text="Export CSV Data:" 
+                           TextWrapping="Wrap"  
+                           FontSize="16" 
+                           FontWeight="Bold"/>
+
+                <TextBox x:Name="csvpathexp"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Top"
+                         Margin="207,79,0,0" 
+                         Text="C:\Users\%USERNAME%\Desktop\" 
+                         TextWrapping="Wrap"  
+                         Width="400" />
+
+                <Button x:Name="buttonexport" 
+                        Content="Export" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Top"
+                        Margin="634,78,0,0" 
+                        Click="buttonexport_Click"
+                        Height="20" Width="50"/>
+
+                <TextBlock x:Name="statusbar" 
+                           HorizontalAlignment="Left" 
+                           VerticalAlignment="Top"
+                           Margin="10,279,0,0"
+                           Text="" 
+                           TextWrapping="Wrap" />
+
+
+            </Grid>
+
+        </TabItem>
+        <TabItem Header="UserManagement">
+            <DataGrid x:Name="data"
+                      HorizontalAlignment="Stretch"
+                      IsReadOnly="False"
+                      SelectionMode="Single" 
+                      SelectionUnit="Cell" 
+                      CanUserAddRows="True" 
+                      CanUserDeleteRows="True">
+                <!-- Datagrid header-->
+                <!-- Input könnte probleme machen-->
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="projectname" Binding="{Binding _projectname}"/>
+                    <DataGridTextColumn Header="projecttype" Binding="{Binding _projecttype}"/>
+                    <DataGridTextColumn Header="root_folder" Binding="{Binding _root_folder}"/>
+                    <DataGridTextColumn Header="level__1" Binding="{Binding _level_1}"/>
+                    <DataGridTextColumn Header="level__2" Binding="{Binding _level_2}"/>
+                    <DataGridTextColumn Header="level__3" Binding="{Binding _level_3}"/>
+                    <DataGridTextColumn Header="permission" Binding="{Binding _permission}"/>
+                    <DataGridTextColumn Header="role__permission" Binding="{Binding _role_permission}"/>
+                    <DataGridTextColumn Header="user__email" Binding="{Binding _user_email}"/>
+                    <DataGridTextColumn Header="industry__role" Binding="{Binding _industry_role}"/>
+                    <DataGridTextColumn Header="company" Binding="{Binding _company}"/>
+                    <DataGridTextColumn Header="company__trade" Binding="{Binding _company_trade}"/>
+                    <DataGridTextColumn Header="local__folder" Binding="{Binding _local_folder}"/>
+
+
+
+
+
+                </DataGrid.Columns>
+
+
+            </DataGrid>
+
+
+
+
+        </TabItem>
+        <TabItem Header="Config">
+            <Grid Background="#FFE5E5E5">
+                <TextBlock HorizontalAlignment="Left" 
+                           Margin="40,40,0,0" 
+                           Text="Forge_Client_ID" 
+                           TextWrapping="Wrap" 
+                           VerticalAlignment="Top" 
+                           FontSize="16" 
+                           FontWeight="Bold" />
+
+                <TextBlock HorizontalAlignment="Left" 
+                           Margin="40,80,0,0" 
+                           Text="Forge_Client_Secret"
+                           TextWrapping="Wrap" 
+                           VerticalAlignment="Top" 
+                           RenderTransformOrigin="-0.028,-0.017" 
+                           FontSize="16" 
+                           FontWeight="Bold" />
+
+                <TextBlock HorizontalAlignment="Left" 
+                           Margin="40,120,0,0" 
+                           Text="Forge_Bim_Account_ID"
+                           TextWrapping="Wrap" 
+                           VerticalAlignment="Top" 
+                           FontSize="16" 
+                           FontWeight="Bold" />
+
+                <TextBox x:Name="clientid" 
+                         HorizontalAlignment="Left" 
+                         Margin="260,40,0,0" 
+                         Text="Forge_Client_ID" 
+                         TextWrapping="Wrap" 
+                         VerticalAlignment="Top" 
+                         Width="408" 
+                         GotKeyboardFocus="clientid_GotKeyboardFocus" />
+
+                <TextBox x:Name="clientsecret" 
+                         HorizontalAlignment="Left" 
+                         Margin="260,80,0,0" 
+                         Text="Forge_Client_Secret" 
+                         TextWrapping="Wrap" 
+                         VerticalAlignment="Top" 
+                         Width="408" 
+                         GotKeyboardFocus="clientsecret_GotKeyboardFocus"/>
+
+                <TextBox x:Name="bimid" 
+                         HorizontalAlignment="Left" 
+                         Margin="260,120,0,0" 
+                         Text="Forge_Bim_Account_ID" 
+                         TextWrapping="Wrap" 
+                         VerticalAlignment="Top" 
+                         Width="408" 
+                         GotKeyboardFocus="bimid_GotKeyboardFocus" />
+
+                <Button x:Name="saveconf" 
+                        Content="Save Config"
+                        HorizontalAlignment="Left" 
+                        Margin="604,159,0,0" 
+                        VerticalAlignment="Top" 
+                        Click="saveconf_Click" 
+                        IsDefault="True"/>
+            </Grid>
+        </TabItem>
+
+    </TabControl>
+    </Grid>
+</Window>
