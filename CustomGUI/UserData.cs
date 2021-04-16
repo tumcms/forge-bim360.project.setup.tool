@@ -1,16 +1,19 @@
-﻿using System;
+﻿using CsvHelper.Configuration;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CustomGUI
 {
     public class UserData
     {
-        public string _projectname { get; set; }
-        public string _projecttype { get; set; }
+        public string _project_name { get; set; }
+        public string _project_type { get; set; }
         public string _root_folder { get; set; }
 
         //Liste für Level erstellen
+        public List<String> _sub_folder { get; set; }
         public string _level_1 { get; set; }
         public string _level_2 { get; set; }
         public string _level_3 { get; set; }
@@ -47,11 +50,37 @@ namespace CustomGUI
         { }
         */
 
-            /// <summary>
-            /// Maps CSV to UserData input
-            /// </summary>
+        /// <summary>
+        /// Maps CSV to UserData input
+        /// </summary>
         public void mapcsvtoinput() { }
 
     }
 
+    public class UserDataMap : ClassMap<UserData>
+    {
+        public UserDataMap()
+        {
+            Map(m => m._project_name).Name("project_name");
+            Map(m => m._project_type).Name("project_type");
+            Map(m => m._root_folder).Name("root_folder");
+            Map(m => m._level_1).Name("level_1");
+            Map(m => m._level_2).Name("level_2");
+            Map(m => m._level_3).Name("level_3");
+            // Here we need to add an new object but i dont know how
+            Map(m => m._sub_folder).Name("level_1");
+            Map(m => m._sub_folder).Name("level_2");
+            Map(m => m._permission).Name("permission");
+            Map(m => m._role_permission).Name("role_permission");
+            Map(m => m._user_email).Name("user_email");
+            Map(m => m._industry_role).Name("industry_role");
+            Map(m => m._company).Name("company");
+            Map(m => m._company_trade).Name("company_trade");
+            Map(m => m._local_folder).Name("local_folder");
+
+
+
+        }
+
+    }
 }

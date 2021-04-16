@@ -7,14 +7,33 @@
         mc:Ignorable="d"
         Title="CustomGUI" Height="350" Width="900"
         MinHeight="250" MinWidth="700"
+        WindowStartupLocation="CenterScreen"
         >
     <Grid>
-        
-        
-        <TabControl>
-        <TabItem Header="CSV Toolkit">
-            <Grid Background="#FFE5E5E5">
-                <TextBlock HorizontalAlignment="Left" 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Menu
+            Grid.Row="0"
+            Margin="2">
+            <MenuItem x:Name="Config" Header="Config" Click="Config_Click"/>
+
+            <MenuItem Header="Import">
+                <MenuItem Header="View Project Information" />
+            </MenuItem>
+            <MenuItem Header="Export">
+                <!-- Here Export infos -->
+            </MenuItem>
+        </Menu>
+
+
+        <TabControl Grid.Row="1">
+            <TabItem Header="CSV Toolkit">
+                <Grid Background="#FFE5E5E5">
+                    <TextBlock HorizontalAlignment="Left" 
                            VerticalAlignment="Top" 
                            Margin="40,27,0,0" 
                            Text="Import CSV Data:" 
@@ -22,7 +41,7 @@
                            FontSize="16" 
                            FontWeight="Bold"/>
 
-                <TextBox x:Name="csvpath" 
+                    <TextBox x:Name="csvpath" 
                          HorizontalAlignment="Left"
                          VerticalAlignment="Top" 
                          Margin="207,31,0,0"
@@ -31,7 +50,7 @@
                          Width="400" 
                          GotKeyboardFocus="csvpath_GotKeyboardFocus"/>
 
-                <Button x:Name="buttonimport" 
+                    <Button x:Name="buttonimport" 
                         Content="Import" 
                         HorizontalAlignment="Left" 
                         VerticalAlignment="Top" 
@@ -39,7 +58,7 @@
                         Click="buttonimport_Click" 
                         Height="20" Width="50"/>
 
-                <TextBlock HorizontalAlignment="Left"
+                    <TextBlock HorizontalAlignment="Left"
                            VerticalAlignment="Top" 
                            Margin="40,77,0,0" 
                            Text="Export CSV Data:" 
@@ -47,7 +66,7 @@
                            FontSize="16" 
                            FontWeight="Bold"/>
 
-                <TextBox x:Name="csvpathexp"
+                    <TextBox x:Name="csvpathexp"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Top"
                          Margin="207,79,0,0" 
@@ -55,7 +74,7 @@
                          TextWrapping="Wrap"  
                          Width="400" />
 
-                <Button x:Name="buttonexport" 
+                    <Button x:Name="buttonexport" 
                         Content="Export" 
                         HorizontalAlignment="Left" 
                         VerticalAlignment="Top"
@@ -63,58 +82,39 @@
                         Click="buttonexport_Click"
                         Height="20" Width="50"/>
 
-                <TextBlock x:Name="statusbar" 
-                           HorizontalAlignment="Left" 
-                           VerticalAlignment="Top"
-                           Margin="10,279,0,0"
-                           Text="" 
-                           TextWrapping="Wrap" />
 
+                </Grid>
 
-            </Grid>
-
-        </TabItem>
-        <TabItem Header="UserManagement">
-            <DataGrid x:Name="data"
+            </TabItem>
+            <TabItem Header="UserManagement">
+                <DataGrid x:Name="data"
                       HorizontalAlignment="Stretch"
                       IsReadOnly="False"
                       SelectionMode="Single" 
                       SelectionUnit="Cell" 
                       CanUserAddRows="True" 
                       CanUserDeleteRows="True">
-                <!-- Datagrid header-->
-                <!-- Input könnte probleme machen-->
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="projectname" Binding="{Binding _projectname}"/>
-                    <DataGridTextColumn Header="projecttype" Binding="{Binding _projecttype}"/>
-                    <DataGridTextColumn Header="root_folder" Binding="{Binding _root_folder}"/>
-                    <DataGridTextColumn Header="level__1" Binding="{Binding _level_1}"/>
-                    <DataGridTextColumn Header="level__2" Binding="{Binding _level_2}"/>
-                    <DataGridTextColumn Header="level__3" Binding="{Binding _level_3}"/>
-                    <DataGridTextColumn Header="permission" Binding="{Binding _permission}"/>
-                    <DataGridTextColumn Header="role__permission" Binding="{Binding _role_permission}"/>
-                    <DataGridTextColumn Header="user__email" Binding="{Binding _user_email}"/>
-                    <DataGridTextColumn Header="industry__role" Binding="{Binding _industry_role}"/>
-                    <DataGridTextColumn Header="company" Binding="{Binding _company}"/>
-                    <DataGridTextColumn Header="company__trade" Binding="{Binding _company_trade}"/>
-                    <DataGridTextColumn Header="local__folder" Binding="{Binding _local_folder}"/>
+                    <!-- Datagrid header-->
+                    <!-- Input könnte probleme machen-->
+                    <DataGrid.Columns>
 
 
 
 
 
-                </DataGrid.Columns>
+
+                    </DataGrid.Columns>
 
 
-            </DataGrid>
+                </DataGrid>
 
 
 
 
-        </TabItem>
-        <TabItem Header="Config">
-            <Grid Background="#FFE5E5E5">
-                <TextBlock HorizontalAlignment="Left" 
+            </TabItem>
+            <TabItem Header="Config">
+                <Grid Background="#FFE5E5E5">
+                    <TextBlock HorizontalAlignment="Left" 
                            Margin="40,40,0,0" 
                            Text="Forge_Client_ID" 
                            TextWrapping="Wrap" 
@@ -122,7 +122,7 @@
                            FontSize="16" 
                            FontWeight="Bold" />
 
-                <TextBlock HorizontalAlignment="Left" 
+                    <TextBlock HorizontalAlignment="Left" 
                            Margin="40,80,0,0" 
                            Text="Forge_Client_Secret"
                            TextWrapping="Wrap" 
@@ -131,7 +131,7 @@
                            FontSize="16" 
                            FontWeight="Bold" />
 
-                <TextBlock HorizontalAlignment="Left" 
+                    <TextBlock HorizontalAlignment="Left" 
                            Margin="40,120,0,0" 
                            Text="Forge_Bim_Account_ID"
                            TextWrapping="Wrap" 
@@ -139,7 +139,7 @@
                            FontSize="16" 
                            FontWeight="Bold" />
 
-                <TextBox x:Name="clientid" 
+                    <TextBox x:Name="clientid" 
                          HorizontalAlignment="Left" 
                          Margin="260,40,0,0" 
                          Text="Forge_Client_ID" 
@@ -148,7 +148,7 @@
                          Width="408" 
                          GotKeyboardFocus="clientid_GotKeyboardFocus" />
 
-                <TextBox x:Name="clientsecret" 
+                    <TextBox x:Name="clientsecret" 
                          HorizontalAlignment="Left" 
                          Margin="260,80,0,0" 
                          Text="Forge_Client_Secret" 
@@ -157,7 +157,7 @@
                          Width="408" 
                          GotKeyboardFocus="clientsecret_GotKeyboardFocus"/>
 
-                <TextBox x:Name="bimid" 
+                    <TextBox x:Name="bimid" 
                          HorizontalAlignment="Left" 
                          Margin="260,120,0,0" 
                          Text="Forge_Bim_Account_ID" 
@@ -166,16 +166,29 @@
                          Width="408" 
                          GotKeyboardFocus="bimid_GotKeyboardFocus" />
 
-                <Button x:Name="saveconf" 
+                    <Button x:Name="saveconf" 
                         Content="Save Config"
                         HorizontalAlignment="Left" 
                         Margin="604,159,0,0" 
                         VerticalAlignment="Top" 
                         Click="saveconf_Click" 
                         IsDefault="True"/>
-            </Grid>
-        </TabItem>
+                </Grid>
+            </TabItem>
 
-    </TabControl>
+        </TabControl>
+
+        <!--Footer-->
+        <DockPanel Grid.Row="2">
+            <TextBox
+                Margin="2"
+                Name="statusbar"
+                Background="AliceBlue"
+                HorizontalContentAlignment="Center" />
+        </DockPanel>
+
     </Grid>
+
+
 </Window>
+    
