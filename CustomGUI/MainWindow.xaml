@@ -112,6 +112,7 @@
 
 
             </TabItem>
+            <!-- remove this tab-->
             <TabItem Header="Config">
                 <Grid Background="#FFE5E5E5">
                     <TextBlock HorizontalAlignment="Left" 
