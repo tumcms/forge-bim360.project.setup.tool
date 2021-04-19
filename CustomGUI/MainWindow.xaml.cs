@@ -65,6 +65,8 @@ namespace CustomGUI
             /* TODO: save config data in the Texboxes into the Config File 
                or create new if not exists            
              */
+
+            // ToDo: As we have a dedicated WTF user control now, please simply trigger its "saveConfig" method in all necessary cases
         }
 
         
@@ -202,42 +204,12 @@ namespace CustomGUI
 
         private void Window_Closed(object sender, EventArgs e)
         {
-
-            string path_folder = ".\\Config";
-
-            //quick and dirty solution -> mainly for testing
-            var temp = save_conf.Children.OfType<TextBox>().ToList();
-
-            // ToDo: delegate store operation to dedicated control in Controls->Config.xaml
-
-            //conf_clientid = temp[0].Text;
-            //conf_clientsecret = temp[1].Text;
-            //conf_bimid = temp[2].Text;
-
-
-
-            ////Create Config Folder
-            //if (!Directory.Exists(path_folder))
-            //{
-            //    Directory.CreateDirectory(path_folder);
-            //}
-            ////Check if Config already exists
-            //if (File.Exists(path_file))
-            //{
-            //    File.Delete(path_file);
-            //}
-
-            ////Write config into txt
-            //using(FileStream fs = File.Create(path_file))
-            //{
-            //    using(var sr= new StreamWriter(fs))
-            //    {
-            //        sr.WriteLine(conf_clientid);
-            //        sr.WriteLine(conf_clientsecret);
-            //        sr.WriteLine(conf_bimid);
-            //    }
-            //}
-
+            // ToDo: create global var for all necessary paths and set appropriate protection layers
+            var filePath = @"C:\dev\config.txt";
+            
+            // call method from user control
+            ForgeConfig.SaveConfigToFile(filePath);
+            
         }
     }
 }

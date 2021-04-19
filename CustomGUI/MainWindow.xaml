@@ -9,7 +9,10 @@
         mc:Ignorable="d"
         Title="ACC_projectSetup Wizard" Height="350" Width="900"
         MinHeight="250" MinWidth="700"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Closed="Window_Closed">
+
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -101,7 +104,7 @@
             <!-- remove this tab-->
             <TabItem Header="Config">
                 <!-- tell the XAML to load the user control here --> 
-                <AccConfig:Config x:Name="ContentControl" />
+                <AccConfig:ForgeConfig x:Name="ForgeConfig" />
             </TabItem>
         </TabControl>
 
