@@ -1,11 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AdskConstructionCloudBreakdown
 {
     public class Folder
     {
-        public bool isTopFolder { get; set; } // set to true if RootFolder value is assigned
-        public string RootFolder { get; set; } // "Plans" or "Project files"
+         private string _name;
+        public string Name
+        {
+            get => this._name;
+            set
+            { _name = value;
+            }
+        } 
 
         // Permission management 
         public string GeneralPermission { get; set; }
@@ -21,5 +28,17 @@ namespace AdskConstructionCloudBreakdown
         // file path to sample files
         public string SampleFilesDirectory { get; set; }
 
+        public Folder()
+        {
+            AssignedUsers = new List<User>();
+            Subfolders = new List<Folder>();
+        }
+
+        public Folder(string name)
+        {
+            this.Name = name;
+            AssignedUsers = new List<User>();
+            Subfolders = new List<Folder>();
+        }
     }
 }

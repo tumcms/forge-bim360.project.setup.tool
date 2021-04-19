@@ -8,12 +8,18 @@ namespace AdskConstructionCloudBreakdown
 {
     public class Bim360Project
     {
-        public string projectName { get; set; }
+        public string ProjectName { get; set; }
         public ProjectTypeEnum ProjectType { get; set; }
 
-        public Folder Folders { get; set; }
+        public List<Folder> Plans { get; set; }
+        public List<Folder> ProjectFiles { get; set; }
 
-
+        public Bim360Project(string projectName)
+        {
+            ProjectName = projectName;
+            Plans = new List<Folder>();
+            ProjectFiles = new List<Folder>();
+        }
     }
 
     
