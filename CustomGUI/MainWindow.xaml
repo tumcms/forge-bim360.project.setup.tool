@@ -3,6 +3,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        
+        xmlns:AccConfig="clr-namespace:CustomGUI.Controls"
+
         mc:Ignorable="d"
         Title="ACC_projectSetup Wizard" Height="350" Width="900"
         MinHeight="250" MinWidth="700"
@@ -97,98 +100,8 @@
             </TabItem>
             <!-- remove this tab-->
             <TabItem Header="Config">
-                <Grid Background="#FFE5E5E5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"></ColumnDefinition>
-                        <ColumnDefinition Width="3*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock
-                        HorizontalAlignment="Left"
-                               Grid.Column="0"
-                               Grid.Row="0"
-                        Margin="1"
-                               Text="Forge_Client_ID"
-                               TextWrapping="Wrap"
-                               VerticalAlignment="Top"
-                               FontSize="16"
-                               FontWeight="Bold" />
-
-                    <TextBlock
-                        HorizontalAlignment="Left"
-                               Grid.Column="0"
-                               Grid.Row="1"
-                        Margin="1"
-                               Text="Forge_Client_Secret"
-                           TextWrapping="Wrap"
-                           VerticalAlignment="Top"
-                           FontSize="16"
-                           FontWeight="Bold" />
-
-                    <TextBlock
-                        HorizontalAlignment="Left"
-                               Grid.Column="0"
-                               Grid.Row="2"
-                        Margin="1"
-                        Text="Forge_Bim_Account_ID"
-                           TextWrapping="Wrap"
-                           VerticalAlignment="Top"
-                           FontSize="16"
-                           FontWeight="Bold" />
-
-                    <TextBox
-                        x:Name="clientid"
-                             Grid.Column="1"
-                             Grid.Row="0"
-                             HorizontalAlignment="Stretch"
-                        Margin="1"
-                             Text="Forge_Client_ID"
-                         TextWrapping="Wrap"
-                         VerticalAlignment="Top"
-                             GotKeyboardFocus="clientid_GotKeyboardFocus" />
-
-                    <TextBox
-                        x:Name="clientsecret"
-                             Grid.Column="1"
-                         Grid.Row="1"
-                         HorizontalAlignment="Stretch"
-                        Margin="1"
-                        Text="Forge_Client_Secret"
-                         TextWrapping="Wrap"
-                         VerticalAlignment="Top"
-                        GotKeyboardFocus="clientsecret_GotKeyboardFocus" />
-
-                    <TextBox
-                        x:Name="bimid"
-                             Grid.Column="1"
-                             Grid.Row="2"
-                             HorizontalAlignment="Stretch"
-                        Margin="1"
-                             Text="Forge_Bim_Account_ID"
-                         TextWrapping="Wrap"
-                         VerticalAlignment="Top"
-                        GotKeyboardFocus="bimid_GotKeyboardFocus" />
-
-                    <Button x:Name="saveconf"
-                        Content="Save Config"
-                        Grid.Column="0"
-                        Grid.Row="3"
-                        Grid.ColumnSpan="2"
-                        Margin="2"
-                        HorizontalAlignment="Stretch"
-
-                        VerticalAlignment="Top"
-                        Click="saveconf_Click"
-                        IsDefault="True"
-                        Focusable="True" />
-                </Grid>
+                <!-- tell the XAML to load the user control here --> 
+                <AccConfig:Config x:Name="ContentControl" />
             </TabItem>
         </TabControl>
 

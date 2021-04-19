@@ -32,28 +32,14 @@ namespace CustomGUI
         //Global Data
         List<UserData> usermanag = new List<UserData>();
         StackPanel save_conf;
-        string conf_clientid ;
-        string conf_clientsecret;
-        string conf_bimid;
+        
         string path_file = ".\\Config\\config.txt";
 
         public MainWindow()
         {
             //TODO: configfile handle -> on start read out configfile all id and set them
             InitializeComponent();
-            //Read Config out of Configfile
-            if (File.Exists(path_file))
-            {
-                using(FileStream fs= File.OpenRead(path_file))
-                {
-                    using(StreamReader reader = new StreamReader(fs))
-                    {
-                        conf_clientid=reader.ReadLine();
-                        conf_clientsecret = reader.ReadLine();
-                        conf_bimid = reader.ReadLine();
-                    }
-                }
-            }
+            
 
 
             usermanag.Add(new UserData());
@@ -81,28 +67,7 @@ namespace CustomGUI
              */
         }
 
-        //Remove input if use click on it
-        private void clientid_GotKeyboardFocus(object sender, RoutedEventArgs e)
-        {
-            if (clientid.Text.Equals("Forge_Client_ID"))
-            {
-                clientid.Text = "";
-            }
-        }
-        private void bimid_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            if (bimid.Text.Equals("Forge_Bim_Account_ID"))
-            {
-                bimid.Text = "";
-            }
-        }
-        private void clientsecret_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            if (clientsecret.Text.Equals("Forge_Client_Secret"))
-            {
-                clientsecret.Text = "";
-            }
-        }
+        
 
         // Here (*)
 
@@ -135,7 +100,7 @@ namespace CustomGUI
             }
 
 
-            statusbar.Text="Import succesfull!";
+            statusbar.Text="Import successful!";
 
         }
 
@@ -156,79 +121,81 @@ namespace CustomGUI
 
         private void Config_Click(object sender, RoutedEventArgs e)
         {
-            var window = new Window();
-            window.Owner = this;
-            //Add config input boxes
-            save_conf = new StackPanel { Orientation = Orientation.Vertical };
-            save_conf.Children.Add(new TextBlock 
-            { 
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(40,40,0,0),
-                Text = "Forge_Client_ID",
-                VerticalAlignment = VerticalAlignment.Top,
-                FontSize = 16,
-                FontWeight=FontWeights.Bold
-            });
-            save_conf.Children.Add(new TextBox 
-            { 
-                Name = "Forge_Client_ID",
-                Text = conf_clientid,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(200,40,0,0),
-                VerticalAlignment = VerticalAlignment.Top,
-                Width = 300,
-            });
+            // ToDo: Use Controls -> Config.XAML instead of re-implementing the same UI again
 
-            save_conf.Children.Add(new TextBlock
-            {
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(40, 80, 0, 0),
-                Text = "Forge_Client_Secret",
-                VerticalAlignment = VerticalAlignment.Top,
-                FontSize = 16,
-                FontWeight = FontWeights.Bold
-            });
-            save_conf.Children.Add(new TextBox
-            {
-                Name = "clientsecret",
-                Text = conf_clientsecret,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(200, 80, 0, 0),
-                VerticalAlignment = VerticalAlignment.Top,
-                Width = 300,
-            });
+            //var window = new Window();
+            //window.Owner = this;
+            ////Add config input boxes
+            //save_conf = new StackPanel { Orientation = Orientation.Vertical };
+            //save_conf.Children.Add(new TextBlock 
+            //{ 
+            //    HorizontalAlignment = HorizontalAlignment.Left,
+            //    Margin = new Thickness(40,40,0,0),
+            //    Text = "Forge_Client_ID",
+            //    VerticalAlignment = VerticalAlignment.Top,
+            //    FontSize = 16,
+            //    FontWeight=FontWeights.Bold
+            //});
+            //save_conf.Children.Add(new TextBox 
+            //{ 
+            //    Name = "Forge_Client_ID",
+            //    Text = conf_clientid,
+            //    HorizontalAlignment = HorizontalAlignment.Left,
+            //    Margin = new Thickness(200,40,0,0),
+            //    VerticalAlignment = VerticalAlignment.Top,
+            //    Width = 300,
+            //});
 
-            save_conf.Children.Add(new TextBlock
-            {
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(40, 120, 0, 0),
-                Text = "Forge_Bim_Account_ID",
-                VerticalAlignment = VerticalAlignment.Top,
-                FontSize = 16,
-                FontWeight = FontWeights.Bold
-            });
-            save_conf.Children.Add(new TextBox
-            {
-                Name = "bimid",
-                Text = conf_bimid,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(200, 120, 0, 0),
-                VerticalAlignment = VerticalAlignment.Top,
-                Width = 300,
-                //add on change event handle
-            }) ;
+            //save_conf.Children.Add(new TextBlock
+            //{
+            //    HorizontalAlignment = HorizontalAlignment.Left,
+            //    Margin = new Thickness(40, 80, 0, 0),
+            //    Text = "Forge_Client_Secret",
+            //    VerticalAlignment = VerticalAlignment.Top,
+            //    FontSize = 16,
+            //    FontWeight = FontWeights.Bold
+            //});
+            //save_conf.Children.Add(new TextBox
+            //{
+            //    Name = "clientsecret",
+            //    Text = conf_clientsecret,
+            //    HorizontalAlignment = HorizontalAlignment.Left,
+            //    Margin = new Thickness(200, 80, 0, 0),
+            //    VerticalAlignment = VerticalAlignment.Top,
+            //    Width = 300,
+            //});
 
-            save_conf.Children.Add(new Button
-            {
-                Content="Save Config",
-                HorizontalAlignment= HorizontalAlignment.Left,
-                Margin = new Thickness(604,159,0,0),
-                VerticalAlignment= VerticalAlignment.Top,
-            });
+            //save_conf.Children.Add(new TextBlock
+            //{
+            //    HorizontalAlignment = HorizontalAlignment.Left,
+            //    Margin = new Thickness(40, 120, 0, 0),
+            //    Text = "Forge_Bim_Account_ID",
+            //    VerticalAlignment = VerticalAlignment.Top,
+            //    FontSize = 16,
+            //    FontWeight = FontWeights.Bold
+            //});
+            //save_conf.Children.Add(new TextBox
+            //{
+            //    Name = "bimid",
+            //    Text = conf_bimid,
+            //    HorizontalAlignment = HorizontalAlignment.Left,
+            //    Margin = new Thickness(200, 120, 0, 0),
+            //    VerticalAlignment = VerticalAlignment.Top,
+            //    Width = 300,
+            //    //add on change event handle
+            //}) ;
 
-            window.Closed += Window_Closed;
-            window.Content = save_conf;
-            window.ShowDialog();
+            //save_conf.Children.Add(new Button
+            //{
+            //    Content="Save Config",
+            //    HorizontalAlignment= HorizontalAlignment.Left,
+            //    Margin = new Thickness(604,159,0,0),
+            //    VerticalAlignment= VerticalAlignment.Top,
+            //});
+
+            //window.Closed += Window_Closed;
+            //window.Content = save_conf;
+            //window.ShowDialog();
 
 
         }
@@ -240,33 +207,36 @@ namespace CustomGUI
 
             //quick and dirty solution -> mainly for testing
             var temp = save_conf.Children.OfType<TextBox>().ToList();
-            conf_clientid = temp[0].Text;
-            conf_clientsecret = temp[1].Text;
-            conf_bimid = temp[2].Text;
+
+            // ToDo: delegate store operation to dedicated control in Controls->Config.xaml
+
+            //conf_clientid = temp[0].Text;
+            //conf_clientsecret = temp[1].Text;
+            //conf_bimid = temp[2].Text;
 
 
 
-            //Create Config Folder
-            if (!Directory.Exists(path_folder))
-            {
-                Directory.CreateDirectory(path_folder);
-            }
-            //Check if Config already exists
-            if (File.Exists(path_file))
-            {
-                File.Delete(path_file);
-            }
+            ////Create Config Folder
+            //if (!Directory.Exists(path_folder))
+            //{
+            //    Directory.CreateDirectory(path_folder);
+            //}
+            ////Check if Config already exists
+            //if (File.Exists(path_file))
+            //{
+            //    File.Delete(path_file);
+            //}
 
-            //Write config into txt
-            using(FileStream fs = File.Create(path_file))
-            {
-                using(var sr= new StreamWriter(fs))
-                {
-                    sr.WriteLine(conf_clientid);
-                    sr.WriteLine(conf_clientsecret);
-                    sr.WriteLine(conf_bimid);
-                }
-            }
+            ////Write config into txt
+            //using(FileStream fs = File.Create(path_file))
+            //{
+            //    using(var sr= new StreamWriter(fs))
+            //    {
+            //        sr.WriteLine(conf_clientid);
+            //        sr.WriteLine(conf_clientsecret);
+            //        sr.WriteLine(conf_bimid);
+            //    }
+            //}
 
         }
     }
