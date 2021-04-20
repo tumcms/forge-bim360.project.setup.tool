@@ -7,11 +7,17 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Controls\AccProjectConfig.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Controls\ForgeConfig.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Controls\AccProjectConfig.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\ForgeConfig.xaml">
       <SubType>Designer</SubType>
     </Page>

@@ -17,6 +17,7 @@ namespace AdskConstructionCloudBreakdown
         public Bim360Project(string projectName)
         {
             ProjectName = projectName;
+            // init arrays
             Plans = new List<Folder>();
             ProjectFiles = new List<Folder>();
         }
