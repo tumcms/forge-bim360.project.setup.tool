@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.IO;
@@ -17,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AdskConstructionCloudBreakdown;
 
 namespace CustomGUI
 {
@@ -32,6 +34,7 @@ namespace CustomGUI
         //Global Data
         List<UserData> usermanag = new List<UserData>();
         StackPanel save_conf;
+        private ObservableCollection<Bim360Project> projects;
         
         string path_file = ".\\Config\\config.txt";
 
@@ -40,6 +43,10 @@ namespace CustomGUI
             //TODO: configfile handle -> on start read out configfile all id and set them
             InitializeComponent();
             
+            // sample data from recently introduced class structure mirroring key aspects of the BIM360 environment
+            projects = CreateSampleStructure();
+
+            AccProjectConfig.ProjectsView.ItemsSource = projects;
 
 
             usermanag.Add(new UserData());
@@ -208,8 +215,40 @@ namespace CustomGUI
             var filePath = @"C:\dev\config.txt";
             
             // call method from user control
-            ForgeConfig.SaveConfigToFile(filePath);
+            //ForgeConfig.SaveConfigToFile(filePath);
             
         }
+
+
+        /// <summary>
+        /// Loading some test data for test purposes. To be deleted before deploying!
+        /// </summary>
+        /// <returns></returns>
+        private ObservableCollection<Bim360Project> CreateSampleStructure()
+        {
+            var project1 = new Bim360Project("MyProject01")
+            {
+                ProjectType = ProjectTypeEnum.Office
+            };
+
+
+            project1.Plans.Add(new Folder("Level1"));
+            project1.ProjectFiles.Add(new Folder("Level1"));
+            project1.ProjectFiles[0].Subfolders.Add(new Folder("Level1"));
+
+            var project2 = new Bim360Project("MyProject02")
+            {
+                ProjectType = ProjectTypeEnum.Office
+            };
+
+
+            project2.Plans.Add(new Folder("Level2"));
+            project2.ProjectFiles.Add(new Folder("Level3"));
+            project2.ProjectFiles[0].Subfolders.Add(new Folder("Level4"));
+
+            return new ObservableCollection<Bim360Project>() {project1, project2};
+
+        }
+
     }
 }
