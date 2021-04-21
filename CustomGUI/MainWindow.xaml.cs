@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AdskConstructionCloudBreakdown;
+using CustomGUI.Controls;
 
 namespace CustomGUI
 {
@@ -36,7 +37,7 @@ namespace CustomGUI
         StackPanel save_conf;
         private ObservableCollection<Bim360Project> projects;
         
-        string path_file = ".\\Config\\config.txt";
+        string path_file =@".\Config\config.txt";
 
         public MainWindow()
         {
@@ -130,81 +131,12 @@ namespace CustomGUI
 
         private void Config_Click(object sender, RoutedEventArgs e)
         {
+            var window_config = new Window();
+            window_config.Owner = this;
+            window_config.Content = new ForgeConfig();
+            window_config.ShowDialog();
+
             // ToDo: Use Controls -> Config.XAML instead of re-implementing the same UI again
-
-            //var window = new Window();
-            //window.Owner = this;
-            ////Add config input boxes
-            //save_conf = new StackPanel { Orientation = Orientation.Vertical };
-            //save_conf.Children.Add(new TextBlock 
-            //{ 
-            //    HorizontalAlignment = HorizontalAlignment.Left,
-            //    Margin = new Thickness(40,40,0,0),
-            //    Text = "Forge_Client_ID",
-            //    VerticalAlignment = VerticalAlignment.Top,
-            //    FontSize = 16,
-            //    FontWeight=FontWeights.Bold
-            //});
-            //save_conf.Children.Add(new TextBox 
-            //{ 
-            //    Name = "Forge_Client_ID",
-            //    Text = conf_clientid,
-            //    HorizontalAlignment = HorizontalAlignment.Left,
-            //    Margin = new Thickness(200,40,0,0),
-            //    VerticalAlignment = VerticalAlignment.Top,
-            //    Width = 300,
-            //});
-
-            //save_conf.Children.Add(new TextBlock
-            //{
-            //    HorizontalAlignment = HorizontalAlignment.Left,
-            //    Margin = new Thickness(40, 80, 0, 0),
-            //    Text = "Forge_Client_Secret",
-            //    VerticalAlignment = VerticalAlignment.Top,
-            //    FontSize = 16,
-            //    FontWeight = FontWeights.Bold
-            //});
-            //save_conf.Children.Add(new TextBox
-            //{
-            //    Name = "clientsecret",
-            //    Text = conf_clientsecret,
-            //    HorizontalAlignment = HorizontalAlignment.Left,
-            //    Margin = new Thickness(200, 80, 0, 0),
-            //    VerticalAlignment = VerticalAlignment.Top,
-            //    Width = 300,
-            //});
-
-            //save_conf.Children.Add(new TextBlock
-            //{
-            //    HorizontalAlignment = HorizontalAlignment.Left,
-            //    Margin = new Thickness(40, 120, 0, 0),
-            //    Text = "Forge_Bim_Account_ID",
-            //    VerticalAlignment = VerticalAlignment.Top,
-            //    FontSize = 16,
-            //    FontWeight = FontWeights.Bold
-            //});
-            //save_conf.Children.Add(new TextBox
-            //{
-            //    Name = "bimid",
-            //    Text = conf_bimid,
-            //    HorizontalAlignment = HorizontalAlignment.Left,
-            //    Margin = new Thickness(200, 120, 0, 0),
-            //    VerticalAlignment = VerticalAlignment.Top,
-            //    Width = 300,
-            //    //add on change event handle
-            //}) ;
-
-            //save_conf.Children.Add(new Button
-            //{
-            //    Content="Save Config",
-            //    HorizontalAlignment= HorizontalAlignment.Left,
-            //    Margin = new Thickness(604,159,0,0),
-            //    VerticalAlignment= VerticalAlignment.Top,
-            //});
-
-            //window.Closed += Window_Closed;
-            //window.Content = save_conf;
-            //window.ShowDialog();
 
 
         }
@@ -212,7 +144,7 @@ namespace CustomGUI
         private void Window_Closed(object sender, EventArgs e)
         {
             // ToDo: create global var for all necessary paths and set appropriate protection layers
-            var filePath = @"C:\dev\config.txt";
+            var filePath = @".\Config\config.txt";
             
             // call method from user control
             //ForgeConfig.SaveConfigToFile(filePath);

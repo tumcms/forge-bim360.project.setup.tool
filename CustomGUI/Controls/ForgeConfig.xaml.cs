@@ -20,8 +20,20 @@ namespace CustomGUI.Controls
     /// <summary>
     /// Interaction logic for Config.xaml
     /// </summary>
-    public partial class ForgeConfig : UserControl
+    public partial class ForgeConfig : UserControl , INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            this.ClientId = ClientId_Box.Text;
+            this.ClientSecret = ClientSecret_Box.Text;
+            this.BimId = BimId_Box.Text;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+
         private string ClientId { get; set; }
         private string ClientSecret { get; set; }
         private string BimId { get; set; }
@@ -31,6 +43,7 @@ namespace CustomGUI.Controls
         {
             InitializeComponent();
             this.DataContext = this;
+            ConfigFilePath= @".\Config\config.txt";
         }
 
         #region Callback functions from Frontend
@@ -59,13 +72,8 @@ namespace CustomGUI.Controls
         }
         private void SaveConfig_click(object sender, RoutedEventArgs e)
         {
-            
-
-            // set path to CSV
-            var path = @"C:\dev\BIM360config.txt";
-
             // run the save method
-            this.SaveConfigToFile(path);
+            this.SaveConfigToFile(ConfigFilePath);
         }
 
         /// <summary>
@@ -101,8 +109,11 @@ namespace CustomGUI.Controls
                     using (StreamReader reader = new StreamReader(fs))
                     {
                         ClientId = reader.ReadLine();
+                        ClientId_Box.Text = ClientId;
                         ClientSecret = reader.ReadLine();
+                        ClientSecret_Box.Text = ClientSecret;
                         BimId = reader.ReadLine();
+                        BimId_Box.Text = BimId;
                     }
                 }
             }
@@ -114,16 +125,20 @@ namespace CustomGUI.Controls
         /// <param name="filePath"></param>
         public void SaveConfigToFile(string filePath)
         {
+
+            System.Threading.Thread.Sleep(1000);
             // query current values from textboxes
             // ToDo: Implement INotifyPropertyChanged Interface to dynamically bind the class property to the text box and simultaneously update both bidirectional
             this.ClientId = ClientId_Box.Text;
             this.ClientSecret = ClientSecret_Box.Text;
             this.BimId = BimId_Box.Text;
 
-            //Check if Config already exists
-            if (File.Exists(filePath))
+            if (!File.Exists(filePath))
             {
-                File.Delete(filePath); // ToDo: do we really need a delete operation or couldn't we use a simple overwrite in the Streamwriter if the file already exists?
+                //Create Directory and File for the Config
+                Directory.CreateDirectory(filePath.Remove(filePath.LastIndexOf("\\")));
+                var tmp = File.Create(filePath);
+                tmp.Close();
             }
 
             //Write config into txt
@@ -131,6 +146,10 @@ namespace CustomGUI.Controls
             {
                 using (var sr = new StreamWriter(fs))
                 {
+                    //Delete the content of the file
+                    sr.Write(string.Empty);
+
+                    //Write the new data into it
                     sr.WriteLine(this.ClientId);
                     sr.WriteLine(this.ClientSecret);
                     sr.WriteLine(this.BimId);
@@ -140,7 +159,17 @@ namespace CustomGUI.Controls
             }
         }
 
+        private void ConfigControl_Initialized(object sender, EventArgs e)
+        {
+            try
+            {
+                this.LoadConfigFromFile(this.ConfigFilePath);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine("Couldn't find config file on specified path. ");
+            }
 
-       
+        }
     }
 }

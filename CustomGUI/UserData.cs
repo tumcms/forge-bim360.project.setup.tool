@@ -8,6 +8,7 @@ namespace CustomGUI
 {
     public class UserData
     {
+
         public string _project_name { get; set; }
         public string _project_type { get; set; }
         public string _root_folder { get; set; }

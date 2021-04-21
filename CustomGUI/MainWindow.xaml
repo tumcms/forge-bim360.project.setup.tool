@@ -24,7 +24,7 @@
             Grid.Row="0"
             Margin="2">
             <MenuItem x:Name="Config" Header="Config" Click="Config_Click" />
-
+                
             <MenuItem Header="Import">
                 <MenuItem Header="View Project Information" />
             </MenuItem>
@@ -107,8 +107,8 @@
                 <AccConfig:AccProjectConfig x:Name="AccProjectConfig" />
             </TabItem>
             <TabItem Header="Config">
-                <!-- tell the XAML to load the user control here --> 
-                <AccConfig:ForgeConfig x:Name="ForgeConfig" />
+                <!-- tell the XAML to load the user control here -->
+
             </TabItem>
         </TabControl>
 
