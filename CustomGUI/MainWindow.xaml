@@ -106,10 +106,6 @@
                 <!-- tell the XAML to load the user control here -->
                 <AccConfig:AccProjectConfig x:Name="AccProjectConfig" />
             </TabItem>
-            <TabItem Header="Config">
-                <!-- tell the XAML to load the user control here -->
-
-            </TabItem>
         </TabControl>
 
         <!--Footer-->

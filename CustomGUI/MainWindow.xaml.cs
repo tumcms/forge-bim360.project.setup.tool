@@ -64,22 +64,20 @@ namespace CustomGUI
 
         //Event Handling
 
-        
-        //Tab Config
-
-        //needs to be removed until (*)
-        private void saveconf_Click(object sender, RoutedEventArgs e)
+        private void Config_Click(object sender, RoutedEventArgs e)
         {
-            /* TODO: save config data in the Texboxes into the Config File 
-               or create new if not exists            
-             */
+            var window_config = new Window();
+            window_config.Owner = this;
+            window_config.Content = new ForgeConfig();
+            window_config.Width = 710;
+            window_config.Height = 150;
+            window_config.ShowDialog();
 
-            // ToDo: As we have a dedicated WTF user control now, please simply trigger its "saveConfig" method in all necessary cases
+            // ToDo: Use Controls -> Config.XAML instead of re-implementing the same UI again
+
+
         }
 
-        
-
-        // Here (*)
 
         //UserManagement
 
@@ -129,17 +127,7 @@ namespace CustomGUI
 
         }
 
-        private void Config_Click(object sender, RoutedEventArgs e)
-        {
-            var window_config = new Window();
-            window_config.Owner = this;
-            window_config.Content = new ForgeConfig();
-            window_config.ShowDialog();
 
-            // ToDo: Use Controls -> Config.XAML instead of re-implementing the same UI again
-
-
-        }
 
         private void Window_Closed(object sender, EventArgs e)
         {
