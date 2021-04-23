@@ -46,6 +46,7 @@
     <Compile Include="Folder.cs" />
     <Compile Include="ProjectTypeEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SerializationParser.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
