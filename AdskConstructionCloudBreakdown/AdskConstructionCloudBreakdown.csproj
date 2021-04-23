@@ -41,9 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccesPermissionEnum.cs" />
     <Compile Include="Bim360Project.cs" />
     <Compile Include="Company.cs" />
     <Compile Include="Folder.cs" />
+    <Compile Include="RolePermission.cs" />
+    <Compile Include="UserPermission.cs" />
     <Compile Include="ProjectTypeEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerializationParser.cs" />

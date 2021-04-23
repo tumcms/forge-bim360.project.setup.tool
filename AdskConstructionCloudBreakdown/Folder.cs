@@ -12,15 +12,14 @@ namespace AdskConstructionCloudBreakdown
             set
             { _name = value;
             }
-        } 
+        }
 
         // Permission management 
-        public string GeneralPermission { get; set; }
-        public string RolePermission { get; set; }
+        // user and company are assignment int Permission
+        public List<UserPermission> GeneralPermission { get; set; }
 
-        // user and company assignment
-        public List<User> AssignedUsers { get; set; }
-        public Company AssignedCompany { get; set; }
+        //maybe need to change role permission
+        public List<RolePermission> RolePermission { get; set; }
         
         // nested Folders
         public List<Folder> Subfolders { get; set; }
@@ -28,17 +27,45 @@ namespace AdskConstructionCloudBreakdown
         // file path to sample files
         public string SampleFilesDirectory { get; set; }
 
+
+        //Constructor
         public Folder()
         {
-            AssignedUsers = new List<User>();
+            GeneralPermission = new List<UserPermission>();
             Subfolders = new List<Folder>();
+            RolePermission = new List<RolePermission>();
         }
 
         public Folder(string name)
         {
             this.Name = name;
-            AssignedUsers = new List<User>();
+            GeneralPermission = new List<UserPermission>();
             Subfolders = new List<Folder>();
+            RolePermission = new List<RolePermission>();
         }
+
+
+        //Add Permissions Methods
+        public void AddRolePermission(string role, AccesPermissionEnum accesPerm)
+        {
+            RolePermission.Add(new RolePermission(role, accesPerm));
+        }
+
+        public void AddUser(string mailAddress, AccesPermissionEnum AccesPerm)
+        {
+            GeneralPermission.Add((new UserPermission(mailAddress,AccesPerm)));
+        }
+
+        public void AddUser(User user, AccesPermissionEnum accesPerm)
+        {
+            GeneralPermission.Add(new UserPermission(user,accesPerm));
+        }
+
+        //Not sure if we need some other SubFolder recursive thing
+        public void AddSubFolder(string name)
+        {
+            Subfolders.Add(new Folder());
+        }
+
     }
 }
