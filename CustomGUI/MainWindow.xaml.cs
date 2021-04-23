@@ -34,7 +34,6 @@ namespace CustomGUI
         //one instand of a class contains data of a row in the CSV file
         //Global Data
         List<UserData> usermanag = new List<UserData>();
-        StackPanel save_conf;
         private ObservableCollection<Bim360Project> projects;
         
         string path_file =@".\Config\config.txt";
@@ -64,6 +63,7 @@ namespace CustomGUI
 
         //Event Handling
 
+        //Config subwindow
         private void Config_Click(object sender, RoutedEventArgs e)
         {
             var window_config = new Window();
@@ -72,9 +72,6 @@ namespace CustomGUI
             window_config.Width = 710;
             window_config.Height = 150;
             window_config.ShowDialog();
-
-            // ToDo: Use Controls -> Config.XAML instead of re-implementing the same UI again
-
 
         }
 
@@ -127,17 +124,6 @@ namespace CustomGUI
 
         }
 
-
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            // ToDo: create global var for all necessary paths and set appropriate protection layers
-            var filePath = @".\Config\config.txt";
-            
-            // call method from user control
-            //ForgeConfig.SaveConfigToFile(filePath);
-            
-        }
 
 
         /// <summary>

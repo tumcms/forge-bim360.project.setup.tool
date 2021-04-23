@@ -6,3 +6,8 @@ ACC_classStructureTester/bin/
 ACC_classStructureTester/obj/
 CustomGUI/obj/
 CustomGUI/bin/
+BimProjectSetupCLI/obj/Debug/
+BimProjectSetupCommon/obj/Debug/
+CustomBIMFromCSV/obj/Debug/
+ForgeBimApi/obj/Debug/
+packages/
