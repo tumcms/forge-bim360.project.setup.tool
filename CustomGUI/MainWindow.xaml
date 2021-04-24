@@ -9,8 +9,7 @@
         mc:Ignorable="d"
         Title="ACC_projectSetup Wizard" Height="350" Width="900"
         MinHeight="250" MinWidth="700"
-        WindowStartupLocation="CenterScreen"
-        Closed="Window_Closed">
+        WindowStartupLocation="CenterScreen">
 
 
     <Grid>

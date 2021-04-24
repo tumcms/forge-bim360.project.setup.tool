@@ -38,6 +38,7 @@ namespace CustomGUI
         
         string path_file =@".\Config\config.txt";
 
+
         public MainWindow()
         {
             //TODO: configfile handle -> on start read out configfile all id and set them
@@ -45,6 +46,7 @@ namespace CustomGUI
             
             // sample data from recently introduced class structure mirroring key aspects of the BIM360 environment
             projects = CreateSampleStructure();
+
 
             AccProjectConfig.ProjectsView.ItemsSource = projects;
 
