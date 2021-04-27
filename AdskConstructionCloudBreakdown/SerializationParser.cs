@@ -22,18 +22,23 @@ namespace AdskConstructionCloudBreakdown
         /// <returns></returns>
         public static List<Bim360Project> LoadBim360ProjectsFromCsv(CsvReader input)
         {
+            //var declaration
             var output = new List<Bim360Project>();
             Folder activeFolder;
+
+            //loop over all rows
             while (input.Read())
             {
                 var tmp = input.GetRecord<UserData>();
-                //create new Projects if 
+
+                //create only new Projects if their is a new name
                 if (tmp._project_name!=null)
                 {
                     output.Add(new Bim360Project(tmp._project_name));
                     activeFolder = null;
                 }
 
+                //set type
                 if (tmp._project_type.Equals("Office"))
                 {
                     output[output.Count].ProjectType = ProjectTypeEnum.Office;
@@ -60,6 +65,16 @@ namespace AdskConstructionCloudBreakdown
         {
             throw new NotImplementedException("this is openSource. Do it yourself. ");
         }
+
+
+        ///<summary>
+        ///
+        /// </summary>
+        public static void ExportBim360toCSV()
+        {
+            throw new NotImplementedException("YOU SHALL NOT PASS \ndata out currently");
+        }
+
 
     }
 }
