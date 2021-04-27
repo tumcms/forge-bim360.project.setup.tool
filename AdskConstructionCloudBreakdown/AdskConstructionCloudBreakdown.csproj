@@ -71,6 +71,7 @@
     <Compile Include="Company.cs" />
     <Compile Include="Folder.cs" />
     <Compile Include="RolePermission.cs" />
+    <Compile Include="UserData.cs" />
     <Compile Include="UserPermission.cs" />
     <Compile Include="ProjectTypeEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

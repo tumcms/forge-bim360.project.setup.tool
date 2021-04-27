@@ -23,20 +23,20 @@ namespace AdskConstructionCloudBreakdown
             MailAddress = mailAddress;
         }
 
-        public User(string mailAddress, string IndustryRoles, Company assignedCompany)
+        public User(string mailAddress, string industryRoles, Company assignedCompany)
         {
             MailAddress = mailAddress;
             this.IndustryRoles = new List<string>
             {
-                IndustryRoles
+                industryRoles
             };
             this.AssignedCompany = assignedCompany;
         }
 
-        public User(string mailAddress, List<string> IndustryRoles, Company assignedCompany)
+        public User(string mailAddress, List<string> industryRoles, Company assignedCompany)
         {
             MailAddress = mailAddress;
-            this.IndustryRoles = IndustryRoles;
+            this.IndustryRoles = industryRoles;
             this.AssignedCompany = assignedCompany;
         }
 

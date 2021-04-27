@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -41,7 +42,6 @@ namespace CustomGUI
 
         public MainWindow()
         {
-            //TODO: configfile handle -> on start read out configfile all id and set them
             InitializeComponent();
             
             // sample data from recently introduced class structure mirroring key aspects of the BIM360 environment
@@ -73,7 +73,9 @@ namespace CustomGUI
             window_config.Content = new ForgeConfig();
             window_config.Width = 710;
             window_config.Height = 150;
+            window_config.ResizeMode = ResizeMode.NoResize;
             window_config.ShowDialog();
+
 
         }
 
@@ -89,22 +91,35 @@ namespace CustomGUI
                 statusbar.Text = "Import Failed! File not found!";
             }
 
+
             using (var readdata = new StreamReader(csvpath.Text))
             {
                 var csv = new CsvReader(readdata, CultureInfo.CurrentCulture);
                 //Maps the Header of the CSV Data to the class attributs
                 csv.Context.RegisterClassMap<UserDataMap>();
 
+                //call the import
+                var output = SerializationParser.LoadBim360ProjectsFromCsv(csv);
+
                 //Read all rows and safe in the usermanagment
                 while (csv.Read())
                 {
                     var tmp = csv.GetRecord<UserData>();
+                    //for old classe def
                     usermanag.Add(tmp);
+
+                    //for new classe def
+
+
+
                 }
 
                 
                 
             }
+
+
+
 
 
             statusbar.Text="Import successful!";
@@ -123,6 +138,10 @@ namespace CustomGUI
 
         private void buttonexport_Click(object sender, RoutedEventArgs e)
         {
+            //create a csv file with 10 + subfolder height columns 
+
+            
+
 
         }
 
@@ -157,6 +176,7 @@ namespace CustomGUI
             return new ObservableCollection<Bim360Project>() {project1, project2};
 
         }
+
 
     }
 }

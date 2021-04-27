@@ -51,9 +51,9 @@ namespace AdskConstructionCloudBreakdown
             RolePermission.Add(new RolePermission(role, accesPerm));
         }
 
-        public void AddUser(string mailAddress, AccesPermissionEnum AccesPerm)
+        public void AddUser(string mailAddress, AccesPermissionEnum accesPerm)
         {
-            GeneralPermission.Add((new UserPermission(mailAddress,AccesPerm)));
+            GeneralPermission.Add((new UserPermission(mailAddress,accesPerm)));
         }
 
         public void AddUser(User user, AccesPermissionEnum accesPerm)
@@ -65,6 +65,26 @@ namespace AdskConstructionCloudBreakdown
         public void AddSubFolder(string name)
         {
             Subfolders.Add(new Folder());
+        }
+
+        //recursive function to get the height
+        public int Getheight()
+        {
+            int height=0;
+
+            if (Subfolders != null)
+            {
+                foreach (var iter in Subfolders)
+                {
+                    int tmp = iter.Getheight()+1;
+                    if (tmp > height)
+                    {
+                        height = tmp;
+                    }
+                }
+            }
+
+            return height;
         }
 
     }

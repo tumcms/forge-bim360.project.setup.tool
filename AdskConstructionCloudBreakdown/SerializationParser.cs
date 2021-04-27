@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
+using CustomGUI;
 
 namespace AdskConstructionCloudBreakdown
 {
@@ -19,16 +20,27 @@ namespace AdskConstructionCloudBreakdown
         /// 
         /// </summary>
         /// <returns></returns>
-        public List<Bim360Project> LoadBim360ProjectsFromCsv()
+        public static List<Bim360Project> LoadBim360ProjectsFromCsv(CsvReader input)
         {
-            return new List<Bim360Project>();
+            while (input.Read())
+            {
+                var tmp = input.GetRecord<UserData>();
+
+                //for new classe def
+
+
+
+
+
+
+                return new List<Bim360Project>();
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public List<Bim360Project> LoadBim360ProjectsFromJSON()
+        public List<Bim360Project> LoadBim360ProjectsFromJson()
         {
             throw new NotImplementedException("this is openSource. Do it yourself. ");
         }
