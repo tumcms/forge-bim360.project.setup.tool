@@ -22,18 +22,34 @@ namespace AdskConstructionCloudBreakdown
         /// <returns></returns>
         public static List<Bim360Project> LoadBim360ProjectsFromCsv(CsvReader input)
         {
+            var output = new List<Bim360Project>();
+            Folder activeFolder;
             while (input.Read())
             {
                 var tmp = input.GetRecord<UserData>();
+                //create new Projects if 
+                if (tmp._project_name!=null)
+                {
+                    output.Add(new Bim360Project(tmp._project_name));
+                    activeFolder = null;
+                }
 
-                //for new classe def
+                if (tmp._project_type.Equals("Office"))
+                {
+                    output[output.Count].ProjectType = ProjectTypeEnum.Office;
+                }
+                else if (tmp._project_type.Equals("Library"))
+                {
+                    output[output.Count].ProjectType = ProjectTypeEnum.Library;
+                }
+
+                //ToDo: Add the folder structure dynamic
+
+            }
 
 
 
-
-
-
-                return new List<Bim360Project>();
+            return output ;
         }
 
         /// <summary>

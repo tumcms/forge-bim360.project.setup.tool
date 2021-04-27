@@ -98,7 +98,7 @@ namespace CustomGUI
                 //Maps the Header of the CSV Data to the class attributs
                 csv.Context.RegisterClassMap<UserDataMap>();
 
-                //call the import
+                //call the import for new class def
                 var output = SerializationParser.LoadBim360ProjectsFromCsv(csv);
 
                 //Read all rows and safe in the usermanagment
@@ -107,10 +107,6 @@ namespace CustomGUI
                     var tmp = csv.GetRecord<UserData>();
                     //for old classe def
                     usermanag.Add(tmp);
-
-                    //for new classe def
-
-
 
                 }
 
