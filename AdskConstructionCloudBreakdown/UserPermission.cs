@@ -21,7 +21,7 @@
         }
 
 
-        public UserPermission(User user, AccessPermissionEnum accesPermission)
+        public UserPermission(User user, AccessPermissionEnum accessPermission)
 
         {
             AssignedUsers = user;

@@ -12,11 +12,11 @@ namespace AdskConstructionCloudBreakdown
         public RolePermission()
         {
             Role = string.Empty;
-            AccesPermission = AccessPermissionEnum.Viewonly;
+            AccessPermission = AccessPermissionEnum.Viewonly;
         }
 
 
-        public RolePermission(string role, AccessPermissionEnum accesPermission)
+        public RolePermission(string role, AccessPermissionEnum accessPermission)
         {
             this.Role = role;
             this.AccessPermission = accessPermission;
