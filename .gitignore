@@ -13,3 +13,5 @@ ForgeBimApi/obj/Debug/
 packages/
 .vs/BimProjectSetupTool/DesignTimeBuild/.dtbcache.v2
 .vs/BimProjectSetupTool/v16/.suo
+AdskConstructionCloudBreakdown/packages.config
+*.user
