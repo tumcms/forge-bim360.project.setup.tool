@@ -2,13 +2,10 @@
 
 namespace AdskConstructionCloudBreakdown
 {
-    public class RolePermission
+    public class RolePermission : Permission
     {
 
         public string Role { get; set; }
-
-        public AccessPermissionEnum AccesPermission { get; set; }
-
 
 
         //Constructor
@@ -18,10 +15,11 @@ namespace AdskConstructionCloudBreakdown
             AccesPermission = AccessPermissionEnum.Viewonly;
         }
 
+
         public RolePermission(string role, AccessPermissionEnum accesPermission)
         {
             this.Role = role;
-            this.AccesPermission = accesPermission;
+            this.AccessPermission = accessPermission;
         }
 
     }

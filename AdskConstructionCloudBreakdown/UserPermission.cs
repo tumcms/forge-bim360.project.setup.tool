@@ -1,30 +1,31 @@
 ﻿namespace AdskConstructionCloudBreakdown
 {
-    public class UserPermission
+    public class UserPermission : Permission
     {
 
         public User AssignedUsers { get; set; }
-
-        public AccessPermissionEnum AccesPermission { get; set; }
 
 
         //Constructor
         public UserPermission()
         {
             AssignedUsers = new User();
-            AccesPermission = AccessPermissionEnum.Viewonly;
+            AccessPermission = AccessPermissionEnum.Viewonly;
         }
 
-        public UserPermission(string mailAddress, AccessPermissionEnum accesPermission)
+
+        public UserPermission(string mailAddress, AccessPermissionEnum accessPermission)
         {
             AssignedUsers = new User(mailAddress);
-            AccesPermission = accesPermission;
+            AccessPermission = accessPermission;
         }
 
+
         public UserPermission(User user, AccessPermissionEnum accesPermission)
+
         {
             AssignedUsers = user;
-            AccesPermission = accesPermission;
+            AccessPermission = accessPermission;
         }
 
     }

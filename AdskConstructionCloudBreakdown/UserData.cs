@@ -52,10 +52,13 @@ namespace CustomGUI
         /// <summary>
         /// Maps CSV to UserData input
         /// </summary>
-        public void mapcsvtoinput() { }
+        public void MapCsvToInput() { }
 
     }
 
+    /// <summary>
+    /// Maps CSV Header to UserData attributs (Import) 
+    /// </summary>
     public class UserDataMap : ClassMap<UserData>
     {
         public UserDataMap()

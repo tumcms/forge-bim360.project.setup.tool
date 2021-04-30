@@ -33,14 +33,14 @@ namespace AdskConstructionCloudBreakdown
         }
 
 
-        public int Findsubheight()
+        public int FindSubHeight()
         {
             int height=0;
 
             //find the height of the subfolder of both roots
             foreach (var iter in Plans)
             {
-                int tmp = iter.Getheight();
+                int tmp = iter.GetHeight();
                 if (tmp > height)
                 {
                     height = tmp;
@@ -49,7 +49,7 @@ namespace AdskConstructionCloudBreakdown
 
             foreach (var iter in ProjectFiles)
             {
-                int tmp = iter.Getheight();
+                int tmp = iter.GetHeight();
                 if (tmp > height)
                 {
                     height = tmp;

@@ -68,7 +68,7 @@ namespace AdskConstructionCloudBreakdown
         }
 
         //recursive function to get the height
-        public int Getheight()
+        public int GetHeight()
         {
             int height=0;
 
@@ -76,7 +76,7 @@ namespace AdskConstructionCloudBreakdown
             {
                 foreach (var iter in Subfolders)
                 {
-                    int tmp = iter.Getheight()+1;
+                    int tmp = iter.GetHeight()+1;
                     if (tmp > height)
                     {
                         height = tmp;
