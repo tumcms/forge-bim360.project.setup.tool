@@ -46,17 +46,17 @@ namespace AdskConstructionCloudBreakdown
 
 
         //Add Permissions Methods
-        public void AddRolePermission(string role, AccesPermissionEnum accesPerm)
+        public void AddRolePermission(string role, AccessPermissionEnum accesPerm)
         {
             RolePermission.Add(new RolePermission(role, accesPerm));
         }
 
-        public void AddUser(string mailAddress, AccesPermissionEnum accesPerm)
+        public void AddUser(string mailAddress, AccessPermissionEnum accesPerm)
         {
             GeneralPermission.Add((new UserPermission(mailAddress,accesPerm)));
         }
 
-        public void AddUser(User user, AccesPermissionEnum accesPerm)
+        public void AddUser(User user, AccessPermissionEnum accesPerm)
         {
             GeneralPermission.Add(new UserPermission(user,accesPerm));
         }
