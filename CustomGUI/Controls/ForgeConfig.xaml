@@ -1,0 +1,107 @@
+﻿<UserControl x:Class="CustomGUI.Controls.ForgeConfig"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:CustomGUI.Controls"
+             mc:Ignorable="d"
+             Name="ConfigControl"
+             Loaded="Config_OnLoaded"
+             Initialized="ConfigControl_Initialized"
+             >
+
+    <Grid Background="#FFE5E5E5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            HorizontalAlignment="Left"
+            Grid.Column="0"
+            Grid.Row="0"
+            Margin="1"
+            Text="Forge_Client_ID"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            FontSize="16"
+            FontWeight="Bold" />
+
+        <TextBlock
+            HorizontalAlignment="Left"
+            Grid.Column="0"
+            Grid.Row="1"
+            Margin="1"
+            Text="Forge_Client_Secret"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            FontSize="16"
+            FontWeight="Bold" />
+
+        <TextBlock
+            HorizontalAlignment="Left"
+            Grid.Column="0"
+            Grid.Row="2"
+            Margin="1"
+            Text="Forge_Bim_Account_ID"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            FontSize="16"
+            FontWeight="Bold" />
+
+        <TextBox
+            x:Name="ClientId_Box"
+            Grid.Column="1"
+            Grid.Row="0"
+            HorizontalAlignment="Stretch"
+            Margin="1"
+            Text="Forge_Client_ID"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            GotKeyboardFocus="ClientId_GotKeyboardFocus" />
+
+        <TextBox
+            x:Name="ClientSecret_Box"
+            Grid.Column="1"
+            Grid.Row="1"
+            HorizontalAlignment="Stretch"
+            Margin="1"
+            Text="Forge_Client_Secret"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            GotKeyboardFocus="ClientSecret_GotKeyboardFocus" 
+            />
+
+        <TextBox
+            x:Name="BimId_Box"
+            Grid.Column="1"
+            Grid.Row="2"
+            HorizontalAlignment="Stretch"
+            Margin="1"
+            Text="Forge_Bim_Account_ID"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            GotKeyboardFocus="BimId_GotKeyboardFocus" />
+
+        <Button x:Name="saveconf"
+                Content="Save Config"
+                Grid.Column="0"
+                Grid.Row="3"
+                Grid.ColumnSpan="2"
+                Margin="2"
+                HorizontalAlignment="Stretch"
+
+                VerticalAlignment="Top"
+                Click="SaveConfig_click"
+                IsDefault="True"
+                Focusable="True" />
+    </Grid>
+
+</UserControl>

@@ -1,0 +1,15 @@
+bin/Debug/
+CustomGUI/bin/Debug/
+AdskConstructionCloudBreakdown/bin/
+AdskConstructionCloudBreakdown/obj/
+ACC_classStructureTester/bin/
+ACC_classStructureTester/obj/
+CustomGUI/obj/
+CustomGUI/bin/
+BimProjectSetupCLI/obj/Debug/
+BimProjectSetupCommon/obj/Debug/
+CustomBIMFromCSV/obj/Debug/
+ForgeBimApi/obj/Debug/
+packages/
+.vs/BimProjectSetupTool/DesignTimeBuild/.dtbcache.v2
+.vs/BimProjectSetupTool/v16/.suo
