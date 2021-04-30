@@ -27,6 +27,7 @@ namespace AdskConstructionCloudBreakdown
             //var declaration
             var output = new List<Bim360Project>();
             Folder activeFolder = new Folder();
+            input.Context.RegisterClassMap<UserDataMap>();
 
             //loop over all rows
             while (input.Read())
