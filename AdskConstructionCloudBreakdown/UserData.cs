@@ -16,6 +16,13 @@ namespace CustomGUI
         public string _level_1 { get; set; }
         public string _level_2 { get; set; }
         public string _level_3 { get; set; }
+        public string _level_4 { get; set; }
+        public string _level_5 { get; set; }
+        public string _level_6 { get; set; }
+        public string _level_7 { get; set; }
+        public string _level_8 { get; set; }
+        public string _level_9 { get; set; }
+        public string _level_10 { get; set; }
         public string _permission { get; set; }
         public string _role_permission { get; set; }
         public string _user_email { get; set; }
@@ -69,9 +76,13 @@ namespace CustomGUI
             Map(m => m._level_1).Name("level_1");
             Map(m => m._level_2).Name("level_2");
             Map(m => m._level_3).Name("level_3");
-            // Here we need to add an new object but i dont know how
-            Map(m => m._sub_folder).Name("level_1");
-            Map(m => m._sub_folder).Name("level_2");
+            Map(m => m._level_4).Name("level_4");
+            Map(m => m._level_5).Name("level_5");
+            Map(m => m._level_6).Name("level_6");
+            Map(m => m._level_7).Name("level_7");
+            Map(m => m._level_8).Name("level_8");
+            Map(m => m._level_9).Name("level_9");
+            Map(m => m._level_10).Name("level_10");
             Map(m => m._permission).Name("permission");
             Map(m => m._role_permission).Name("role_permission");
             Map(m => m._user_email).Name("user_email");

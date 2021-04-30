@@ -69,7 +69,7 @@ namespace AdskConstructionCloudBreakdown
 
 
                 //add subfolder into the roots
-                //currently only supports until down to level3
+                //currently only supports until down to level10
                 if (tmp._level_1 != "")
                 {
                     Folder subfold = new Folder(tmp._level_1);
@@ -91,7 +91,6 @@ namespace AdskConstructionCloudBreakdown
                     }
                     activeFolder.AddSubFolder(subfold);
                     activeFolder = subfold;
-
                 }
                 else if (tmp._level_3 != "")
                 {
@@ -103,7 +102,83 @@ namespace AdskConstructionCloudBreakdown
                     }
                     activeFolder.AddSubFolder(subfold);
                     activeFolder = subfold;
-                    
+                }
+                else if (tmp._level_4 != "")
+                {
+                    Folder subfold = new Folder(tmp._level_4);
+                    //decide where to put it
+                    while (activeFolder.level > 3)
+                    {
+                        activeFolder = activeFolder.RootFolder;
+                    }
+                    activeFolder.AddSubFolder(subfold);
+                    activeFolder = subfold;
+                }
+                else if (tmp._level_5 != "")
+                {
+                    Folder subfold = new Folder(tmp._level_5);
+                    //decide where to put it
+                    while (activeFolder.level > 4)
+                    {
+                        activeFolder = activeFolder.RootFolder;
+                    }
+                    activeFolder.AddSubFolder(subfold);
+                    activeFolder = subfold;
+                }
+                else if (tmp._level_6 != "")
+                {
+                    Folder subfold = new Folder(tmp._level_6);
+                    //decide where to put it
+                    while (activeFolder.level > 5)
+                    {
+                        activeFolder = activeFolder.RootFolder;
+                    }
+                    activeFolder.AddSubFolder(subfold);
+                    activeFolder = subfold;
+                }
+                else if (tmp._level_7 != "")
+                {
+                    Folder subfold = new Folder(tmp._level_7);
+                    //decide where to put it
+                    while (activeFolder.level > 6)
+                    {
+                        activeFolder = activeFolder.RootFolder;
+                    }
+                    activeFolder.AddSubFolder(subfold);
+                    activeFolder = subfold;
+                }
+                else if (tmp._level_8 != "")
+                {
+                    Folder subfold = new Folder(tmp._level_8);
+                    //decide where to put it
+                    while (activeFolder.level > 7)
+                    {
+                        activeFolder = activeFolder.RootFolder;
+                    }
+                    activeFolder.AddSubFolder(subfold);
+                    activeFolder = subfold;
+                }
+                else if (tmp._level_9 != "")
+                {
+                    Folder subfold = new Folder(tmp._level_9);
+                    //decide where to put it
+                    while (activeFolder.level > 8)
+                    {
+                        activeFolder = activeFolder.RootFolder;
+                    }
+                    activeFolder.AddSubFolder(subfold);
+                    activeFolder = subfold;
+                }
+                else if (tmp._level_10 != "")
+                {
+                    Folder subfold = new Folder(tmp._level_10);
+                    //decide where to put it
+                    while (activeFolder.level > 9)
+                    {
+                        activeFolder = activeFolder.RootFolder;
+                    }
+                    activeFolder.AddSubFolder(subfold);
+                    activeFolder = subfold;
                 }
 
 
