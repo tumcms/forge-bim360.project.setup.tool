@@ -2,13 +2,10 @@
 
 namespace AdskConstructionCloudBreakdown
 {
-    public class RolePermission
+    public class RolePermission : Permission
     {
 
         public string Role { get; set; }
-
-        public AccesPermissionEnum AccesPermission { get; set; }
-
 
 
         //Constructor

@@ -87,33 +87,12 @@ namespace CustomGUI
 
         private void buttonimport_Click(object sender, RoutedEventArgs e)
         {
+            //move to conifg
             if (!File.Exists(csvpath.Text)){
                 statusbar.Text = "Import Failed! File not found!";
             }
 
-
-            using (var readdata = new StreamReader(csvpath.Text))
-            {
-                var csv = new CsvReader(readdata, CultureInfo.CurrentCulture);
-                //Maps the Header of the CSV Data to the class attributs
-                csv.Context.RegisterClassMap<UserDataMap>();
-
-                //call the import for new class def
-                var output = SerializationParser.LoadBim360ProjectsFromCsv(csv);
-
-                //this should be outdated so it can be probably deleted
-                //Read all rows and safe in the usermanagment
-                while (csv.Read())
-                {
-                    var tmp = csv.GetRecord<UserData>();
-                    //for old classe def
-                    usermanag.Add(tmp);
-
-                }
-
-
-            }
-
+            AccProjectConfig.LoadBim360Projekts(csvpath.Text);
 
             statusbar.Text="Import successful!";
 

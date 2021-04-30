@@ -70,7 +70,7 @@ namespace AdskConstructionCloudBreakdown
         ///<summary>
         ///
         /// </summary>
-        public static void ExportBim360toCSV()
+        public static void ExportBim360ToCSV()
         {
             throw new NotImplementedException("YOU SHALL NOT PASS \ndata out currently");
         }

@@ -70,6 +70,7 @@
     <Compile Include="Bim360Project.cs" />
     <Compile Include="Company.cs" />
     <Compile Include="Folder.cs" />
+    <Compile Include="Permission.cs" />
     <Compile Include="RolePermission.cs" />
     <Compile Include="UserData.cs" />
     <Compile Include="UserPermission.cs" />
