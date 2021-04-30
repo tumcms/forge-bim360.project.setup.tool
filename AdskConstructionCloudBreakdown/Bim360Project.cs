@@ -12,15 +12,15 @@ namespace AdskConstructionCloudBreakdown
         public string ProjectName { get; set; }
         public ProjectTypeEnum ProjectType { get; set; }
 
-        public List<Folder> Plans { get; set; }
-        public List<Folder> ProjectFiles { get; set; }
+        public Folder Plans { get; set; }
+        public Folder ProjectFiles { get; set; }
 
         public Bim360Project(string projectName)
         {
             ProjectName = projectName;
             // init arrays
-            Plans = new List<Folder>();
-            ProjectFiles = new List<Folder>();
+            Plans = new Folder();
+            ProjectFiles = new Folder();
         }
 
         public Bim360Project(string projectName, ProjectTypeEnum projectType)
@@ -28,35 +28,21 @@ namespace AdskConstructionCloudBreakdown
             ProjectName = projectName;
             ProjectType = projectType;
             // init arrays
-            Plans = new List<Folder>();
-            ProjectFiles = new List<Folder>();
+            Plans = new Folder();
+            ProjectFiles = new Folder();
         }
 
 
         public int FindSubHeight()
         {
-            int height=0;
-
             //find the height of the subfolder of both roots
-            foreach (var iter in Plans)
+            int heightpl = Plans.GetHeight();
+            int heightpf = ProjectFiles.GetHeight();
+            if (heightpl > heightpf)
             {
-                int tmp = iter.GetHeight();
-                if (tmp > height)
-                {
-                    height = tmp;
-                }
+                return heightpl;
             }
-
-            foreach (var iter in ProjectFiles)
-            {
-                int tmp = iter.GetHeight();
-                if (tmp > height)
-                {
-                    height = tmp;
-                }
-            }
-
-            return height;
+            return heightpf;
         }
 
     }

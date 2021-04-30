@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -49,6 +50,27 @@ namespace AdskConstructionCloudBreakdown
                 }
 
                 //ToDo: Add the folder structure dynamic
+
+                //change where sub folder shoulde be located
+                if (tmp._root_folder.Equals("Plans"))
+                {
+                    activeFolder = output.Last().Plans;
+                    if (tmp._user_email != null)
+                    {
+                        
+                    }
+                }
+                else if (tmp._root_folder.Equals("Project Files"))
+                {
+                    activeFolder = output.Last().ProjectFiles;
+                }
+
+
+
+
+                //ToDo: Add User 
+
+                //ToDO: Add Role Permission
 
             }
 

@@ -131,9 +131,9 @@ namespace CustomGUI
             };
 
 
-            project1.Plans.Add(new Folder("Level1"));
-            project1.ProjectFiles.Add(new Folder("Level1"));
-            project1.ProjectFiles[0].Subfolders.Add(new Folder("Level1"));
+            project1.Plans=new Folder("Level1");
+            project1.ProjectFiles=(new Folder("Level1"));
+            project1.ProjectFiles.Subfolders.Add(new Folder("Level1"));
 
             var project2 = new Bim360Project("MyProject02")
             {
@@ -141,9 +141,9 @@ namespace CustomGUI
             };
 
 
-            project2.Plans.Add(new Folder("Level2"));
-            project2.ProjectFiles.Add(new Folder("Level3"));
-            project2.ProjectFiles[0].Subfolders.Add(new Folder("Level4"));
+            project2.Plans=(new Folder("Level2"));
+            project2.ProjectFiles=(new Folder("Level3"));
+            project2.ProjectFiles.Subfolders.Add(new Folder("Level4"));
 
             return new ObservableCollection<Bim360Project>() {project1, project2};
 
