@@ -191,12 +191,13 @@
                         <ComboBox 
                             Margin="2" 
                             Name="FolderPermissionComboBox">
-                            <ComboBoxItem IsSelected="True" >Read Only</ComboBoxItem>
-                            <ComboBoxItem >Read And Write</ComboBoxItem>
-                            
-                            <!--ToDo: The combobox items are just placeholders yet! -->
-
-
+                            <!--<ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding FolderPermissionComboBox.ItemsSource}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>-->
                         </ComboBox>
                     </StackPanel>
                         

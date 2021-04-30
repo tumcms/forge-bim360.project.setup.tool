@@ -28,6 +28,8 @@ namespace CustomGUI.Controls
         {
             InitializeComponent();
 
+            FolderPermissionComboBox.ItemsSource = Enum.GetValues(typeof(AdskConstructionCloudBreakdown.AccessPermissionEnum));
+
         }
 
         private void AccProjectConfig_OnInitialized(object? sender, EventArgs e)
@@ -60,7 +62,6 @@ namespace CustomGUI.Controls
 
                 }
             }
-
 
         }
     }

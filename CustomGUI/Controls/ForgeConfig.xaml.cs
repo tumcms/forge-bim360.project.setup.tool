@@ -43,7 +43,7 @@ namespace CustomGUI.Controls
         {
             InitializeComponent();
             this.DataContext = this;
-            ConfigFilePath= @".\Config\config.txt";
+            ConfigFilePath = @".\Config\config.txt";
         }
 
         #region Callback functions from Frontend
