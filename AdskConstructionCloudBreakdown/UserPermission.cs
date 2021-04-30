@@ -10,19 +10,19 @@
         public UserPermission()
         {
             AssignedUsers = new User();
-            AccesPermission = AccesPermissionEnum.Viewonly;
+            AccessPermission = AccessPermissionEnum.Viewonly;
         }
 
-        public UserPermission(string mailAddress, AccesPermissionEnum accesPermission)
+        public UserPermission(string mailAddress, AccessPermissionEnum accessPermission)
         {
             AssignedUsers = new User(mailAddress);
-            AccesPermission = accesPermission;
+            AccessPermission = accessPermission;
         }
 
-        public UserPermission(User user, AccesPermissionEnum accesPermission)
+        public UserPermission(User user, AccessPermissionEnum accessPermission)
         {
             AssignedUsers = user;
-            AccesPermission = accesPermission;
+            AccessPermission = accessPermission;
         }
 
     }

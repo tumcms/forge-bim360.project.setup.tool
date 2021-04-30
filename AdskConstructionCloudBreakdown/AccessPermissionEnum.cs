@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AdskConstructionCloudBreakdown
 {
-    public enum AccesPermissionEnum
+    public enum AccessPermissionEnum
     {
 
         //Not sure 

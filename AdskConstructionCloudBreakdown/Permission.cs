@@ -2,7 +2,7 @@
 {
     public abstract class Permission 
     {
-        public AccesPermissionEnum AccesPermission { get; set; }
+        public AccessPermissionEnum AccessPermission { get; set; }
 
 
     }
