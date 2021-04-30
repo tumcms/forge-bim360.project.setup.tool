@@ -27,6 +27,7 @@ namespace AdskConstructionCloudBreakdown
             //var declaration
             var output = new List<Bim360Project>();
             Folder activeFolder = new Folder();
+            //Maps the Header of the CSV Data to the class attributs
             input.Context.RegisterClassMap<UserDataMap>();
 
             //loop over all rows
@@ -35,7 +36,7 @@ namespace AdskConstructionCloudBreakdown
                 var tmp = input.GetRecord<UserData>();
 
                 //create only new Projects if their is a new name
-                if (tmp._project_name!=null)
+                if (tmp._project_name!="")
                 {
                     output.Add(new Bim360Project(tmp._project_name));
                     activeFolder = null;
@@ -44,11 +45,11 @@ namespace AdskConstructionCloudBreakdown
                 //set type
                 if (tmp._project_type.Equals("Office"))
                 {
-                    output[output.Count].ProjectType = ProjectTypeEnum.Office;
+                    output.Last().ProjectType = ProjectTypeEnum.Office;
                 }
                 else if (tmp._project_type.Equals("Library"))
                 {
-                    output[output.Count].ProjectType = ProjectTypeEnum.Library;
+                    output.Last().ProjectType = ProjectTypeEnum.Library;
                 }
 
 
@@ -61,15 +62,15 @@ namespace AdskConstructionCloudBreakdown
                 {
                     activeFolder = output.Last().ProjectFiles;
                 }
-                else
+                else if(tmp._root_folder!="")
                 {
                     throw new Exception("Unexpected root folder!");
                 }
 
-                //ToDo: Testing
+
                 //add subfolder into the roots
                 //currently only supports until down to level3
-                if (tmp._level_1 != null)
+                if (tmp._level_1 != "")
                 {
                     Folder subfold = new Folder(tmp._level_1);
                     //decide where to put it
@@ -80,7 +81,7 @@ namespace AdskConstructionCloudBreakdown
                     activeFolder.AddSubFolder(subfold);
                     activeFolder = subfold;
                 }
-                else if (tmp._level_2 != null)
+                else if (tmp._level_2 != "")
                 {
                     Folder subfold = new Folder(tmp._level_2);
                     //decide where to put it
@@ -92,27 +93,30 @@ namespace AdskConstructionCloudBreakdown
                     activeFolder = subfold;
 
                 }
-                else if (tmp._level_3 != null)
+                else if (tmp._level_3 != "")
                 {
                     Folder subfold = new Folder(tmp._level_3);
-                    activeFolder.RootFolder.AddSubFolder(subfold);
+                    //decide where to put it
+                    while (activeFolder.level > 2)
+                    {
+                        activeFolder = activeFolder.RootFolder;
+                    }
+                    activeFolder.AddSubFolder(subfold);
                     activeFolder = subfold;
                     
                 }
 
 
-
-                //ToDo: Testing
                 //add userpermission to active folder
-                if (tmp._user_email != null)
+                if (tmp._user_email != "")
                 {
                     try
                     {
                         User user;
                         //assign company to user if exists
-                        if (tmp._company != null)
+                        if (tmp._company != "")
                         {
-                            Company comp = tmp._company_trade != null ? new Company(tmp._company,
+                            Company comp = tmp._company_trade != "" ? new Company(tmp._company,
                                 tmp._company_trade) : new Company(tmp._company);
 
                             user = new User(tmp._user_email, comp);
@@ -133,7 +137,7 @@ namespace AdskConstructionCloudBreakdown
 
                 //ToDo: Testing
                 //add rolepermission to active folder
-                if (tmp._role_permission != null)
+                if (tmp._role_permission != "")
                 {
                     try
                     {
@@ -147,7 +151,7 @@ namespace AdskConstructionCloudBreakdown
                 }
 
                 //Set local folder 
-                if (tmp._local_folder != null)
+                if (tmp._local_folder != "")
                 {
                     activeFolder.SampleFilesDirectory = tmp._local_folder;
                 }

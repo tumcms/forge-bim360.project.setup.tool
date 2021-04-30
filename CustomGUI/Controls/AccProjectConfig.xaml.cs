@@ -49,7 +49,6 @@ namespace CustomGUI.Controls
             { 
                 using (var csv = new CsvReader(readdata, CultureInfo.CurrentCulture))
                 {
-
                     //Maps the Header of the CSV Data to the class attributs
                     csv.Context.RegisterClassMap<UserDataMap>();
 
