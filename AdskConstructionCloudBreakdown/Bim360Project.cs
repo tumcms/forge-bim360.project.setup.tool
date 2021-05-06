@@ -15,6 +15,10 @@ namespace AdskConstructionCloudBreakdown
         public Folder Plans { get; set; }
         public Folder ProjectFiles { get; set; }
 
+        /// <summary>
+        /// Creates a BIM360Project instance with a project name
+        /// </summary>
+        /// <param name="projectName"></param>
         public Bim360Project(string projectName)
         {
             ProjectName = projectName;
@@ -23,6 +27,11 @@ namespace AdskConstructionCloudBreakdown
             ProjectFiles = new Folder();
         }
 
+        /// <summary>
+        /// Creates a BIM360Project instance with project name and type
+        /// </summary>
+        /// <param name="projectName"></param>
+        /// <param name="projectType"></param>
         public Bim360Project(string projectName, ProjectTypeEnum projectType)
         {
             ProjectName = projectName;
@@ -32,7 +41,10 @@ namespace AdskConstructionCloudBreakdown
             ProjectFiles = new Folder();
         }
 
-
+        /// <summary>
+        /// Returns the max height of folder hierarchy 
+        /// </summary>
+        /// <returns></returns>
         public int FindSubHeight()
         {
             //find the height of the subfolder of both roots
