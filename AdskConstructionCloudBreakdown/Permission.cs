@@ -8,21 +8,21 @@ namespace AdskConstructionCloudBreakdown
         public AccessPermissionEnum AccessPermission { get; set; }
 
         //Not sure if this is the right place for it
-        public static AccessPermissionEnum SelectPermission(string intput)
+        public static AccessPermissionEnum SelectPermission(string input)
         {
 
             //Dictionary to link String tko AccessPermission
-            Dictionary<string, AccessPermissionEnum> dictinoaryPermission =
+            Dictionary<string, AccessPermissionEnum> permissionDict =
                 new Dictionary<string, AccessPermissionEnum>();
-            dictinoaryPermission.Add("V", AccessPermissionEnum.Viewonly);
-            dictinoaryPermission.Add("V+D", AccessPermissionEnum.ViewandDownload);
-            dictinoaryPermission.Add("U", AccessPermissionEnum.Publishonly);
-            dictinoaryPermission.Add("V+D+U", AccessPermissionEnum.ViewDownladandPublish);
-            dictinoaryPermission.Add("V+D+U+E", AccessPermissionEnum.ViewDownlaodPusblishandEdit);
-            dictinoaryPermission.Add("FULL", AccessPermissionEnum.Full);
+            permissionDict.Add("V", AccessPermissionEnum.Viewonly);
+            permissionDict.Add("V+D", AccessPermissionEnum.ViewandDownload);
+            permissionDict.Add("U", AccessPermissionEnum.Publishonly);
+            permissionDict.Add("V+D+U", AccessPermissionEnum.ViewDownladandPublish);
+            permissionDict.Add("V+D+U+E", AccessPermissionEnum.ViewDownlaodPusblishandEdit);
+            permissionDict.Add("FULL", AccessPermissionEnum.Full);
             try
             {
-                return dictinoaryPermission[intput];
+                return permissionDict[input];
             }
             catch
             {

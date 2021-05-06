@@ -25,23 +25,23 @@ namespace CustomBIMFromCSV
             // Check if folder at this row
             if (folderColumnName != null)
             {
-                string currFolderName = table.Rows[rowIndex][folderColumnName].ToString();
+                string currentFolderName = table.Rows[rowIndex][folderColumnName].ToString();
 
                 List<string> currParentFolders = GetParentFolders(table, rowIndex, folderColumnName);
 
                 // If currently subfolder
                 if (currParentFolders.Count > 0)
                 {
-                    NestedFolder currParentFolder = FindParentFolder(currParentFolders, folders);
-                    currentFolder = RecursiveFindFolder(currFolderName, currParentFolder.childrenFolders);
+                    NestedFolder currentParentFolder = FindParentFolder(currParentFolders, folders);
+                    currentFolder = RecursiveFindFolder(currentFolderName, currentParentFolder.childrenFolders);
 
                     if (currentFolder == null)
                     {
-                        currentFolder = CreateFolder(folderProcess, project.id, currParentFolder, currFolderName, currParentFolders[0]);
+                        currentFolder = CreateFolder(folderProcess, project.id, currentParentFolder, currentFolderName, currParentFolders[0]);
                     }
                     else
                     {
-                        Util.LogInfo($"Folder in '{currParentFolders[0]}' already exists with name: {currFolderName}.");
+                        Util.LogInfo($"Folder in '{currParentFolders[0]}' already exists with name: {currentFolderName}.");
                     }
 
                     if (isUserAtRow || isRoleAtRow)
@@ -54,8 +54,8 @@ namespace CustomBIMFromCSV
                 {
                     if (isUserAtRow || isRoleAtRow) 
                     {
-                        Util.LogInfo($"\nCurrently at root folder '{currFolderName}'...\n");
-                        NestedFolder rootFolder = folders.Find(x => x.name.ToLower() == currFolderName.ToLower());
+                        Util.LogInfo($"\nCurrently at root folder '{currentFolderName}'...\n");
+                        NestedFolder rootFolder = folders.Find(x => x.name.ToLower() == currentFolderName.ToLower());
                         AssignPermission(table, rowIndex, projectUsers, folderProcess, rootFolder, project, projectUserProcess);
                         currentFolder = rootFolder;
                     }
@@ -214,16 +214,18 @@ namespace CustomBIMFromCSV
                 Util.LogImportant($"Permission '{letterPermission}' for role '{role.name}' for folder '{folder.name}' was not recognized. Default permission 'V' is taken for this folder.");
             }
 
-            List<FolderPermission> curr_permissions = new List<FolderPermission>();
-            curr_permissions.Add(new FolderPermission()
+            List<FolderPermission> currPermissions = new List<FolderPermission>
             {
-                subjectId = role.id,
-                subjectType = "ROLE",
-                actions = permissionLevel,
-                inheritActions = permissionLevel
-            });
+                new FolderPermission()
+                {
+                    subjectId = role.id,
+                    subjectType = "ROLE",
+                    actions = permissionLevel,
+                    inheritActions = permissionLevel
+                }
+            };
 
-            folderProcess.CustomAssignPermissionToFolder(ProjectId, folder.id, curr_permissions);
+            folderProcess.CustomAssignPermissionToFolder(ProjectId, folder.id, currPermissions);
         }
         internal static void AssignUserPermissionToFolder(FolderWorkflow folderProcess, NestedFolder folder, HqUser user, string letterPermission, string ProjectId)
         {
@@ -235,16 +237,19 @@ namespace CustomBIMFromCSV
                 permissionLevel = new List<string> { "VIEW", "COLLABORATE" };
                 Util.LogImportant($"Permission '{letterPermission}' for user '{user.email}' for folder '{folder.name}' was not recognized. Default permission 'V' is taken for this folder.");
             }
-            List<FolderPermission> curr_permissions = new List<FolderPermission>();
-            curr_permissions.Add(new FolderPermission()
-            {
-                subjectId = user.id,
-                subjectType = "USER",
-                actions = permissionLevel,
-                inheritActions = permissionLevel
-            });
 
-            folderProcess.CustomAssignPermissionToFolder(ProjectId, folder.id, curr_permissions);
+            List<FolderPermission> currPermissions = new List<FolderPermission>
+            {
+                new FolderPermission()
+                {
+                    subjectId = user.id,
+                    subjectType = "USER",
+                    actions = permissionLevel,
+                    inheritActions = permissionLevel
+                }
+            };
+
+            folderProcess.CustomAssignPermissionToFolder(ProjectId, folder.id, currPermissions);
         }
 
         internal static void CheckRootsExist(List<NestedFolder> folderStructure)
@@ -254,7 +259,7 @@ namespace CustomBIMFromCSV
 
             if (plansFolderId == null || projectFilesFolderId == null)
             {
-                throw new ApplicationException($"The project does't cointain the necessary root folders 'Plans' and 'Project Files'");
+                throw new ApplicationException($"The project doesn't contain the necessary root folders 'Plans' and 'Project Files'");
             }
         }
 

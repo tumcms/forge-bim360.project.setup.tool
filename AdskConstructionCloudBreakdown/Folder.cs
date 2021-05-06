@@ -6,25 +6,18 @@ namespace AdskConstructionCloudBreakdown
 {
     public class Folder
     {
-         private string _name;
-        public string Name
-        {
-            get => this._name;
-            set
-            { _name = value;
-            }
-        }
+        public string Name { get; set; }
 
         // Permission management 
-        // user and company are assignment int Permission
-        public List<UserPermission> GeneralPermission { get; set; }
+        // user and company
+        public List<UserPermission> UserPermissions { get; set; }
 
         //maybe need to change role permission
-        public List<RolePermission> RolePermission { get; set; }
-        
+        public List<RolePermission> RolePermissions { get; set; }
+
         // nested Folders
         public List<Folder> Subfolders { get; set; }
-        
+
         // file path to sample files
         public string SampleFilesDirectory { get; set; }
 
@@ -35,36 +28,49 @@ namespace AdskConstructionCloudBreakdown
         //Constructor
         public Folder()
         {
-            GeneralPermission = new List<UserPermission>();
+            UserPermissions = new List<UserPermission>();
             Subfolders = new List<Folder>();
-            RolePermission = new List<RolePermission>();
+            RolePermissions = new List<RolePermission>();
             level = 0;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
         public Folder(string name)
         {
             this.Name = name;
-            GeneralPermission = new List<UserPermission>();
+            UserPermissions = new List<UserPermission>();
             Subfolders = new List<Folder>();
-            RolePermission = new List<RolePermission>();
+            RolePermissions = new List<RolePermission>();
             level = 0;
         }
 
 
-        //Add Permissions Methods
-        public void AddRolePermission(string role, AccessPermissionEnum accesPerm)
+        /// <summary>
+        /// Adds a role permission to the current folder
+        /// </summary>
+        /// <param name="role"></param>
+        /// <param name="accessPerm"></param>
+        public void AddRolePermission(string role, AccessPermissionEnum accessPerm)
         {
-            RolePermission.Add(new RolePermission(role, accesPerm));
+            RolePermissions.Add(new RolePermission(role, accessPerm));
         }
 
-        public void AddUser(string mailAddress, AccessPermissionEnum accesPerm)
+        /// <summary>
+        /// Adds a user to the current folder
+        /// </summary>
+        /// <param name="mailAddress"></param>
+        /// <param name="accessPerm">User permission </param>
+        public void AddUser(string mailAddress, AccessPermissionEnum accessPerm)
         {
-            GeneralPermission.Add((new UserPermission(mailAddress,accesPerm)));
+            UserPermissions.Add((new UserPermission(mailAddress, accessPerm)));
         }
 
-        public void AddUser(User user, AccessPermissionEnum accesPerm)
+        public void AddUser(User user, AccessPermissionEnum accessPerm)
         {
-            GeneralPermission.Add(new UserPermission(user,accesPerm));
+            UserPermissions.Add(new UserPermission(user, accessPerm));
         }
 
         //Not sure if we need some other SubFolder recursive thing
@@ -72,7 +78,7 @@ namespace AdskConstructionCloudBreakdown
         {
             Subfolders.Add(new Folder());
             Subfolders.Last().RootFolder = this;
-            Subfolders.Last().level = this.level+1;
+            Subfolders.Last().level = this.level + 1;
         }
 
         public void AddSubFolder(Folder name)
@@ -85,13 +91,13 @@ namespace AdskConstructionCloudBreakdown
         //recursive function to get the height
         public int GetHeight()
         {
-            int height=0;
+            int height = 0;
 
             if (Subfolders != null)
             {
                 foreach (var iter in Subfolders)
                 {
-                    int tmp = iter.GetHeight()+1;
+                    int tmp = iter.GetHeight() + 1;
                     if (tmp > height)
                     {
                         height = tmp;
@@ -101,6 +107,5 @@ namespace AdskConstructionCloudBreakdown
 
             return height;
         }
-
     }
 }

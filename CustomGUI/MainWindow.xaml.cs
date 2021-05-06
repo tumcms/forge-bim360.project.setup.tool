@@ -92,7 +92,7 @@ namespace CustomGUI
                 statusbar.Text = "Import Failed! File not found!";
             }
 
-            AccProjectConfig.LoadBim360Projekts(csvpath.Text);
+            AccProjectConfig.LoadBim360Projects(csvpath.Text);
 
             statusbar.Text="Import successful!";
 
