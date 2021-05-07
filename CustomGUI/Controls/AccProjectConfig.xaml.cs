@@ -81,7 +81,7 @@ namespace CustomGUI.Controls
                 {
                     //Maps the Header of the CSV Data to the class attributes
                     var tmp = SerializationParser.ExportBim360ToCSV(dataset);
-                    //csv.Context.RegisterClassMap<UserDataExport>();
+                    csv.Context.RegisterClassMap<UserDataExport>();
                     csv.WriteRecords(tmp);
                 }
             }

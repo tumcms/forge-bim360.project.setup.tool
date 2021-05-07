@@ -19,7 +19,7 @@ namespace AdskConstructionCloudBreakdown
             permissionDict.Add("U", AccessPermissionEnum.Publishonly);
             permissionDict.Add("V+D+U", AccessPermissionEnum.ViewDownladandPublish);
             permissionDict.Add("V+D+U+E", AccessPermissionEnum.ViewDownlaodPusblishandEdit);
-            permissionDict.Add("FULL", AccessPermissionEnum.Full);
+            permissionDict.Add("Full", AccessPermissionEnum.Full);
 
             try
             {
@@ -27,7 +27,7 @@ namespace AdskConstructionCloudBreakdown
             }
             catch
             {
-                throw new Exception("Unknown AccessPermission found");
+                throw new Exception("Unknown AccessPermission found" + input);
             }
         }
 
@@ -42,7 +42,7 @@ namespace AdskConstructionCloudBreakdown
             permissionDict.Add(AccessPermissionEnum.Publishonly, "U");
             permissionDict.Add(AccessPermissionEnum.ViewDownladandPublish, "V+D+U");
             permissionDict.Add(AccessPermissionEnum.ViewDownlaodPusblishandEdit, "V+D+U+E");
-            permissionDict.Add(AccessPermissionEnum.Full, "FULL");
+            permissionDict.Add(AccessPermissionEnum.Full, "Full");
 
             return permissionDict[input];
            

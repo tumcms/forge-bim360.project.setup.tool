@@ -78,7 +78,7 @@ namespace AdskConstructionCloudBreakdown
         //Not sure if we need some other SubFolder recursive thing
         public void AddSubFolder(string name)
         {
-            Subfolders.Add(new Folder());
+            Subfolders.Add(new Folder(name));
             Subfolders.Last().RootFolder = this;
             Subfolders.Last().level = this.level + 1;
         }

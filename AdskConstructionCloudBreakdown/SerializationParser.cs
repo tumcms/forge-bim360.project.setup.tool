@@ -72,7 +72,7 @@ namespace AdskConstructionCloudBreakdown
 
                 //add subfolder into the roots
                 //currently only supports until down to level10
-                if (tmp._level_1 != "")
+                if (!string.IsNullOrEmpty(tmp._level_1))
                 {
                     Folder subfold = new Folder(tmp._level_1);
                     //decide where to put it
@@ -83,7 +83,7 @@ namespace AdskConstructionCloudBreakdown
                     activeFolder.AddSubFolder(subfold);
                     activeFolder = subfold;
                 }
-                else if (tmp._level_2 != "")
+                else if (!string.IsNullOrEmpty(tmp._level_2))
                 {
                     Folder subfold = new Folder(tmp._level_2);
                     //decide where to put it
@@ -94,7 +94,7 @@ namespace AdskConstructionCloudBreakdown
                     activeFolder.AddSubFolder(subfold);
                     activeFolder = subfold;
                 }
-                else if (tmp._level_3 != "")
+                else if (!string.IsNullOrEmpty(tmp._level_3))
                 {
                     Folder subfold = new Folder(tmp._level_3);
                     //decide where to put it
@@ -105,7 +105,7 @@ namespace AdskConstructionCloudBreakdown
                     activeFolder.AddSubFolder(subfold);
                     activeFolder = subfold;
                 }
-                else if (tmp._level_4 != "")
+                else if (!string.IsNullOrEmpty(tmp._level_4))
                 {
                     Folder subfold = new Folder(tmp._level_4);
                     //decide where to put it
@@ -116,7 +116,7 @@ namespace AdskConstructionCloudBreakdown
                     activeFolder.AddSubFolder(subfold);
                     activeFolder = subfold;
                 }
-                else if (tmp._level_5 != "")
+                else if (!string.IsNullOrEmpty(tmp._level_5))
                 {
                     Folder subfold = new Folder(tmp._level_5);
                     //decide where to put it
@@ -127,7 +127,7 @@ namespace AdskConstructionCloudBreakdown
                     activeFolder.AddSubFolder(subfold);
                     activeFolder = subfold;
                 }
-                else if (tmp._level_6 != "")
+                else if (!string.IsNullOrEmpty(tmp._level_6))
                 {
                     Folder subfold = new Folder(tmp._level_6);
                     //decide where to put it
@@ -138,7 +138,7 @@ namespace AdskConstructionCloudBreakdown
                     activeFolder.AddSubFolder(subfold);
                     activeFolder = subfold;
                 }
-                else if (tmp._level_7 != "")
+                else if (!string.IsNullOrEmpty(tmp._level_7))
                 {
                     Folder subfold = new Folder(tmp._level_7);
                     //decide where to put it
@@ -149,7 +149,7 @@ namespace AdskConstructionCloudBreakdown
                     activeFolder.AddSubFolder(subfold);
                     activeFolder = subfold;
                 }
-                else if (tmp._level_8 != "")
+                else if (!string.IsNullOrEmpty(tmp._level_8))
                 {
                     Folder subfold = new Folder(tmp._level_8);
                     //decide where to put it
@@ -160,7 +160,7 @@ namespace AdskConstructionCloudBreakdown
                     activeFolder.AddSubFolder(subfold);
                     activeFolder = subfold;
                 }
-                else if (tmp._level_9 != "")
+                else if (!string.IsNullOrEmpty(tmp._level_9))
                 {
                     Folder subfold = new Folder(tmp._level_9);
                     //decide where to put it
@@ -171,7 +171,7 @@ namespace AdskConstructionCloudBreakdown
                     activeFolder.AddSubFolder(subfold);
                     activeFolder = subfold;
                 }
-                else if (tmp._level_10 != "")
+                else if (!string.IsNullOrEmpty(tmp._level_10))
                 {
                     Folder subfold = new Folder(tmp._level_10);
                     //decide where to put it
@@ -187,43 +187,32 @@ namespace AdskConstructionCloudBreakdown
                 //add userpermission to active folder
                 if (tmp._user_email != "")
                 {
-                    try
+                    User user;
+                    //assign company to user if exists
+                    if (tmp._company != "")
                     {
-                        User user;
-                        //assign company to user if exists
-                        if (tmp._company != "")
-                        {
-                            Company comp = tmp._company_trade != "" ? new Company(tmp._company,
-                                tmp._company_trade) : new Company(tmp._company);
+                        Company comp = tmp._company_trade != "" ? new Company(tmp._company,
+                            tmp._company_trade) : new Company(tmp._company);
 
-                            user = new User(tmp._user_email, comp);
-
-
-
-
-
-                        }
-                        else
-                        {
-                            user = new User(tmp._user_email);
-                        }
-
-                        var userperadd = new UserPermission(user, Permission.SelectPermission(tmp._permission));
-                        //add industry role
-                        string[] tobeadd = tmp._industry_role.Split(',');
-                        foreach (string iter in tobeadd)
-                        {
-                            userperadd.AssignedUsers.IndustryRoles.Add((iter.Trim()));
-                        }
-
-                        //add permission to Folder
-                        activeFolder.UserPermissions.Add(userperadd);
+                        user = new User(tmp._user_email, comp);
 
                     }
-                    catch
+                    else
                     {
-                        new NullReferenceException("No folder to add user!");
+                        user = new User(tmp._user_email);
                     }
+
+                    var userperadd = new UserPermission(user, Permission.SelectPermission(tmp._permission));
+                    //add industry role
+                    string[] tobeadd = tmp._industry_role.Split(',');
+                    foreach (string iter in tobeadd)
+                    {
+                        userperadd.AssignedUsers.IndustryRoles.Add((iter.Trim()));
+                    }
+
+                    //add permission to Folder
+                    activeFolder.UserPermissions.Add(userperadd);
+
                 }
 
                 //ToDo: Testing
@@ -307,6 +296,7 @@ namespace AdskConstructionCloudBreakdown
                 foreach (var iterperm in iter.Plans.RolePermissions)
                 {
                     activeRow._permission=Permission.SelectPermission(iterperm.AccessPermission);
+                    activeRow._role_permission = iterperm.Role;
                     output.Add(new UserData());
                     activeRow = output.Last();
                 }
@@ -343,6 +333,7 @@ namespace AdskConstructionCloudBreakdown
                 foreach (var iterperm in iter.ProjectFiles.RolePermissions)
                 {
                     activeRow._permission = Permission.SelectPermission(iterperm.AccessPermission);
+                    activeRow._role_permission = iterperm.Role;
                     output.Add(new UserData());
                     activeRow = output.Last();
                 }
@@ -458,6 +449,7 @@ namespace AdskConstructionCloudBreakdown
             foreach (var iterperm in from.RolePermissions)
             {
                 activeRow._permission = Permission.SelectPermission(iterperm.AccessPermission);
+                activeRow._role_permission = iterperm.Role;
                 addto.Add(new UserData());
                 activeRow = addto.Last();
             }

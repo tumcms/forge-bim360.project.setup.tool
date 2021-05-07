@@ -24,7 +24,9 @@ namespace AdskConstructionCloudBreakdown
             ProjectName = projectName;
             // init arrays
             Plans = new Folder();
+            Plans.Name = "Plans";
             ProjectFiles = new Folder();
+            ProjectFiles.Name = "ProjectFiles";
         }
 
         /// <summary>
