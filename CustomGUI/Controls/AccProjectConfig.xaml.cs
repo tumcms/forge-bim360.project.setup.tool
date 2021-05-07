@@ -43,13 +43,13 @@ namespace CustomGUI.Controls
 
         }
 
-        public void LoadBim360Projekts(string filepath)
+        public void LoadBim360Projects(string filepath)
         {
-            using (var readdata = new StreamReader(filepath))
+            using (var streamReader = new StreamReader(filepath))
             { 
-                using (var csv = new CsvReader(readdata, CultureInfo.CurrentCulture))
+                using (var csv = new CsvReader(streamReader, CultureInfo.CurrentCulture))
                 {
-                    //Maps the Header of the CSV Data to the class attributs
+                    //Maps the Header of the CSV Data to the class attributes
                     csv.Context.RegisterClassMap<UserDataMap>();
 
                     //call the import for new class def
