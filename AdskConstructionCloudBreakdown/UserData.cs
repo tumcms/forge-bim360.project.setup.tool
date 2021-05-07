@@ -96,4 +96,34 @@ namespace CustomGUI
         }
 
     }
+
+    public class UserDataExport : ClassMap<UserData>
+    {
+        public UserDataExport()
+        {
+
+            Map(m => m._project_name).Index(0).Name("project_name");
+            Map(m => m._project_type).Index(1).Name("project_type");
+            Map(m => m._root_folder).Index(2).Name("root_folder");
+            Map(m => m._level_1).Index(3).Name("level_1");
+            Map(m => m._level_2).Index(4).Name("level_2");
+            Map(m => m._level_3).Index(5).Name("level_3");
+            Map(m => m._level_4).Index(6).Name("level_4");
+            Map(m => m._level_5).Index(7).Name("level_5");
+            Map(m => m._level_6).Index(8).Name("level_6");
+            Map(m => m._level_7).Index(9).Name("level_7");
+            Map(m => m._level_8).Index(10).Name("level_8");
+            Map(m => m._level_9).Index(11).Name("level_9");
+            Map(m => m._level_10).Index(12).Name("level_10");
+            Map(m => m._permission).Index(13).Name("permission");
+            Map(m => m._role_permission).Index(14).Name("role_permission");
+            Map(m => m._user_email).Index(15).Name("user_email");
+            Map(m => m._industry_role).Index(16).Name("industry_role");
+            Map(m => m._company).Index(17).Name("company");
+            Map(m => m._company_trade).Index(18).Name("company_trade");
+            Map(m => m._local_folder).Index(19).Name("local_folder");
+
+        }
+    }
+
 }

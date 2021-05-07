@@ -2,8 +2,10 @@
 {
     public class Company
     {
-        private string Name { get; set; }
-        private string Trade { get; set; }
+        public string Name { get; set; }
+
+        //ToDo: adjust Trade to tradeenum
+        public string Trade { get; set; }
 
         //Constructor
         public Company()

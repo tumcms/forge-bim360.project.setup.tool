@@ -32,6 +32,7 @@ namespace AdskConstructionCloudBreakdown
             Subfolders = new List<Folder>();
             RolePermissions = new List<RolePermission>();
             level = 0;
+            SampleFilesDirectory = "";
         }
 
         /// <summary>
@@ -45,6 +46,7 @@ namespace AdskConstructionCloudBreakdown
             Subfolders = new List<Folder>();
             RolePermissions = new List<RolePermission>();
             level = 0;
+            SampleFilesDirectory = "";
         }
 
 

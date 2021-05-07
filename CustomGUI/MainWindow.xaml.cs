@@ -110,10 +110,20 @@ namespace CustomGUI
 
         private void buttonexport_Click(object sender, RoutedEventArgs e)
         {
-            //create a csv file with 10 + subfolder height columns 
+            //move to conifg
+            if (File.Exists(csvpathexp.Text))
+            {
+                statusbar.Text = "Export Failed! File already exists!";
+            }
 
-            
+            if (!Directory.Exists((csvpathexp.Text)))
+            {
 
+            }
+
+            AccProjectConfig.ExportBim360Projects(csvpathexp.Text, (List<Bim360Project>) AccProjectConfig.ProjectsView.ItemsSource);
+
+            statusbar.Text = "Export successful";
 
         }
 

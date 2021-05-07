@@ -43,6 +43,7 @@ namespace AdskConstructionCloudBreakdown
                 }
 
                 //set type
+                //ToDo: need to be dynamic with the enums
                 if (tmp._project_type.Equals("Office"))
                 {
                     output.Last().ProjectType = ProjectTypeEnum.Office;
@@ -201,7 +202,7 @@ namespace AdskConstructionCloudBreakdown
                             user = new User(tmp._user_email);
                         }
 
-                        activeFolder.GeneralPermission.Add(new UserPermission(
+                        activeFolder.UserPermissions.Add(new UserPermission(
                             user,Permission.SelectPermission(tmp._permission)));
                     }
                     catch
@@ -216,7 +217,7 @@ namespace AdskConstructionCloudBreakdown
                 {
                     try
                     {
-                        activeFolder.GeneralPermission.Add(new UserPermission(
+                        activeFolder.UserPermissions.Add(new UserPermission(
                             tmp._role_permission, Permission.SelectPermission(tmp._permission)));
                     }
                     catch
@@ -250,14 +251,203 @@ namespace AdskConstructionCloudBreakdown
         ///<summary>
         ///
         /// </summary>
-        public static void ExportBim360ToCSV()
+        ///
+        // ToDO: Testing
+        public static List<UserData> ExportBim360ToCSV(List<Bim360Project> input)
         {
-            throw new NotImplementedException("YOU SHALL NOT PASS \ndata out currently");
+            List<UserData> output = new List<UserData>();
+
+            //iterate over all BimProjects
+            foreach (var iter in input)
+            {
+                //add new Row in the "CSV"
+                output.Add(new UserData());
+                var activeRow = output.Last();
+                activeRow._project_name = iter.ProjectName;
+
+                //ToDo: add Dictionary for Projecttypes 
+                if (iter.ProjectType == ProjectTypeEnum.Office)
+                {
+                    activeRow._project_type = "Office";
+                }
+                else if(iter.ProjectType == ProjectTypeEnum.Library)
+                {
+                    activeRow._project_type = "Library";
+                }
+
+
+                //Add folder structure under Plans
+                //Hardcoded for Plans & Projcet Files
+                activeRow._root_folder = "Plans";
+                activeRow._local_folder = iter.Plans.SampleFilesDirectory;
+
+                //add User permissions
+                foreach (var iterperm in iter.Plans.UserPermissions)
+                {
+                    AddUserPermission(activeRow, iterperm);
+                    output.Add(new UserData());
+                    activeRow = output.Last();
+                }
+                //add role permissions
+                foreach (var iterperm in iter.Plans.RolePermissions)
+                {
+                    activeRow._permission=Permission.SelectPermission(iterperm.AccessPermission);
+                    output.Add(new UserData());
+                    activeRow = output.Last();
+                }
+
+                //if no permission is inserted ->add new row for new Folder
+                if (iter.Plans.UserPermissions == null && iter.Plans.RolePermissions == null)
+                {
+                    output.Add(new UserData());
+                    activeRow = output.Last();
+                }
+
+
+                //add subfolder for Plans
+                foreach (var subfolder in iter.Plans.Subfolders)
+                {
+                    AddAllSubFolder(output, subfolder);
+                }
+
+                //Add folder structure under Project Files
+                output.Add(new UserData());
+                activeRow = output.Last();
+
+                activeRow._root_folder = "Project Files";
+                activeRow._local_folder = iter.Plans.SampleFilesDirectory;
+
+                //add User permissions
+                foreach (var iterperm in iter.ProjectFiles.UserPermissions)
+                {
+                    AddUserPermission(activeRow, iterperm);
+                    output.Add(new UserData());
+                    activeRow = output.Last();
+                }
+                //add role permissions
+                foreach (var iterperm in iter.ProjectFiles.RolePermissions)
+                {
+                    activeRow._permission = Permission.SelectPermission(iterperm.AccessPermission);
+                    output.Add(new UserData());
+                    activeRow = output.Last();
+                }
+
+                //if no permission is inserted ->add new row for new Folder
+                if (iter.ProjectFiles.UserPermissions == null && iter.ProjectFiles.RolePermissions == null)
+                {
+                    output.Add(new UserData());
+                    activeRow = output.Last();
+                }
+
+
+                //add subfolder
+                foreach (var subfolder in iter.ProjectFiles.Subfolders)
+                {
+                    AddAllSubFolder(output, subfolder);
+                }
+
+                //Create an empty row
+                output.Add(new UserData());
+            }
+
+
+            return output;
         }
 
-        
+        //helpful function dont know if this is the right place for it
+
+        public static void AddUserPermission(UserData addto, UserPermission from )
+        {
+            addto._permission = Permission.SelectPermission(from.AccessPermission);
+            addto._user_email = from.AssignedUsers.MailAddress;
+            string tmp = "";
+            //add all roles up to one string
+            for (int i = 0; i < from.AssignedUsers.IndustryRoles.Count; i++)
+            {
+                if (i != 0)
+                {
+                    tmp += ",";
+                }
+
+                tmp += from.AssignedUsers.IndustryRoles[i];
+
+            }
+            addto._industry_role = tmp;
+            addto._company = from.AssignedUsers.AssignedCompany.Name;
+            //ToDo: need to be adjusted to Enums
+            addto._company_trade = from.AssignedUsers.AssignedCompany.Trade;
+
+        }
+
+        public static void AddAllSubFolder(List<UserData> addto, Folder from)
+        {
+            var activeRow = addto.Last();
+
+            //select Level
+            switch (from.level)
+            {
+                case 1:
+                    activeRow._level_1 = from.Name;
+                    break;
+                case 2:
+                    activeRow._level_2 = from.Name;
+                    break;
+                case 3:
+                    activeRow._level_3 = from.Name;
+                    break;
+                case 4:
+                    activeRow._level_4 = from.Name;
+                    break;
+                case 5:
+                    activeRow._level_5 = from.Name;
+                    break;
+                case 6:
+                    activeRow._level_6 = from.Name;
+                    break;
+                case 7:
+                    activeRow._level_7 = from.Name;
+                    break;
+                case 8:
+                    activeRow._level_8 = from.Name;
+                    break;
+                case 9:
+                    activeRow._level_9 = from.Name;
+                    break;
+                case 10:
+                    activeRow._level_10 = from.Name;
+                    break;
+            }
+            activeRow._local_folder = from.SampleFilesDirectory;
+            //add user Permissions
+            foreach (var iterperm in from.UserPermissions)
+            {
+                AddUserPermission(activeRow, iterperm);
+                addto.Add(new UserData());
+                activeRow = addto.Last();
+            }
+
+            //add role Permission
+            foreach (var iterperm in from.RolePermissions)
+            {
+                activeRow._permission = Permission.SelectPermission(iterperm.AccessPermission);
+                addto.Add(new UserData());
+                activeRow = addto.Last();
+            }
+
+            //if no permission is inserted ->add new row for new Folder
+            if (from.UserPermissions == null && from.RolePermissions == null)
+            {
+                addto.Add(new UserData());
+                activeRow = addto.Last();
+            }
 
 
+            foreach (var subfolder in from.Subfolders)
+            {
+                AddAllSubFolder(addto,subfolder);
+            }
+
+        }
 
 
 

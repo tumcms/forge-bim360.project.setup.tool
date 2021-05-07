@@ -63,5 +63,22 @@ namespace CustomGUI.Controls
             }
 
         }
+
+        public void ExportBim360Projects(string filepath,List<Bim360Project> dataset)
+        {
+            using (var streamWriter = new StreamWriter(filepath))
+            {
+                //maybe the CultureInfo needs to be changed
+                using (var csv = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
+                {
+                    //Maps the Header of the CSV Data to the class attributes
+                    var tmp = SerializationParser.ExportBim360ToCSV(dataset);
+                    csv.Context.RegisterClassMap<UserDataExport>();
+                    csv.WriteRecords(tmp);
+                }
+            }
+
+        }
+
     }
 }
