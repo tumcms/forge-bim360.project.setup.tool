@@ -73,9 +73,9 @@
                          HorizontalAlignment="Left"
                          VerticalAlignment="Top"
                          Margin="207,79,0,0"
-                         Text="C:\Users\%USERNAME%\Desktop\"
                          TextWrapping="Wrap"
-                         Width="400" />
+                         Width="400"
+                         Initialized="Csvpathexp_OnInitialized"/>
 
                     <Button x:Name="buttonexport"
                         Content="Export"

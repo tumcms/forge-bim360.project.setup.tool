@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AdskConstructionCloudBreakdown;
 using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace CustomGUI.Controls
 {
@@ -46,11 +47,18 @@ namespace CustomGUI.Controls
         public void LoadBim360Projects(string filepath)
         {
             using (var streamReader = new StreamReader(filepath))
-            { 
-                using (var csv = new CsvReader(streamReader, CultureInfo.CurrentCulture))
+            {
+                var csvconfig = new CsvConfiguration(CultureInfo.CurrentCulture)
                 {
+                    HeaderValidated = null,
+                    MissingFieldFound = null
+                };
+                using (var csv = new CsvReader(streamReader, csvconfig))
+                {
+                    
                     //Maps the Header of the CSV Data to the class attributes
                     csv.Context.RegisterClassMap<UserDataMap>();
+
 
                     //call the import for new class def
                     var output = SerializationParser.LoadBim360ProjectsFromCsv(csv);
@@ -73,7 +81,7 @@ namespace CustomGUI.Controls
                 {
                     //Maps the Header of the CSV Data to the class attributes
                     var tmp = SerializationParser.ExportBim360ToCSV(dataset);
-                    csv.Context.RegisterClassMap<UserDataExport>();
+                    //csv.Context.RegisterClassMap<UserDataExport>();
                     csv.WriteRecords(tmp);
                 }
             }

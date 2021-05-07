@@ -29,6 +29,7 @@ namespace AdskConstructionCloudBreakdown
             Folder activeFolder = new Folder();
             //Maps the Header of the CSV Data to the class attributs
             input.Context.RegisterClassMap<UserDataMap>();
+            //ignore missing Header
 
             //loop over all rows
             while (input.Read())
@@ -196,14 +197,28 @@ namespace AdskConstructionCloudBreakdown
                                 tmp._company_trade) : new Company(tmp._company);
 
                             user = new User(tmp._user_email, comp);
+
+
+
+
+
                         }
                         else
                         {
                             user = new User(tmp._user_email);
                         }
 
-                        activeFolder.UserPermissions.Add(new UserPermission(
-                            user,Permission.SelectPermission(tmp._permission)));
+                        var userperadd = new UserPermission(user, Permission.SelectPermission(tmp._permission));
+                        //add industry role
+                        string[] tobeadd = tmp._industry_role.Split(',');
+                        foreach (string iter in tobeadd)
+                        {
+                            userperadd.AssignedUsers.IndustryRoles.Add((iter.Trim()));
+                        }
+
+                        //add permission to Folder
+                        activeFolder.UserPermissions.Add(userperadd);
+
                     }
                     catch
                     {
@@ -217,7 +232,7 @@ namespace AdskConstructionCloudBreakdown
                 {
                     try
                     {
-                        activeFolder.UserPermissions.Add(new UserPermission(
+                        activeFolder.RolePermissions.Add(new RolePermission(
                             tmp._role_permission, Permission.SelectPermission(tmp._permission)));
                     }
                     catch
@@ -358,24 +373,37 @@ namespace AdskConstructionCloudBreakdown
 
         public static void AddUserPermission(UserData addto, UserPermission from )
         {
+            if (from.AssignedUsers == null)
+            {
+                return;
+            }
             addto._permission = Permission.SelectPermission(from.AccessPermission);
             addto._user_email = from.AssignedUsers.MailAddress;
             string tmp = "";
             //add all roles up to one string
-            for (int i = 0; i < from.AssignedUsers.IndustryRoles.Count; i++)
+            if (from.AssignedUsers.IndustryRoles != null)
             {
-                if (i != 0)
+                for (int i = 0; i < from.AssignedUsers.IndustryRoles.Count; i++)
                 {
-                    tmp += ",";
+                    if (i != 0)
+                    {
+                        tmp += ",";
+                    }
+
+                    tmp += from.AssignedUsers.IndustryRoles[i];
+
                 }
 
-                tmp += from.AssignedUsers.IndustryRoles[i];
+                addto._industry_role = tmp;
 
             }
-            addto._industry_role = tmp;
-            addto._company = from.AssignedUsers.AssignedCompany.Name;
-            //ToDo: need to be adjusted to Enums
-            addto._company_trade = from.AssignedUsers.AssignedCompany.Trade;
+
+            if (from.AssignedUsers.AssignedCompany != null)
+            {
+                addto._company = from.AssignedUsers.AssignedCompany.Name;
+                //ToDo: need to be adjusted to Enums
+                addto._company_trade = from.AssignedUsers.AssignedCompany.Trade;
+            }
 
         }
 

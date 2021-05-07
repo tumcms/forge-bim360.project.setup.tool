@@ -11,7 +11,7 @@ namespace AdskConstructionCloudBreakdown
         public static AccessPermissionEnum SelectPermission(string input)
         {
 
-            //Dictionary to link String tko AccessPermission
+            //Dictionary to link String to AccessPermission
             Dictionary<string, AccessPermissionEnum> permissionDict =
                 new Dictionary<string, AccessPermissionEnum>();
             permissionDict.Add("V", AccessPermissionEnum.Viewonly);
@@ -34,7 +34,7 @@ namespace AdskConstructionCloudBreakdown
         public static String SelectPermission(AccessPermissionEnum input)
         {
 
-            //Dictionary to link String tko AccessPermission
+            //Dictionary to link AccessPermission to String
             Dictionary<AccessPermissionEnum,string> permissionDict =
                 new Dictionary<AccessPermissionEnum, string>();
             permissionDict.Add(AccessPermissionEnum.Viewonly, "V");

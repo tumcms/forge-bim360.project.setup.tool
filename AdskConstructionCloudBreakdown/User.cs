@@ -21,6 +21,7 @@ namespace AdskConstructionCloudBreakdown
         public User(string mailAddress)
         {
             MailAddress = mailAddress;
+            IndustryRoles = new List<string>();
         }
 
         public User(string mailAddress, string industryRoles, Company assignedCompany)
@@ -44,12 +45,14 @@ namespace AdskConstructionCloudBreakdown
         {
             MailAddress = mailAddress;
             this.AssignedCompany = assignedCompany;
+            IndustryRoles = new List<string>();
         }
 
         public User(string mailAddress, string assignedCompany)
         {
             MailAddress = mailAddress;
             this.AssignedCompany = new Company(assignedCompany);
+            IndustryRoles = new List<string>();
 
         }
     }

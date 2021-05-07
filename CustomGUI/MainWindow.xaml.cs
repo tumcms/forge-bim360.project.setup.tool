@@ -90,6 +90,7 @@ namespace CustomGUI
             //move to conifg
             if (!File.Exists(csvpath.Text)){
                 statusbar.Text = "Import Failed! File not found!";
+                return;
             }
 
             AccProjectConfig.LoadBim360Projects(csvpath.Text);
@@ -118,10 +119,16 @@ namespace CustomGUI
 
             if (!Directory.Exists((csvpathexp.Text)))
             {
+                var tmp = csvpathexp.Text;
 
+                Directory.CreateDirectory((csvpathexp.Text));
             }
 
-            AccProjectConfig.ExportBim360Projects(csvpathexp.Text, (List<Bim360Project>) AccProjectConfig.ProjectsView.ItemsSource);
+            //Hardcoded Name in here maybe user should be able to change
+            string filename = "\\BIM360_Custom_Template.csv";
+
+            //export the Projects
+            AccProjectConfig.ExportBim360Projects(csvpathexp.Text+ filename, (List<Bim360Project>) AccProjectConfig.ProjectsView.ItemsSource);
 
             statusbar.Text = "Export successful";
 
@@ -160,5 +167,9 @@ namespace CustomGUI
         }
 
 
+        private void Csvpathexp_OnInitialized(object? sender, EventArgs e)
+        {
+            csvpathexp.Text = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        }
     }
 }
