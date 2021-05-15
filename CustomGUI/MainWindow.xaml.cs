@@ -36,7 +36,9 @@ namespace CustomGUI
         //Global Data
         List<UserData> usermanag = new List<UserData>();
         private ObservableCollection<Bim360Project> projects;
-        
+        private Bim360Project activeProject;
+        private Folder activeFolder;
+
         string path_file =@".\Config\config.txt";
 
 
