@@ -1,4 +1,6 @@
-﻿namespace AdskConstructionCloudBreakdown
+﻿using System.Collections.Generic;
+
+namespace AdskConstructionCloudBreakdown
 {
     public enum ProjectTypeEnum
     {
@@ -63,5 +65,6 @@
 
     // values taken from: https://forge.autodesk.com/en/docs/bim360/v1/overview/parameters/
     // ToDo: missing whitespaces in the enum entities might create problems. Consider to introduce a dictionary
+
 
 }

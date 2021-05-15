@@ -52,16 +52,8 @@ namespace AdskConstructionCloudBreakdown
                 }
 
                 //set type
-                //ToDo: need to be dynamic with the enums
-                if (tmp._project_type.Equals("Office"))
-                {
-                    output.Last().ProjectType = ProjectTypeEnum.Office;
-                }
-                else if (tmp._project_type.Equals("Library"))
-                {
-                    output.Last().ProjectType = ProjectTypeEnum.Library;
-                }
-
+                output.Last().ProjectType = Selection.SelectProjectType(tmp._project_type);
+ 
 
                 //change where sub folder shoulde be located
                 if (tmp._root_folder.Equals("Plans"))
