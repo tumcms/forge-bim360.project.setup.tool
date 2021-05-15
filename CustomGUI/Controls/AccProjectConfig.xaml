@@ -110,7 +110,8 @@
 
                 <TreeView 
                 Margin="2"
-                VerticalAlignment="Stretch">
+                VerticalAlignment="Stretch"
+                >
 
                     <!--Resources are used to build and style the contained items-->
                     <TreeView.Resources>

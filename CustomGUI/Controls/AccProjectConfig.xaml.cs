@@ -46,27 +46,32 @@ namespace CustomGUI.Controls
 
         public Boolean LoadBim360Projects(string filepath)
         {
-            using (var streamReader = new StreamReader(filepath))
+            for (int i = 0; i < 2; i++)
             {
-                //CSV with current date config
-                var csvconfig1 = new CsvConfiguration(CultureInfo.CurrentCulture)
+                using (var streamReader = new StreamReader(filepath))
                 {
-                    HeaderValidated = null,
-                    MissingFieldFound = null
-                };
-
-                //CSV with Invariant Config
-                var csvconfig2 = new CsvConfiguration(CultureInfo.InvariantCulture)
-                {
-                    HeaderValidated = null,
-                    MissingFieldFound = null
-                };
-
-                //try each configuration
-                for(int i=0;i<2;i++)
-                {
+                    //try different configs
                     CsvConfiguration csvconfig;
-                    csvconfig = i == 0 ? csvconfig1 : csvconfig2;
+                    if (i == 0)
+                    {
+                        //CSV with current date config
+                        csvconfig = new CsvConfiguration(CultureInfo.CurrentCulture)
+                        {
+                            HeaderValidated = null,
+                            MissingFieldFound = null
+                        };
+                    }
+                    else
+                    {
+                        //CSV with Invariant Config
+                        csvconfig = new CsvConfiguration(CultureInfo.InvariantCulture)
+                        {
+                            HeaderValidated = null,
+                            MissingFieldFound = null
+                        };
+                    }
+
+                    //try each configuration
                     using (var csv = new CsvReader(streamReader, csvconfig))
                     {
                         //Maps the Header of the CSV Data to the class attributes
@@ -82,13 +87,12 @@ namespace CustomGUI.Controls
                             ProjectsView.ItemsSource = output;
                             return true;
                         }
-
                     }
-                }
 
-                return false;
+                }
             }
 
+            return false;
         }
 
         public void ExportBim360Projects(string filepath,List<Bim360Project> dataset)

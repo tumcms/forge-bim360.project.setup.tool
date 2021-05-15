@@ -29,7 +29,6 @@ namespace AdskConstructionCloudBreakdown
             Folder activeFolder = new Folder();
             //Maps the Header of the CSV Data to the class attributs
             input.Context.RegisterClassMap<UserDataMap>();
-            //ignore missing Header
 
             //loop over all rows
             while (input.Read())
@@ -52,8 +51,10 @@ namespace AdskConstructionCloudBreakdown
                 }
 
                 //set type
-                output.Last().ProjectType = Selection.SelectProjectType(tmp._project_type);
- 
+                if (tmp._project_type != "")
+                {
+                    output.Last().ProjectType = Selection.SelectProjectType(tmp._project_type);
+                }
 
                 //change where sub folder shoulde be located
                 if (tmp._root_folder.Equals("Plans"))

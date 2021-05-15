@@ -51,14 +51,6 @@ namespace CustomGUI
             AccProjectConfig.ProjectsView.ItemsSource = projects;
 
 
-            usermanag.Add(new UserData());
-            List<string> temp = new List<string>();
-            usermanag[0]._sub_folder = temp;
-            usermanag[0]._sub_folder.Add("test1");
-            usermanag[0]._sub_folder.Add("test3");
-
-            data.ItemsSource = usermanag;
-
         }
 
 
