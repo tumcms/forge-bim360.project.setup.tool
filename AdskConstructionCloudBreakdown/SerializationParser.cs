@@ -191,7 +191,7 @@ namespace AdskConstructionCloudBreakdown
                     //assign company to user if exists
                     if (tmp._company != "")
                     {
-                        Company comp = tmp._company_trade != "" ? new Company(tmp._company,
+                        Company comp = !string.IsNullOrEmpty(tmp._company_trade) ? new Company(tmp._company,
                             tmp._company_trade) : new Company(tmp._company);
 
                         user = new User(tmp._user_email, comp);
@@ -215,7 +215,7 @@ namespace AdskConstructionCloudBreakdown
 
                 }
 
-                //ToDo: Testing
+
                 //add rolepermission to active folder
                 if (tmp._role_permission != "")
                 {
@@ -267,16 +267,9 @@ namespace AdskConstructionCloudBreakdown
                 var activeRow = output.Last();
                 activeRow._project_name = iter.ProjectName;
 
-                //ToDo: add Dictionary for Projecttypes 
-                if (iter.ProjectType == ProjectTypeEnum.Office)
-                {
-                    activeRow._project_type = "Office";
-                }
-                else if(iter.ProjectType == ProjectTypeEnum.Library)
-                {
-                    activeRow._project_type = "Library";
-                }
-
+                //add projectTypes
+                activeRow._project_type = Selection.SelectProjectType(iter.ProjectType);
+                
 
                 //Add folder structure under Plans
                 //Hardcoded for Plans & Projcet Files
@@ -390,8 +383,7 @@ namespace AdskConstructionCloudBreakdown
             if (from.AssignedUsers.AssignedCompany != null)
             {
                 addto._company = from.AssignedUsers.AssignedCompany.Name;
-                //ToDo: need to be adjusted to Enums
-                addto._company_trade = from.AssignedUsers.AssignedCompany.Trade;
+                addto._company_trade = Selection.SelectTrade(from.AssignedUsers.AssignedCompany.Trade);
             }
 
         }

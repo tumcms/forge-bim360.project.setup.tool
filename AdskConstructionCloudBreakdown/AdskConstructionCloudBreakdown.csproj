@@ -72,7 +72,7 @@
     <Compile Include="Folder.cs" />
     <Compile Include="Permission.cs" />
     <Compile Include="RolePermission.cs" />
-    <Compile Include="SelectProjectType.cs" />
+    <Compile Include="Selection.cs" />
     <Compile Include="TradeEnum.cs" />
     <Compile Include="UserData.cs" />
     <Compile Include="UserPermission.cs" />
