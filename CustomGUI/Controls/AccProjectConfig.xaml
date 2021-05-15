@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:CustomGUI.Controls"
              xmlns:self="clr-namespace:AdskConstructionCloudBreakdown;assembly=AdskConstructionCloudBreakdown"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -53,6 +52,7 @@
                               IsReadOnly="True"
                               CanUserAddRows="True"
                               SelectionMode="Single"
+                              SelectionChanged="ProjectsView_OnSelectionChanged"
                               >
 
                         <DataGrid.ContextMenu>
@@ -66,7 +66,6 @@
                                 Header="BIM360 Projects"
                                 Binding="{Binding ProjectName}"
                                 Width="150" />
-                            
                         </DataGrid.Columns>
                     </DataGrid>
             </StackPanel>
@@ -109,11 +108,9 @@
                     Margin="2" />
 
 
-                <TreeView 
-                Margin="2"
-                VerticalAlignment="Stretch"
-                ItemsSource="{Binding }"
-                >
+                <TreeView
+                    Margin="2"
+                VerticalAlignment="Stretch">
 
                     <!--Resources are used to build and style the contained items-->
                     <TreeView.Resources>
@@ -121,21 +118,24 @@
                             <MenuItem Header="Create new folder as child"/>
                             <MenuItem Header="Create new folder as neighbor"/>
                         </ContextMenu>
-
                     </TreeView.Resources>
 
+                    <!-- this should add the folders automatically-->
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type self:Folder}" ItemsSource="{Binding Subfolders}">
+                            <TreeViewItem Header="{Binding Name}" ContextMenu="{StaticResource FolderActions}"/>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
 
 
                     <!--actual tree viewer activity-->
                     <TreeViewItem 
                         Header="Plans" 
-                        ContextMenu="{StaticResource FolderActions}">
-                        <TreeViewItem ItemsSource="{Binding Plans}">
-                            <TreeViewItem.ItemTemplate>
-                                <HierarchicalDataTemplate DataType="{x:Type self:Folder}" ItemsSource="{Binding Subfolders}">
-                                    <TreeViewItem Header="{Binding Name}" ContextMenu="{StaticResource FolderActions}"/>
-                                </HierarchicalDataTemplate>
-                            </TreeViewItem.ItemTemplate>
+                        ContextMenu="{StaticResource FolderActions}"
+                        ItemsSource="{Binding Plans.Subfolder}">
+                        <TreeViewItem
+                            Header="Folder1" 
+                            ContextMenu="{StaticResource FolderActions}">
                         </TreeViewItem>
                     </TreeViewItem>
 

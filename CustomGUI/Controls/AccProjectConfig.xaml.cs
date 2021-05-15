@@ -25,6 +25,11 @@ namespace CustomGUI.Controls
     {
         private List<Bim360Project> projects { get; set; }
         private string csvpath { get; set; }
+
+        private Bim360Project activeProject { set; get; }
+
+        private Folder activeFolder { set; get; }
+
         public AccProjectConfig()
         {
             InitializeComponent();
@@ -85,6 +90,7 @@ namespace CustomGUI.Controls
                         {
                             //ToDo: sort data into Frontend
                             ProjectsView.ItemsSource = output;
+                            activeProject = output[0];
                             return true;
                         }
                     }
@@ -110,6 +116,11 @@ namespace CustomGUI.Controls
             }
 
         }
-
+        //change active project
+        private void ProjectsView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //should be right i guess
+            activeProject=(Bim360Project)ProjectsView.SelectedCells[0].Item;
+        }
     }
 }
