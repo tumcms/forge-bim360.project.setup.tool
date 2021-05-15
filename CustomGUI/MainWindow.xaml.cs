@@ -85,20 +85,6 @@ namespace CustomGUI
 
         //CSVToolkit
 
-        private void buttonimport_Click(object sender, RoutedEventArgs e)
-        {
-            //move to conifg
-            if (!File.Exists(csvpath.Text)){
-                statusbar.Text = "Import Failed! File not found!";
-                return;
-            }
-
-            AccProjectConfig.LoadBim360Projects(csvpath.Text);
-
-            statusbar.Text="Import successful!";
-
-        }
-
         //Remove input if use click on it
         private void csvpath_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
@@ -108,6 +94,30 @@ namespace CustomGUI
                 csvpath.Text = "";
             }
         }
+
+
+        private void buttonimport_Click(object sender, RoutedEventArgs e)
+        {
+            //move to conifg
+            if (!File.Exists(csvpath.Text)){
+                statusbar.Text = "Import failed! File not found!";
+                return;
+            }
+
+            //Load CSV into Mainwindow
+            if (AccProjectConfig.LoadBim360Projects(csvpath.Text))
+            {
+                statusbar.Text = "Import successful!";
+            }
+            else
+            {
+                statusbar.Text = "Import failed! Unknown CSV Config!";
+            }
+
+
+        }
+
+
 
         private void buttonexport_Click(object sender, RoutedEventArgs e)
         {

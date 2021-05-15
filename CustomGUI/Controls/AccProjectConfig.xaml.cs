@@ -44,30 +44,49 @@ namespace CustomGUI.Controls
 
         }
 
-        public void LoadBim360Projects(string filepath)
+        public Boolean LoadBim360Projects(string filepath)
         {
             using (var streamReader = new StreamReader(filepath))
             {
-                var csvconfig = new CsvConfiguration(CultureInfo.CurrentCulture)
+                //CSV with current date config
+                var csvconfig1 = new CsvConfiguration(CultureInfo.CurrentCulture)
                 {
                     HeaderValidated = null,
                     MissingFieldFound = null
                 };
-                using (var csv = new CsvReader(streamReader, csvconfig))
+
+                //CSV with Invariant Config
+                var csvconfig2 = new CsvConfiguration(CultureInfo.InvariantCulture)
                 {
-                    
-                    //Maps the Header of the CSV Data to the class attributes
-                    csv.Context.RegisterClassMap<UserDataMap>();
+                    HeaderValidated = null,
+                    MissingFieldFound = null
+                };
 
+                //try each configuration
+                for(int i=0;i<2;i++)
+                {
+                    CsvConfiguration csvconfig;
+                    csvconfig = i == 0 ? csvconfig1 : csvconfig2;
+                    using (var csv = new CsvReader(streamReader, csvconfig))
+                    {
+                        //Maps the Header of the CSV Data to the class attributes
+                        csv.Context.RegisterClassMap<UserDataMap>();
 
-                    //call the import for new class def
-                    var output = SerializationParser.LoadBim360ProjectsFromCsv(csv);
+                        //call the import
+                        var output = SerializationParser.LoadBim360ProjectsFromCsv(csv);
 
-                    //ToDo: sort data into Frontend
+                        //Sort in Data if read was successful
+                        if (output != null)
+                        {
+                            //ToDo: sort data into Frontend
+                            ProjectsView.ItemsSource = output;
+                            return true;
+                        }
 
-                    ProjectsView.ItemsSource = output;
-
+                    }
                 }
+
+                return false;
             }
 
         }

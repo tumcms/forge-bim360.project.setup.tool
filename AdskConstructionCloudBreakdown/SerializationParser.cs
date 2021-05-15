@@ -34,7 +34,15 @@ namespace AdskConstructionCloudBreakdown
             //loop over all rows
             while (input.Read())
             {
-                var tmp = input.GetRecord<UserData>();
+                UserData tmp;
+                try
+                {
+                    tmp  = input.GetRecord<UserData>();
+                }
+                catch(BadDataException)
+                {
+                    return null;
+                }
 
                 //create only new Projects if their is a new name
                 if (tmp._project_name!="")
@@ -255,8 +263,6 @@ namespace AdskConstructionCloudBreakdown
         ///<summary>
         ///
         /// </summary>
-        ///
-        // ToDO: Testing
         public static List<UserData> ExportBim360ToCSV(List<Bim360Project> input)
         {
             List<UserData> output = new List<UserData>();
