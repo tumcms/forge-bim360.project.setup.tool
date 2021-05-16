@@ -113,11 +113,10 @@ namespace CustomGUI
             }
             else
             {
-                statusbar.Text = "Import failed! Unknown CSV Config!";
+                statusbar.Text = "Import failed! Unknown CSV Config or File not found!";
             }
 
         }
-
 
 
         private void buttonexport_Click(object sender, RoutedEventArgs e)
@@ -139,7 +138,7 @@ namespace CustomGUI
             string filename = "\\BIM360_Custom_Template.csv";
 
             //export the Projects
-            AccProjectConfig.ExportBim360Projects(csvpathexp.Text+ filename, (List<Bim360Project>) AccProjectConfig.ProjectsView.ItemsSource);
+            AccProjectConfig.ExportBim360Projects(csvpathexp.Text+ filename);
 
             statusbar.Text = "Export successful";
 
@@ -168,9 +167,6 @@ namespace CustomGUI
                     }
                 }
             }
-
-
-
         }
         private void Csvpathexp_OnInitialized(object? sender, EventArgs e)
         {

@@ -186,7 +186,7 @@ namespace AdskConstructionCloudBreakdown
 
 
                 //add userpermission to active folder
-                if (tmp._user_email != "")
+                if (!string.IsNullOrEmpty(tmp._user_email))
                 {
                     User user;
                     //assign company to user if exists
@@ -218,7 +218,7 @@ namespace AdskConstructionCloudBreakdown
 
 
                 //add rolepermission to active folder
-                if (tmp._role_permission != "")
+                if (!string.IsNullOrEmpty(tmp._role_permission))
                 {
                     try
                     {
@@ -232,7 +232,7 @@ namespace AdskConstructionCloudBreakdown
                 }
 
                 //Set local folder 
-                if (tmp._local_folder != "")
+                if (!string.IsNullOrEmpty(tmp._local_folder))
                 {
                     activeFolder.SampleFilesDirectory = tmp._local_folder;
                 }
@@ -294,9 +294,8 @@ namespace AdskConstructionCloudBreakdown
                 }
 
                 //if no permission is inserted ->add new row for new Folder
-                if (iter.Plans.UserPermissions == null && iter.Plans.RolePermissions == null)
+                if (!iter.Plans.UserPermissions.Any() && !iter.Plans.RolePermissions.Any())
                 {
-                    output.Add(new UserData());
                     activeRow = output.Last();
                 }
 
@@ -331,9 +330,8 @@ namespace AdskConstructionCloudBreakdown
                 }
 
                 //if no permission is inserted ->add new row for new Folder
-                if (iter.ProjectFiles.UserPermissions == null && iter.ProjectFiles.RolePermissions == null)
+                if (!iter.ProjectFiles.UserPermissions.Any() && !iter.ProjectFiles.RolePermissions.Any())
                 {
-                    output.Add(new UserData());
                     activeRow = output.Last();
                 }
 
@@ -392,7 +390,11 @@ namespace AdskConstructionCloudBreakdown
         public static void AddAllSubFolder(List<UserData> addto, Folder from)
         {
             var activeRow = addto.Last();
-
+            if (from.Name.Equals("Folder1.1.1"))
+            {
+                //just for debugging
+                var t = from;
+            }
             //select Level
             switch (from.level)
             {
@@ -446,8 +448,9 @@ namespace AdskConstructionCloudBreakdown
             }
 
             //if no permission is inserted ->add new row for new Folder
-            if (from.UserPermissions == null && from.RolePermissions == null)
+            if (!from.UserPermissions.Any() && !from.RolePermissions.Any())
             {
+                activeRow = addto.Last();
                 addto.Add(new UserData());
                 activeRow = addto.Last();
             }
