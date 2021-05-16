@@ -132,7 +132,7 @@
                     <TreeViewItem 
                         Header="Plans" 
                         ContextMenu="{StaticResource FolderActions}"
-                        ItemsSource="{Binding Plans.Subfolder}">
+                        ItemsSource="{Binding this.activeProject.Plans.Subfolder}">
                         <TreeViewItem
                             Header="Folder1" 
                             ContextMenu="{StaticResource FolderActions}">

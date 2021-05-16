@@ -116,7 +116,6 @@ namespace CustomGUI
                 statusbar.Text = "Import failed! Unknown CSV Config!";
             }
 
-
         }
 
 
@@ -146,7 +145,37 @@ namespace CustomGUI
 
         }
 
+        private void MainWindow_OnInitialized(object? sender, EventArgs e)
+        {
+            //create history
+            if (!File.Exists(path_last))
+            {
+                //Create Directory and File for the Config
+                Directory.CreateDirectory(path_last.Remove(path_last.LastIndexOf("\\")));
+                var tmp = File.Create(path_last);
+                tmp.Close();
+            }
+            else
+            {
+                if (File.Exists(path_last))
+                {
+                    using (FileStream fs = File.OpenRead(path_last))
+                    {
+                        using (StreamReader reader = new StreamReader(fs))
+                        {
+                            csvpath.Text = reader.ReadLine();
+                        }
+                    }
+                }
+            }
 
+
+
+        }
+        private void Csvpathexp_OnInitialized(object? sender, EventArgs e)
+        {
+            csvpathexp.Text = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        }
 
         /// <summary>
         /// Loading some test data for test purposes. To be deleted before deploying!
@@ -179,21 +208,7 @@ namespace CustomGUI
         }
 
 
-        private void Csvpathexp_OnInitialized(object? sender, EventArgs e)
-        {
-            csvpathexp.Text = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        }
 
-        private void MainWindow_OnInitialized(object? sender, EventArgs e)
-        {
-            //create history
-            if (!File.Exists(path_last))
-            {
-                //Create Directory and File for the Config
-                Directory.CreateDirectory(path_last.Remove(path_last.LastIndexOf("\\")));
-                var tmp = File.Create(path_last);
-                tmp.Close();
-            }
-        }
+
     }
 }
