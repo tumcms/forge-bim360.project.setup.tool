@@ -29,6 +29,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!-- Projects view -->
@@ -76,12 +77,18 @@
                 Name="ProjectTypeComboBox"
                 LostFocus="ProjectTypeComboBox_OnLostFocus">
             </ComboBox>
+            <TextBox Grid.Row="2"
+                Margin="2"
+                FontStyle="Italic"
+                BorderThickness="2"
+                Text="enter new projectname here"
+                x:Name="Namenewproject"></TextBox>
 
             <Button Content="Add Project"
                     Grid.Column="0"
-                    Grid.Row="2"
+                    Grid.Row="3"
                     Margin="2"
-                    VerticalAlignment="Bottom" />
+                    VerticalAlignment="Bottom" Click="Button_Click" />
         </Grid>
 
 
@@ -140,9 +147,10 @@
                         x:Name="TreeViewPlans">
                     </TreeViewItem>
 
-                    <TreeViewItem Header="Project Files"
-                                 x:Name="TreeViewProjects"
-                                 ContextMenu="{StaticResource FolderActions}">
+                    <TreeViewItem 
+                        Header="Project Files"
+                        ContextMenu="{StaticResource FolderActions}"
+                        x:Name="TreeViewProjects">
                     </TreeViewItem>
 
                 </TreeView>
@@ -218,6 +226,14 @@
                             FontStyle="Italic"
                             BorderThickness="2"
                             Text="add company name here"></TextBox>
+                        <TextBlock 
+                            Margin="4"
+                            Text="Company Trade"></TextBlock>
+                        <ComboBox 
+                            Margin="2" 
+                            Name="TradeComboBox">
+                        </ComboBox>
+
                     </StackPanel>
 
                     <Button Grid.Row="2"

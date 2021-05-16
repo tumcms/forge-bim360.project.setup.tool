@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
@@ -28,6 +29,7 @@ namespace CustomGUI.Controls
 
 
 
+
         protected List<Bim360Project> projects { get; set; }
         private string csvpath { get; set; }
 
@@ -37,6 +39,8 @@ namespace CustomGUI.Controls
         {
             InitializeComponent();
 
+
+            //combobox Value assignment
             FolderUserPermissionComboBox.ItemsSource = Enum.GetValues(typeof(AdskConstructionCloudBreakdown.AccessPermissionEnum));
             FolderRolePermissionComboBox.ItemsSource = Enum.GetValues(typeof(AdskConstructionCloudBreakdown.AccessPermissionEnum));
             
@@ -48,6 +52,16 @@ namespace CustomGUI.Controls
                 tobeadded.Add(Selection.SelectProjectType((ProjectTypeEnum)iter));
             }
             ProjectTypeComboBox.ItemsSource = tobeadded;
+
+            tmp = Enum.GetValues((typeof(AdskConstructionCloudBreakdown.TradeEnum)));
+            tobeadded = new List<string>();
+            foreach (var iter in tmp)
+            {
+                tobeadded.Add(Selection.SelectTrade((TradeEnum)iter));
+            }
+            TradeComboBox.ItemsSource = tobeadded;
+
+
         }
 
         private void AccProjectConfig_OnInitialized(object? sender, EventArgs e)
@@ -115,9 +129,6 @@ namespace CustomGUI.Controls
                                 //ToDo: sort data into Frontend
                                 projects = output;
                                 ProjectsView.ItemsSource = projects;
-                                activeProject = projects[0];
-                                TreeViewPlans.ItemsSource = activeProject.Plans.Subfolders;
-                                TreeViewProjects.ItemsSource = activeProject.Plans.Subfolders;
                                 return true;
                             }
                         }
@@ -156,7 +167,17 @@ namespace CustomGUI.Controls
 
         private void ProjectTypeComboBox_OnLostFocus(object sender, RoutedEventArgs e)
         {
-            activeProject.ProjectType = Selection.SelectProjectType(ProjectTypeComboBox.Text.ToString());
+            if (string.IsNullOrEmpty(ProjectTypeComboBox.Text.ToString()))
+            {
+                activeProject.ProjectType = Selection.SelectProjectType(ProjectTypeComboBox.Text.ToString());
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            projects.Add(new Bim360Project(Namenewproject.Text));
+            activeProject=projects.Last();
+            ProjectsView.Items.Refresh();
         }
     }
 }
