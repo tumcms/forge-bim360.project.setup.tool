@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,22 +23,31 @@ namespace CustomGUI.Controls
     /// <summary>
     /// Interaction logic for AccProjectConfig.xaml
     /// </summary>
-    public partial class AccProjectConfig : UserControl
+    public partial class AccProjectConfig : UserControl 
     {
+
+
+
         protected List<Bim360Project> projects { get; set; }
         private string csvpath { get; set; }
 
         private Bim360Project activeProject { set; get; }
 
-        private Folder activeFolder { set; get; }
-
         public AccProjectConfig()
         {
             InitializeComponent();
 
-            FolderPermissionComboBox.ItemsSource = Enum.GetValues(typeof(AdskConstructionCloudBreakdown.AccessPermissionEnum));
-
-           
+            FolderUserPermissionComboBox.ItemsSource = Enum.GetValues(typeof(AdskConstructionCloudBreakdown.AccessPermissionEnum));
+            FolderRolePermissionComboBox.ItemsSource = Enum.GetValues(typeof(AdskConstructionCloudBreakdown.AccessPermissionEnum));
+            
+            //transform Enum to real Name as string
+            var tmp = Enum.GetValues((typeof(AdskConstructionCloudBreakdown.ProjectTypeEnum)));
+            List<string> tobeadded = new List<string>();
+            foreach (var iter in tmp)
+            {
+                tobeadded.Add(Selection.SelectProjectType((ProjectTypeEnum)iter));
+            }
+            ProjectTypeComboBox.ItemsSource = tobeadded;
         }
 
         private void AccProjectConfig_OnInitialized(object? sender, EventArgs e)
@@ -140,6 +151,12 @@ namespace CustomGUI.Controls
             activeProject=(Bim360Project)ProjectsView.SelectedCells[0].Item;
             TreeViewPlans.ItemsSource = activeProject.Plans.Subfolders;
             TreeViewProjects.ItemsSource = activeProject.Plans.Subfolders;
+            ProjectTypeComboBox.SelectedItem = Selection.SelectProjectType(activeProject.ProjectType);
+        }
+
+        private void ProjectTypeComboBox_OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            activeProject.ProjectType = Selection.SelectProjectType(ProjectTypeComboBox.Text.ToString());
         }
     }
 }

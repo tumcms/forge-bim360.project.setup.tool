@@ -28,6 +28,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!-- Projects view -->
@@ -69,9 +70,16 @@
                         </DataGrid.Columns>
                     </DataGrid>
             </StackPanel>
+            <ComboBox 
+                Grid.Row="1"
+                Margin="2" 
+                Name="ProjectTypeComboBox"
+                LostFocus="ProjectTypeComboBox_OnLostFocus">
+            </ComboBox>
+
             <Button Content="Add Project"
                     Grid.Column="0"
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Margin="2"
                     VerticalAlignment="Bottom" />
         </Grid>
@@ -119,15 +127,11 @@
                             <MenuItem Header="Create new folder as child"/>
                             <MenuItem Header="Create new folder as neighbor"/>
                         </ContextMenu>
-
+                        <!-- Recursive Folder --> 
                         <HierarchicalDataTemplate DataType="{x:Type self:Folder}" ItemsSource="{Binding Subfolders}">
                             <TreeViewItem Header="{Binding Name}" ContextMenu="{StaticResource FolderActions}"/>
                         </HierarchicalDataTemplate>
-
                     </TreeView.Resources>
-
-                    <!-- this should add the folders automatically-->
-
 
                     <!--actual tree viewer activity-->
                     <TreeViewItem 
@@ -140,6 +144,7 @@
                                  x:Name="TreeViewProjects"
                                  ContextMenu="{StaticResource FolderActions}">
                     </TreeViewItem>
+
                 </TreeView>
 
             </StackPanel>
@@ -171,6 +176,9 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
 
                     <!--User permissions-->
@@ -186,10 +194,10 @@
                        
                         <TextBlock 
                             Margin="2"
-                            Text="Folder permission"></TextBlock>
+                            Text="Folder user permission"></TextBlock>
                         <ComboBox 
                             Margin="2" 
-                            Name="FolderPermissionComboBox">
+                            Name="FolderUserPermissionComboBox">
                             <!--<ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
@@ -211,6 +219,45 @@
                             BorderThickness="2"
                             Text="add company name here"></TextBox>
                     </StackPanel>
+
+                    <Button Grid.Row="2"
+                            Margin="5"
+                            Content="Add User Permission"></Button>
+
+
+                    <!-- Role permissions -->
+                    <StackPanel Grid.Row="3">
+                        <StackPanel
+                            Margin="6"></StackPanel>
+                        <TextBlock
+                            Margin="2"
+                            Text="Role Assignment"></TextBlock>
+                        <TextBox 
+                            Margin="2"
+                            FontStyle="Italic"
+                            BorderThickness="2"
+                            Text="add role name here, separated with ;"></TextBox>
+                        <TextBlock 
+                            Margin="2"
+                            Text="Folder user permission"></TextBlock>
+                        <ComboBox 
+                            Margin="2" 
+                            Name="FolderRolePermissionComboBox">
+                            <!--<ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding FolderPermissionComboBox.ItemsSource}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>-->
+                        </ComboBox>
+                        <Button Grid.Row="4"
+                                Margin="5"
+                                Content="Add Role Permission"></Button>
+
+                    </StackPanel>
+
+
                 </Grid>
 
 
