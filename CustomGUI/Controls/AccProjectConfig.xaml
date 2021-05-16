@@ -110,7 +110,8 @@
 
                 <TreeView
                     Margin="2"
-                VerticalAlignment="Stretch">
+                VerticalAlignment="Stretch"
+                >
 
                     <!--Resources are used to build and style the contained items-->
                     <TreeView.Resources>
@@ -118,35 +119,26 @@
                             <MenuItem Header="Create new folder as child"/>
                             <MenuItem Header="Create new folder as neighbor"/>
                         </ContextMenu>
-                    </TreeView.Resources>
 
-                    <!-- this should add the folders automatically-->
-                    <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate DataType="{x:Type self:Folder}" ItemsSource="{Binding Subfolders}">
                             <TreeViewItem Header="{Binding Name}" ContextMenu="{StaticResource FolderActions}"/>
                         </HierarchicalDataTemplate>
-                    </TreeView.ItemTemplate>
+
+                    </TreeView.Resources>
+
+                    <!-- this should add the folders automatically-->
 
 
                     <!--actual tree viewer activity-->
                     <TreeViewItem 
                         Header="Plans" 
                         ContextMenu="{StaticResource FolderActions}"
-                        ItemsSource="{Binding this.activeProject.Plans.Subfolder}">
-                        <TreeViewItem
-                            Header="Folder1" 
-                            ContextMenu="{StaticResource FolderActions}">
-                        </TreeViewItem>
+                        x:Name="TreeViewPlans">
                     </TreeViewItem>
 
-
-                   <TreeViewItem Header="Project Files">
-                       <TreeViewItem
-                           Header="Folder1" 
-                           ContextMenu="{StaticResource FolderActions}"></TreeViewItem>
-                       <TreeViewItem
-                           Header="Folder2" 
-                           ContextMenu="{StaticResource FolderActions}"></TreeViewItem>
+                    <TreeViewItem Header="Project Files"
+                                 x:Name="TreeViewProjects"
+                                 ContextMenu="{StaticResource FolderActions}">
                     </TreeViewItem>
                 </TreeView>
 
