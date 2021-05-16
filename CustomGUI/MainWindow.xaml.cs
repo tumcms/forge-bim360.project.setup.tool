@@ -38,7 +38,8 @@ namespace CustomGUI
         private ObservableCollection<Bim360Project> projects;
 
 
-        string path_file =@".\Config\config.txt";
+        private string path_file =@".\Config\config.txt";
+        private string path_last =@".\Config\last.txt";
 
 
         public MainWindow()
@@ -49,8 +50,7 @@ namespace CustomGUI
             projects = CreateSampleStructure();
 
 
-            AccProjectConfig.ProjectsView.ItemsSource = projects;
-
+            //AccProjectConfig.ProjectsView.ItemsSource = projects;
 
         }
 
@@ -68,7 +68,6 @@ namespace CustomGUI
             window_config.Height = 150;
             window_config.ResizeMode = ResizeMode.NoResize;
             window_config.ShowDialog();
-
 
         }
 
@@ -101,6 +100,16 @@ namespace CustomGUI
             if (AccProjectConfig.LoadBim360Projects(csvpath.Text))
             {
                 statusbar.Text = "Import successful!";
+                //Write config into txt
+                using (FileStream fs = File.OpenWrite(path_last))
+                {
+                    using (var sr = new StreamWriter(fs))
+                    {
+                        //Delete the content of the file
+                        sr.Write(string.Empty);
+                        sr.WriteLine(csvpath.Text);
+                    }
+                }
             }
             else
             {
@@ -173,6 +182,18 @@ namespace CustomGUI
         private void Csvpathexp_OnInitialized(object? sender, EventArgs e)
         {
             csvpathexp.Text = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        }
+
+        private void MainWindow_OnInitialized(object? sender, EventArgs e)
+        {
+            //create history
+            if (!File.Exists(path_last))
+            {
+                //Create Directory and File for the Config
+                Directory.CreateDirectory(path_last.Remove(path_last.LastIndexOf("\\")));
+                var tmp = File.Create(path_last);
+                tmp.Close();
+            }
         }
     }
 }

@@ -36,17 +36,28 @@ namespace CustomGUI.Controls
 
             FolderPermissionComboBox.ItemsSource = Enum.GetValues(typeof(AdskConstructionCloudBreakdown.AccessPermissionEnum));
 
+           
         }
 
         private void AccProjectConfig_OnInitialized(object? sender, EventArgs e)
         {
-            try
+            //read last Path
+            string path_last = @".\Config\last.txt";
+            if (File.Exists(path_last))
             {
-                //TOdo: add last path to csvpath to load last config
-                // projects = SerializationParser.LoadBim360ProjectsFromCsv("csvpath");
+                using (FileStream fs = File.OpenRead(path_last))
+                {
+                    using (StreamReader reader = new StreamReader(fs))
+                    {
+                        csvpath = reader.ReadLine();
+                    }
+                }
             }
-            catch{}
 
+            if (!string.IsNullOrEmpty(csvpath))
+            {
+                LoadBim360Projects(csvpath);
+            }
         }
 
         public Boolean LoadBim360Projects(string filepath)
@@ -90,6 +101,7 @@ namespace CustomGUI.Controls
                         {
                             //ToDo: sort data into Frontend
                             ProjectsView.ItemsSource = output;
+                            projects = output;
                             activeProject = output[0];
                             return true;
                         }
