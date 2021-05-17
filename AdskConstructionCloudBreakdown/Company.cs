@@ -4,15 +4,12 @@
     {
         public string Name { get; set; }
 
-        //ToDo: adjust Trade to tradeenum
-        public string Trade { get; set; }
+        public TradeEnum Trade { get; set; }
 
         //Constructor
         public Company()
         {
             Name = string.Empty;
-            Trade = string.Empty;
-
         }
 
         public Company(string name)
@@ -23,7 +20,7 @@
         public Company(string name, string trade)
         {
             this.Name = name;
-            this.Trade = trade;
+            this.Trade = Selection.SelectTrade(trade);
         }
     }
 }

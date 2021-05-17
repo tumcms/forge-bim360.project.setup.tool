@@ -128,7 +128,6 @@ namespace CustomGUI.Controls
 
             System.Threading.Thread.Sleep(1000);
             // query current values from textboxes
-            // ToDo: Implement INotifyPropertyChanged Interface to dynamically bind the class property to the text box and simultaneously update both bidirectional
             this.ClientId = ClientId_Box.Text;
             this.ClientSecret = ClientSecret_Box.Text;
             this.BimId = BimId_Box.Text;

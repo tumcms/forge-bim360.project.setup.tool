@@ -29,12 +29,19 @@ namespace AdskConstructionCloudBreakdown
             Folder activeFolder = new Folder();
             //Maps the Header of the CSV Data to the class attributs
             input.Context.RegisterClassMap<UserDataMap>();
-            //ignore missing Header
 
             //loop over all rows
             while (input.Read())
             {
-                var tmp = input.GetRecord<UserData>();
+                UserData tmp;
+                try
+                {
+                    tmp  = input.GetRecord<UserData>();
+                }
+                catch(BadDataException)
+                {
+                    return null;
+                }
 
                 //create only new Projects if their is a new name
                 if (tmp._project_name!="")
@@ -44,16 +51,10 @@ namespace AdskConstructionCloudBreakdown
                 }
 
                 //set type
-                //ToDo: need to be dynamic with the enums
-                if (tmp._project_type.Equals("Office"))
+                if (tmp._project_type != "")
                 {
-                    output.Last().ProjectType = ProjectTypeEnum.Office;
+                    output.Last().ProjectType = Selection.SelectProjectType(tmp._project_type);
                 }
-                else if (tmp._project_type.Equals("Library"))
-                {
-                    output.Last().ProjectType = ProjectTypeEnum.Library;
-                }
-
 
                 //change where sub folder shoulde be located
                 if (tmp._root_folder.Equals("Plans"))
@@ -185,13 +186,13 @@ namespace AdskConstructionCloudBreakdown
 
 
                 //add userpermission to active folder
-                if (tmp._user_email != "")
+                if (!string.IsNullOrEmpty(tmp._user_email))
                 {
                     User user;
                     //assign company to user if exists
                     if (tmp._company != "")
                     {
-                        Company comp = tmp._company_trade != "" ? new Company(tmp._company,
+                        Company comp = !string.IsNullOrEmpty(tmp._company_trade) ? new Company(tmp._company,
                             tmp._company_trade) : new Company(tmp._company);
 
                         user = new User(tmp._user_email, comp);
@@ -215,9 +216,9 @@ namespace AdskConstructionCloudBreakdown
 
                 }
 
-                //ToDo: Testing
+
                 //add rolepermission to active folder
-                if (tmp._role_permission != "")
+                if (!string.IsNullOrEmpty(tmp._role_permission))
                 {
                     try
                     {
@@ -231,7 +232,7 @@ namespace AdskConstructionCloudBreakdown
                 }
 
                 //Set local folder 
-                if (tmp._local_folder != "")
+                if (!string.IsNullOrEmpty(tmp._local_folder))
                 {
                     activeFolder.SampleFilesDirectory = tmp._local_folder;
                 }
@@ -255,8 +256,6 @@ namespace AdskConstructionCloudBreakdown
         ///<summary>
         ///
         /// </summary>
-        ///
-        // ToDO: Testing
         public static List<UserData> ExportBim360ToCSV(List<Bim360Project> input)
         {
             List<UserData> output = new List<UserData>();
@@ -269,16 +268,9 @@ namespace AdskConstructionCloudBreakdown
                 var activeRow = output.Last();
                 activeRow._project_name = iter.ProjectName;
 
-                //ToDo: add Dictionary for Projecttypes 
-                if (iter.ProjectType == ProjectTypeEnum.Office)
-                {
-                    activeRow._project_type = "Office";
-                }
-                else if(iter.ProjectType == ProjectTypeEnum.Library)
-                {
-                    activeRow._project_type = "Library";
-                }
-
+                //add projectTypes
+                activeRow._project_type = Selection.SelectProjectType(iter.ProjectType);
+                
 
                 //Add folder structure under Plans
                 //Hardcoded for Plans & Projcet Files
@@ -302,9 +294,8 @@ namespace AdskConstructionCloudBreakdown
                 }
 
                 //if no permission is inserted ->add new row for new Folder
-                if (iter.Plans.UserPermissions == null && iter.Plans.RolePermissions == null)
+                if (!iter.Plans.UserPermissions.Any() && !iter.Plans.RolePermissions.Any())
                 {
-                    output.Add(new UserData());
                     activeRow = output.Last();
                 }
 
@@ -339,9 +330,8 @@ namespace AdskConstructionCloudBreakdown
                 }
 
                 //if no permission is inserted ->add new row for new Folder
-                if (iter.ProjectFiles.UserPermissions == null && iter.ProjectFiles.RolePermissions == null)
+                if (!iter.ProjectFiles.UserPermissions.Any() && !iter.ProjectFiles.RolePermissions.Any())
                 {
-                    output.Add(new UserData());
                     activeRow = output.Last();
                 }
 
@@ -392,8 +382,7 @@ namespace AdskConstructionCloudBreakdown
             if (from.AssignedUsers.AssignedCompany != null)
             {
                 addto._company = from.AssignedUsers.AssignedCompany.Name;
-                //ToDo: need to be adjusted to Enums
-                addto._company_trade = from.AssignedUsers.AssignedCompany.Trade;
+                addto._company_trade = Selection.SelectTrade(from.AssignedUsers.AssignedCompany.Trade);
             }
 
         }
@@ -401,7 +390,11 @@ namespace AdskConstructionCloudBreakdown
         public static void AddAllSubFolder(List<UserData> addto, Folder from)
         {
             var activeRow = addto.Last();
-
+            if (from.Name.Equals("Folder1.1.1"))
+            {
+                //just for debugging
+                var t = from;
+            }
             //select Level
             switch (from.level)
             {
@@ -455,8 +448,9 @@ namespace AdskConstructionCloudBreakdown
             }
 
             //if no permission is inserted ->add new row for new Folder
-            if (from.UserPermissions == null && from.RolePermissions == null)
+            if (!from.UserPermissions.Any() && !from.RolePermissions.Any())
             {
+                activeRow = addto.Last();
                 addto.Add(new UserData());
                 activeRow = addto.Last();
             }

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,58 +24,123 @@ namespace CustomGUI.Controls
     /// <summary>
     /// Interaction logic for AccProjectConfig.xaml
     /// </summary>
-    public partial class AccProjectConfig : UserControl
+    public partial class AccProjectConfig : UserControl 
     {
-        private List<Bim360Project> projects { get; set; }
+
+
+
+
+        protected List<Bim360Project> projects { get; set; }
         private string csvpath { get; set; }
+
+        private Bim360Project activeProject { set; get; }
+
         public AccProjectConfig()
         {
             InitializeComponent();
 
-            FolderPermissionComboBox.ItemsSource = Enum.GetValues(typeof(AdskConstructionCloudBreakdown.AccessPermissionEnum));
+
+            //combobox Value assignment
+            FolderUserPermissionComboBox.ItemsSource = Enum.GetValues(typeof(AdskConstructionCloudBreakdown.AccessPermissionEnum));
+            FolderRolePermissionComboBox.ItemsSource = Enum.GetValues(typeof(AdskConstructionCloudBreakdown.AccessPermissionEnum));
+            
+            //transform Enum to real Name as string
+            var tmp = Enum.GetValues((typeof(AdskConstructionCloudBreakdown.ProjectTypeEnum)));
+            List<string> tobeadded = new List<string>();
+            foreach (var iter in tmp)
+            {
+                tobeadded.Add(Selection.SelectProjectType((ProjectTypeEnum)iter));
+            }
+            ProjectTypeComboBox.ItemsSource = tobeadded;
+
+            tmp = Enum.GetValues((typeof(AdskConstructionCloudBreakdown.TradeEnum)));
+            tobeadded = new List<string>();
+            foreach (var iter in tmp)
+            {
+                tobeadded.Add(Selection.SelectTrade((TradeEnum)iter));
+            }
+            TradeComboBox.ItemsSource = tobeadded;
+
 
         }
 
         private void AccProjectConfig_OnInitialized(object? sender, EventArgs e)
         {
-            try
+            //read last Path
+            string path_last = @".\Config\last.txt";
+            if (File.Exists(path_last))
             {
-                //TOdo: add last path to csvpath to load last config
-                // projects = SerializationParser.LoadBim360ProjectsFromCsv("csvpath");
-            }
-            catch{}
-
-        }
-
-        public void LoadBim360Projects(string filepath)
-        {
-            using (var streamReader = new StreamReader(filepath))
-            {
-                var csvconfig = new CsvConfiguration(CultureInfo.CurrentCulture)
+                using (FileStream fs = File.OpenRead(path_last))
                 {
-                    HeaderValidated = null,
-                    MissingFieldFound = null
-                };
-                using (var csv = new CsvReader(streamReader, csvconfig))
-                {
-                    
-                    //Maps the Header of the CSV Data to the class attributes
-                    csv.Context.RegisterClassMap<UserDataMap>();
-
-
-                    //call the import for new class def
-                    var output = SerializationParser.LoadBim360ProjectsFromCsv(csv);
-
-                    //ToDo: sort data into Frontend
-
-                    ProjectsView.ItemsSource = output;
-
+                    using (StreamReader reader = new StreamReader(fs))
+                    {
+                        csvpath = reader.ReadLine();
+                    }
                 }
             }
 
+            if (!string.IsNullOrEmpty(csvpath))
+            {
+                LoadBim360Projects(csvpath);
+            }
         }
 
-        public void ExportBim360Projects(string filepath,List<Bim360Project> dataset)
+        public Boolean LoadBim360Projects(string filepath)
+        {
+            if (File.Exists(filepath))
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    using (var streamReader = new StreamReader(filepath))
+                    {
+                        //try different configs
+                        CsvConfiguration csvconfig;
+                        if (i == 0)
+                        {
+                            //CSV with current date config
+                            csvconfig = new CsvConfiguration(CultureInfo.CurrentCulture)
+                            {
+                                HeaderValidated = null,
+                                MissingFieldFound = null
+                            };
+                        }
+                        else
+                        {
+                            //CSV with Invariant Config
+                            csvconfig = new CsvConfiguration(CultureInfo.InvariantCulture)
+                            {
+                                HeaderValidated = null,
+                                MissingFieldFound = null
+                            };
+                        }
+
+                        //try each configuration
+                        using (var csv = new CsvReader(streamReader, csvconfig))
+                        {
+                            //Maps the Header of the CSV Data to the class attributes
+                            csv.Context.RegisterClassMap<UserDataMap>();
+
+                            //call the import
+                            var output = SerializationParser.LoadBim360ProjectsFromCsv(csv);
+
+                            //Sort in Data if read was successful
+                            if (output != null)
+                            {
+                                //ToDo: sort data into Frontend
+                                projects = output;
+                                ProjectsView.ItemsSource = projects;
+                                return true;
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public void ExportBim360Projects(string filepath)
         {
             using (var streamWriter = new StreamWriter(filepath))
             {
@@ -80,13 +148,36 @@ namespace CustomGUI.Controls
                 using (var csv = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
                 {
                     //Maps the Header of the CSV Data to the class attributes
-                    var tmp = SerializationParser.ExportBim360ToCSV(dataset);
+                    var tmp = SerializationParser.ExportBim360ToCSV(projects);
                     csv.Context.RegisterClassMap<UserDataExport>();
                     csv.WriteRecords(tmp);
                 }
             }
 
         }
+        //change active project
+        private void ProjectsView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //should be right i guess
+            activeProject=(Bim360Project)ProjectsView.SelectedCells[0].Item;
+            TreeViewPlans.ItemsSource = activeProject.Plans.Subfolders;
+            TreeViewProjects.ItemsSource = activeProject.Plans.Subfolders;
+            ProjectTypeComboBox.SelectedItem = Selection.SelectProjectType(activeProject.ProjectType);
+        }
 
+        private void ProjectTypeComboBox_OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(ProjectTypeComboBox.Text.ToString()))
+            {
+                activeProject.ProjectType = Selection.SelectProjectType(ProjectTypeComboBox.Text.ToString());
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            projects.Add(new Bim360Project(Namenewproject.Text));
+            activeProject=projects.Last();
+            ProjectsView.Items.Refresh();
+        }
     }
 }

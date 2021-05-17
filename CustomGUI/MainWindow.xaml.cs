@@ -36,8 +36,10 @@ namespace CustomGUI
         //Global Data
         List<UserData> usermanag = new List<UserData>();
         private ObservableCollection<Bim360Project> projects;
-        
-        string path_file =@".\Config\config.txt";
+
+
+        private string path_file =@".\Config\config.txt";
+        private string path_last =@".\Config\last.txt";
 
 
         public MainWindow()
@@ -48,16 +50,7 @@ namespace CustomGUI
             projects = CreateSampleStructure();
 
 
-            AccProjectConfig.ProjectsView.ItemsSource = projects;
-
-
-            usermanag.Add(new UserData());
-            List<string> temp = new List<string>();
-            usermanag[0]._sub_folder = temp;
-            usermanag[0]._sub_folder.Add("test1");
-            usermanag[0]._sub_folder.Add("test3");
-
-            data.ItemsSource = usermanag;
+            //AccProjectConfig.ProjectsView.ItemsSource = projects;
 
         }
 
@@ -76,7 +69,6 @@ namespace CustomGUI
             window_config.ResizeMode = ResizeMode.NoResize;
             window_config.ShowDialog();
 
-
         }
 
 
@@ -84,20 +76,6 @@ namespace CustomGUI
 
 
         //CSVToolkit
-
-        private void buttonimport_Click(object sender, RoutedEventArgs e)
-        {
-            //move to conifg
-            if (!File.Exists(csvpath.Text)){
-                statusbar.Text = "Import Failed! File not found!";
-                return;
-            }
-
-            AccProjectConfig.LoadBim360Projects(csvpath.Text);
-
-            statusbar.Text="Import successful!";
-
-        }
 
         //Remove input if use click on it
         private void csvpath_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
@@ -108,6 +86,38 @@ namespace CustomGUI
                 csvpath.Text = "";
             }
         }
+
+
+        private void buttonimport_Click(object sender, RoutedEventArgs e)
+        {
+            //move to conifg
+            if (!File.Exists(csvpath.Text)){
+                statusbar.Text = "Import failed! File not found!";
+                return;
+            }
+
+            //Load CSV into Mainwindow
+            if (AccProjectConfig.LoadBim360Projects(csvpath.Text))
+            {
+                statusbar.Text = "Import successful!";
+                //Write config into txt
+                using (FileStream fs = File.OpenWrite(path_last))
+                {
+                    using (var sr = new StreamWriter(fs))
+                    {
+                        //Delete the content of the file
+                        sr.Write(string.Empty);
+                        sr.WriteLine(csvpath.Text);
+                    }
+                }
+            }
+            else
+            {
+                statusbar.Text = "Import failed! Unknown CSV Config or File not found!";
+            }
+
+        }
+
 
         private void buttonexport_Click(object sender, RoutedEventArgs e)
         {
@@ -128,13 +138,40 @@ namespace CustomGUI
             string filename = "\\BIM360_Custom_Template.csv";
 
             //export the Projects
-            AccProjectConfig.ExportBim360Projects(csvpathexp.Text+ filename, (List<Bim360Project>) AccProjectConfig.ProjectsView.ItemsSource);
+            AccProjectConfig.ExportBim360Projects(csvpathexp.Text+ filename);
 
             statusbar.Text = "Export successful";
 
         }
 
-
+        private void MainWindow_OnInitialized(object? sender, EventArgs e)
+        {
+            //create history
+            if (!File.Exists(path_last))
+            {
+                //Create Directory and File for the Config
+                Directory.CreateDirectory(path_last.Remove(path_last.LastIndexOf("\\")));
+                var tmp = File.Create(path_last);
+                tmp.Close();
+            }
+            else
+            {
+                if (File.Exists(path_last))
+                {
+                    using (FileStream fs = File.OpenRead(path_last))
+                    {
+                        using (StreamReader reader = new StreamReader(fs))
+                        {
+                            csvpath.Text = reader.ReadLine();
+                        }
+                    }
+                }
+            }
+        }
+        private void Csvpathexp_OnInitialized(object? sender, EventArgs e)
+        {
+            csvpathexp.Text = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        }
 
         /// <summary>
         /// Loading some test data for test purposes. To be deleted before deploying!
@@ -167,9 +204,7 @@ namespace CustomGUI
         }
 
 
-        private void Csvpathexp_OnInitialized(object? sender, EventArgs e)
-        {
-            csvpathexp.Text = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        }
+
+
     }
 }
