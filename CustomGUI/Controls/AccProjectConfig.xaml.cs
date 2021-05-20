@@ -35,6 +35,8 @@ namespace CustomGUI.Controls
 
         private Bim360Project activeProject { set; get; }
 
+        private Folder activeFolder { set; get; }
+
         public AccProjectConfig()
         {
             InitializeComponent();
@@ -59,6 +61,7 @@ namespace CustomGUI.Controls
             {
                 tobeadded.Add(Selection.SelectTrade((TradeEnum)iter));
             }
+            tobeadded.Add(string.Empty);
             TradeComboBox.ItemsSource = tobeadded;
 
 
@@ -163,6 +166,7 @@ namespace CustomGUI.Controls
             TreeViewPlans.ItemsSource = activeProject.Plans.Subfolders;
             TreeViewProjects.ItemsSource = activeProject.Plans.Subfolders;
             ProjectTypeComboBox.SelectedItem = Selection.SelectProjectType(activeProject.ProjectType);
+
         }
 
         private void ProjectTypeComboBox_OnLostFocus(object sender, RoutedEventArgs e)
@@ -178,6 +182,126 @@ namespace CustomGUI.Controls
             projects.Add(new Bim360Project(Namenewproject.Text));
             activeProject=projects.Last();
             ProjectsView.Items.Refresh();
+        }
+
+        private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            //set active Folder 
+            if (TreeViewFolder.SelectedItem.GetType()==typeof(Folder))
+            {
+                activeFolder = (Folder)TreeViewFolder.SelectedItem;
+            }
+            else if(activeProject!=null)
+            {
+                //this is needed because of the Static implimentation of the Rootfolders
+                if (((TreeViewItem) TreeViewFolder.SelectedItem).Header.ToString() == "Plans")
+                {
+                    activeFolder = activeProject.Plans;
+                }
+                else if(((TreeViewItem)TreeViewFolder.SelectedItem).Header.ToString() == "Project Files")
+                {
+                    activeFolder = activeProject.ProjectFiles;
+                }
+            }
+
+        }
+
+        private void Button_AddUserPermission(object sender, RoutedEventArgs e)
+        {
+            //error handling
+            if (activeProject == null)
+            {
+                MessageBox.Show("Please select a Project", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+
+            }
+            if (activeFolder == null)
+            {
+                MessageBox.Show("Please select a Folder", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (FolderUserPermissionComboBox.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a Userpermission", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var tobeadd = InputUserEmail.Text.Split(';');
+            if (tobeadd.Any(iter => string.IsNullOrWhiteSpace(iter)))
+            {
+                MessageBox.Show("Please enter a valid Name.\nMaybe an ; to much?", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+
+            var inputindsrole = InputIndustryRole.Text.Split(';');
+            var roletoadd = inputindsrole.Where(iterrole => 
+                !string.IsNullOrWhiteSpace(iterrole)).ToList();
+
+
+            //add user
+            foreach (var iteruser in tobeadd)
+            {
+                var tmp = new UserPermission(iteruser, (AccessPermissionEnum) 
+                    FolderUserPermissionComboBox.SelectedItem);
+                activeFolder.UserPermissions.Add(tmp);
+                tmp.AssignedUsers.IndustryRoles=roletoadd;
+
+                //if no company was added
+                if ((string.IsNullOrWhiteSpace(InputCompanyName.Text)) ||
+                    (InputCompanyName.Text.Equals("add company name here"))) continue;
+
+                tmp.AssignedUsers.AssignedCompany = new Company(InputCompanyName.Text);
+                //assign Trade to Company
+                if (TradeComboBox.SelectionBoxItem.ToString() != "")
+                {
+                    tmp.AssignedUsers.AssignedCompany.Trade = Selection.SelectTrade(
+                        (string) TradeComboBox.SelectionBoxItem);
+                }
+
+            }
+
+        }
+
+        private void Button_AddRolePermission(object sender, RoutedEventArgs e)
+        {
+            //error handling
+            if (activeProject == null)
+            {
+                MessageBox.Show("Please select a Project", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+
+            }
+            if (activeFolder == null)
+            {
+                MessageBox.Show("Please select a Folder", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (FolderRolePermissionComboBox.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a Rolepermission", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(InputRole.Text))
+            {
+                MessageBox.Show("Please enter a Role", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            //add role to Folder
+            var tobeadd=new RolePermission(InputRole.Text, (AccessPermissionEnum)
+                FolderRolePermissionComboBox.SelectedItem);
+            activeFolder.RolePermissions.Add(tobeadd);
+
+
         }
     }
 }

@@ -126,6 +126,8 @@
                 <TreeView
                     Margin="2"
                 VerticalAlignment="Stretch"
+                SelectedItemChanged="TreeView_OnSelectedItemChanged"
+                    x:Name="TreeViewFolder"
                 >
 
                     <!--Resources are used to build and style the contained items-->
@@ -198,7 +200,8 @@
                                 Margin="2"
                                 FontStyle="Italic"
                                 BorderThickness="2"
-                                Text="add user's mail here, separated with ;"></TextBox>
+                                Text="add user's mail here, separated with ;"
+                                x:Name="InputUserEmail"></TextBox>
                        
                         <TextBlock 
                             Margin="2"
@@ -220,12 +223,22 @@
                     <StackPanel Grid.Row="1">
                         <TextBlock
                             Margin="2"
+                            Text="Industry Role"></TextBlock>
+                        <TextBox 
+                            Margin="2"
+                            FontStyle="Italic"
+                            BorderThickness="2"
+                            Text="add user's Role here, separated with ;"
+                            x:Name="InputIndustryRole"></TextBox>
+                        <TextBlock
+                            Margin="2"
                             Text="Company Assignment"></TextBlock>
                         <TextBox 
                             Margin="2"
                             FontStyle="Italic"
                             BorderThickness="2"
-                            Text="add company name here"></TextBox>
+                            Text="add company name here"
+                            x:Name="InputCompanyName"></TextBox>
                         <TextBlock 
                             Margin="4"
                             Text="Company Trade"></TextBlock>
@@ -234,11 +247,15 @@
                             Name="TradeComboBox">
                         </ComboBox>
 
+                        
+
+
+
                     </StackPanel>
 
                     <Button Grid.Row="2"
                             Margin="5"
-                            Content="Add User Permission"></Button>
+                            Content="Add User Permission" Click="Button_AddUserPermission"></Button>
 
 
                     <!-- Role permissions -->
@@ -252,10 +269,11 @@
                             Margin="2"
                             FontStyle="Italic"
                             BorderThickness="2"
-                            Text="add role name here, separated with ;"></TextBox>
+                            Text="add role name here, separated with ;"
+                            x:Name="InputRole"></TextBox>
                         <TextBlock 
                             Margin="2"
-                            Text="Folder user permission"></TextBlock>
+                            Text="Folder Role permission"></TextBlock>
                         <ComboBox 
                             Margin="2" 
                             Name="FolderRolePermissionComboBox">
@@ -269,7 +287,7 @@
                         </ComboBox>
                         <Button Grid.Row="4"
                                 Margin="5"
-                                Content="Add Role Permission"></Button>
+                                Content="Add Role Permission" Click="Button_AddRolePermission"></Button>
 
                     </StackPanel>
 
