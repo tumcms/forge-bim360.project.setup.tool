@@ -139,10 +139,6 @@
                                       Click="MenuItem_FolderNeighbor"/>
                         </ContextMenu>
 
-                        <ContextMenu x:Key="FolderActionsRoot">
-                            <MenuItem Header="Create new folder as child"
-                                      Click="MenuItem_FolderChild"/>
-                        </ContextMenu>
 
                         <!-- Recursive Folder --> 
                         <HierarchicalDataTemplate DataType="{x:Type self:Folder}" ItemsSource="{Binding Subfolders}">
@@ -153,14 +149,14 @@
                     <!--actual tree viewer activity-->
                     <TreeViewItem 
                         Header="Plans" 
-                        ContextMenu="{StaticResource FolderActionsRoot}"
                         x:Name="TreeViewPlans">
+                        <!-- ContextMenu="{StaticResource FolderActionsRoot}" -->
                     </TreeViewItem>
 
                     <TreeViewItem 
                         Header="Project Files"
-                        ContextMenu="{StaticResource FolderActionsRoot}"
                         x:Name="TreeViewProjects">
+                        <!--ContextMenu="{StaticResource FolderActionsRoot}" -->
                     </TreeViewItem>
 
                 </TreeView>

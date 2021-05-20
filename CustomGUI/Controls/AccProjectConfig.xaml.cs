@@ -164,7 +164,7 @@ namespace CustomGUI.Controls
             //should be right i guess
             activeProject=(Bim360Project)ProjectsView.SelectedCells[0].Item;
             TreeViewPlans.ItemsSource = activeProject.Plans.Subfolders;
-            TreeViewProjects.ItemsSource = activeProject.Plans.Subfolders;
+            TreeViewProjects.ItemsSource = activeProject.ProjectFiles.Subfolders;
             ProjectTypeComboBox.SelectedItem = Selection.SelectProjectType(activeProject.ProjectType);
 
         }
@@ -304,7 +304,6 @@ namespace CustomGUI.Controls
 
         }
 
-
         private void MenuItem_FolderChild(object sender, RoutedEventArgs e)
         {
             var tmp = (MenuItem) e.Source;
@@ -320,6 +319,10 @@ namespace CustomGUI.Controls
             dialog.ShowDialog(); 
             folder.AddSubFolder(dialog.Answer);
             dialog.Close();
+            //refresh layout
+            TreeViewFolder.Items.Refresh();
+            TreeViewPlans.Items.Refresh();
+            TreeViewProjects.Items.Refresh();
         }
 
         private void MenuItem_FolderNeighbor(object sender, RoutedEventArgs e)
@@ -337,6 +340,10 @@ namespace CustomGUI.Controls
             dialog.ShowDialog();
             folder.RootFolder.AddSubFolder(dialog.Answer);
             dialog.Close();
+            //Refresh layout
+            TreeViewFolder.Items.Refresh();
+            TreeViewPlans.Items.Refresh();
+            TreeViewProjects.Items.Refresh();
         }
         
     }
