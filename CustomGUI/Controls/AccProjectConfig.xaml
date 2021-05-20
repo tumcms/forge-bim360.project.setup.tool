@@ -88,7 +88,7 @@
                     Grid.Column="0"
                     Grid.Row="3"
                     Margin="2"
-                    VerticalAlignment="Bottom" Click="Button_Click" />
+                    VerticalAlignment="Bottom" Click="Button_AddProject" />
         </Grid>
 
 
@@ -133,9 +133,17 @@
                     <!--Resources are used to build and style the contained items-->
                     <TreeView.Resources>
                         <ContextMenu x:Key="FolderActions">
-                            <MenuItem Header="Create new folder as child"/>
-                            <MenuItem Header="Create new folder as neighbor"/>
+                            <MenuItem Header="Create new folder as child"
+                                      Click="MenuItem_FolderChild"/>
+                            <MenuItem Header="Create new folder as neighbor"
+                                      Click="MenuItem_FolderNeighbor"/>
                         </ContextMenu>
+
+                        <ContextMenu x:Key="FolderActionsRoot">
+                            <MenuItem Header="Create new folder as child"
+                                      Click="MenuItem_FolderChild"/>
+                        </ContextMenu>
+
                         <!-- Recursive Folder --> 
                         <HierarchicalDataTemplate DataType="{x:Type self:Folder}" ItemsSource="{Binding Subfolders}">
                             <TreeViewItem Header="{Binding Name}" ContextMenu="{StaticResource FolderActions}"/>
@@ -145,13 +153,13 @@
                     <!--actual tree viewer activity-->
                     <TreeViewItem 
                         Header="Plans" 
-                        ContextMenu="{StaticResource FolderActions}"
+                        ContextMenu="{StaticResource FolderActionsRoot}"
                         x:Name="TreeViewPlans">
                     </TreeViewItem>
 
                     <TreeViewItem 
                         Header="Project Files"
-                        ContextMenu="{StaticResource FolderActions}"
+                        ContextMenu="{StaticResource FolderActionsRoot}"
                         x:Name="TreeViewProjects">
                     </TreeViewItem>
 

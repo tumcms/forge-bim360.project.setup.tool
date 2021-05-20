@@ -177,7 +177,7 @@ namespace CustomGUI.Controls
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_AddProject(object sender, RoutedEventArgs e)
         {
             projects.Add(new Bim360Project(Namenewproject.Text));
             activeProject=projects.Last();
@@ -303,5 +303,41 @@ namespace CustomGUI.Controls
 
 
         }
+
+
+        private void MenuItem_FolderChild(object sender, RoutedEventArgs e)
+        {
+            var tmp = (MenuItem) e.Source;
+            var folder= (Folder) tmp.DataContext;
+            if (folder == null)
+            {
+                MessageBox.Show("Please select a Project", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            var dialog = new InputDialog("Please enter the folder name:","Example Folder");
+            dialog.ResizeMode = ResizeMode.NoResize;
+            dialog.ShowDialog(); 
+            folder.AddSubFolder(dialog.Answer);
+            dialog.Close();
+        }
+
+        private void MenuItem_FolderNeighbor(object sender, RoutedEventArgs e)
+        {
+            var tmp = (MenuItem)e.Source;
+            var folder = (Folder)tmp.DataContext;
+            if (folder == null)
+            {
+                MessageBox.Show("Please select a Project", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            var dialog = new InputDialog("Please enter the folder name:", "Example Folder");
+            dialog.ResizeMode = ResizeMode.NoResize;
+            dialog.ShowDialog();
+            folder.RootFolder.AddSubFolder(dialog.Answer);
+            dialog.Close();
+        }
+        
     }
 }
