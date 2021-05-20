@@ -16,9 +16,9 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.75*" Name="Projects"></ColumnDefinition>
+            <ColumnDefinition Width="0.5*" Name="Projects"></ColumnDefinition>
             <ColumnDefinition Width="1.5*" Name="FolderBreakdown"></ColumnDefinition>
-            <ColumnDefinition Width="0.75*" Name="PermissionAssignment"></ColumnDefinition>
+            <ColumnDefinition Width="0.6*" Name="PermissionAssignment"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
         <!-- Projects overview -->
@@ -173,6 +173,7 @@
                               IsReadOnly="True"
                               CanUserAddRows="False"
                               SelectionMode="Single"
+                              SelectionChanged="UserPermissionView_OnSelectionChanged"
                     >
 
                         <DataGrid.ContextMenu>
@@ -181,9 +182,6 @@
                                 <MenuItem Header="Delete" />
                             </ContextMenu>
                         </DataGrid.ContextMenu>
-                        <DataGrid.Resources>
-                            <CollectionViewSource x:Key="IndustryRoles" Source="{Binding AssignedUsers.IndustryRoles}"/>
-                        </DataGrid.Resources>
                         <DataGrid.Columns>
 
                             <DataGridTextColumn
@@ -194,23 +192,40 @@
                                 Header="Permission"
                                 Binding="{Binding AccessPermission}"
                                 Width="Auto" />
-                            <DataGridComboBoxColumn
-                                Header="Industry Roles"
-                                ItemsSource="{Binding Source={StaticResource IndustryRoles}}"
-                                Width="150" 
-                                IsReadOnly="True">
-
-                            </DataGridComboBoxColumn>
                             <DataGridTextColumn
                                 Header="Company"
                                 Binding="{Binding AssignedUsers.AssignedCompany.Name}"
                                 Width="150" />
 
+
                         </DataGrid.Columns>
+
+
+                        
 
 
                     </DataGrid>
 
+                    <DataGrid 
+                        x:Name="RoleView"
+                        Margin="2"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        AutoGenerateColumns="False"
+                        CanUserResizeColumns="True"
+                        IsReadOnly="True"
+                        CanUserAddRows="False"
+                        SelectionMode="Single">
+
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn
+                                Header="Role"
+                                Binding="{Binding}"
+                                Width="*" />
+                        </DataGrid.Columns>
+
+                    </DataGrid>
                 </DockPanel>
                 <DockPanel
                     Dock="Bottom">

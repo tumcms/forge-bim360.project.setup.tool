@@ -37,6 +37,9 @@ namespace CustomGUI.Controls
 
         private Folder activeFolder { set; get; }
 
+        private UserPermission activePermission { set; get; }
+
+
         public AccProjectConfig()
         {
             InitializeComponent();
@@ -348,6 +351,15 @@ namespace CustomGUI.Controls
             TreeViewPlans.Items.Refresh();
             TreeViewProjects.Items.Refresh();
         }
-        
+
+        private void UserPermissionView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            activePermission = (UserPermission)UserPermissionView.SelectedItem;
+            if(activePermission!=null)
+            {
+                RoleView.ItemsSource = activePermission.AssignedUsers.IndustryRoles;
+            }
+           
+        }
     }
 }
