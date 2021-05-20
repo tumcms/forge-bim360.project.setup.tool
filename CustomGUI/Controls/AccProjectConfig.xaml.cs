@@ -204,6 +204,9 @@ namespace CustomGUI.Controls
                 }
             }
 
+            UserPermissionView.ItemsSource = activeFolder.UserPermissions;
+            RolePermissionView.ItemsSource = activeFolder.RolePermissions;
+
         }
 
         private void Button_AddUserPermission(object sender, RoutedEventArgs e)

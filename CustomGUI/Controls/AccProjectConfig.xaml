@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:self="clr-namespace:AdskConstructionCloudBreakdown;assembly=AdskConstructionCloudBreakdown"
+
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              Initialized="AccProjectConfig_OnInitialized">
@@ -15,9 +16,9 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" Name="Projects"></ColumnDefinition>
+            <ColumnDefinition Width="0.75*" Name="Projects"></ColumnDefinition>
             <ColumnDefinition Width="1.5*" Name="FolderBreakdown"></ColumnDefinition>
-            <ColumnDefinition Width="*" Name="PermissionAssignment"></ColumnDefinition>
+            <ColumnDefinition Width="0.75*" Name="PermissionAssignment"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
         <!-- Projects overview -->
@@ -104,6 +105,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
             </Grid>
 
@@ -160,8 +162,90 @@
                     </TreeViewItem>
 
                 </TreeView>
+                <DockPanel
+                    Dock="Bottom">
+                    <DataGrid x:Name="UserPermissionView"
+                              Margin="2"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              AutoGenerateColumns="False"
+                              CanUserResizeColumns="True"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              SelectionMode="Single"
+                    >
+
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Modify" />
+                                <MenuItem Header="Delete" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Resources>
+                            <CollectionViewSource x:Key="IndustryRoles" Source="{Binding AssignedUsers.IndustryRoles}"/>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn
+                                Header="User"
+                                Binding="{Binding AssignedUsers.MailAddress}"
+                                Width="150" />
+                            <DataGridTextColumn
+                                Header="Permission"
+                                Binding="{Binding AccessPermission}"
+                                Width="Auto" />
+                            <DataGridComboBoxColumn
+                                Header="Industry Roles"
+                                ItemsSource="{Binding Source={StaticResource IndustryRoles}}"
+                                Width="150" 
+                                IsReadOnly="True">
+
+                            </DataGridComboBoxColumn>
+                            <DataGridTextColumn
+                                Header="Company"
+                                Binding="{Binding AssignedUsers.AssignedCompany.Name}"
+                                Width="150" />
+
+                        </DataGrid.Columns>
+
+
+                    </DataGrid>
+
+                </DockPanel>
+                <DockPanel
+                    Dock="Bottom">
+                    <DataGrid x:Name="RolePermissionView"
+                              Margin="2"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              AutoGenerateColumns="False"
+                              CanUserResizeColumns="True"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              SelectionMode="Single"
+                    >
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn
+                                Header="Role"
+                                Binding="{Binding Role}"
+                                Width="Auto" />
+                            <DataGridTextColumn
+                                Header="Permission"
+                                Binding="{Binding AccessPermission}"
+                                Width="*" />
+
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+
+                </DockPanel>
 
             </StackPanel>
+
+
+
         </Grid>
         
         <!--Assign permissions-->
