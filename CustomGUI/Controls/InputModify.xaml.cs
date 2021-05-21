@@ -13,6 +13,7 @@ namespace CustomGUI.Controls
         public InputModify(string username, AccessPermissionEnum access, string company="")
         {
             InitializeComponent();
+            //set values to values that are currently set
             ComboBoxAccess.ItemsSource = Enum.GetValues(typeof(AdskConstructionCloudBreakdown.AccessPermissionEnum));
             UserNameAnswer.Text = username;
             CompanyAnswer.Text = company;
@@ -21,6 +22,7 @@ namespace CustomGUI.Controls
 
         private void btnDialogOk_Click(object sender, RoutedEventArgs e)
         {
+            //set values for config
             UserRet=UserNameAnswer.Text;
             CompanyRet=CompanyAnswer.Text;
             AccessRet=(AccessPermissionEnum)ComboBoxAccess.SelectedItem;
