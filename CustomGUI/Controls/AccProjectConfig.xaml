@@ -223,6 +223,17 @@
                         CanUserAddRows="False"
                         SelectionMode="Single">
 
+
+
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Add" 
+                                          Click="MenuItem_AddRole"/>
+                                <MenuItem Header="Delete" 
+                                          Click="MenuItem_RoleDelete"/>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+
                         <DataGrid.Columns>
 
                             <DataGridTextColumn
@@ -245,6 +256,17 @@
                               CanUserAddRows="False"
                               SelectionMode="Single"
                     >
+
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Modify" 
+                                          Click="MenuItem_RolePermissionModify"/>
+                                <MenuItem Header="Delete" 
+                                          Click="MenuItem_RolePermissionDelete"/>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+
+
                         <DataGrid.Columns>
 
                             <DataGridTextColumn

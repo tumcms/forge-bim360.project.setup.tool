@@ -5,38 +5,39 @@ using AdskConstructionCloudBreakdown;
 
 namespace CustomGUI.Controls
 {
-    public partial class InputModify : Window
+    public partial class InputModifyRole : Window
     {
-        public string UserRet { set; get; }
-        public string CompanyRet { set; get; }
+        public string RoleRet { set; get; }
         public AccessPermissionEnum AccessRet { set; get; }
-        public InputModify(string username, AccessPermissionEnum access, string company="")
+        public InputModifyRole(string RoleName, AccessPermissionEnum access)
         {
             InitializeComponent();
             //set values to values that are currently set
             ComboBoxAccess.ItemsSource = Enum.GetValues(typeof(AdskConstructionCloudBreakdown.AccessPermissionEnum));
-            UserNameAnswer.Text = username;
-            CompanyAnswer.Text = company;
+            RoleNameAnswer.Text = RoleName;
             ComboBoxAccess.SelectedItem = access;
+            //in case that user canceled the input
+            RoleRet = RoleNameAnswer.Text;
+            AccessRet = (AccessPermissionEnum)ComboBoxAccess.SelectedItem;
+
         }
 
         private void btnDialogOk_Click(object sender, RoutedEventArgs e)
         {
             //set values for config
-            UserRet=UserNameAnswer.Text;
-            CompanyRet=CompanyAnswer.Text;
-            AccessRet=(AccessPermissionEnum)ComboBoxAccess.SelectedItem;
+            RoleRet = RoleNameAnswer.Text;
+            AccessRet = (AccessPermissionEnum)ComboBoxAccess.SelectedItem;
 
             this.DialogResult = true;
         }
 
         private void Window_ContentRendered(object sender, EventArgs e)
         {
-            UserNameAnswer.SelectAll();
-            UserNameAnswer.Focus();
+            RoleNameAnswer.SelectAll();
+            RoleNameAnswer.Focus();
 
         }
 
-        
+
     }
 }

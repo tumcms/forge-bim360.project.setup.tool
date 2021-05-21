@@ -281,7 +281,8 @@ namespace CustomGUI.Controls
                 }
 
             }
-
+            //refresh view
+            UserPermissionView.Items.Refresh();
         }
 
         private void Button_AddRolePermission(object sender, RoutedEventArgs e)
@@ -317,7 +318,8 @@ namespace CustomGUI.Controls
             var tobeadd=new RolePermission(InputRole.Text, (AccessPermissionEnum)
                 FolderRolePermissionComboBox.SelectedItem);
             activeFolder.RolePermissions.Add(tobeadd);
-
+            //refresh view
+            RolePermissionView.Items.Refresh();
 
         }
 
@@ -435,16 +437,16 @@ namespace CustomGUI.Controls
             var toModifyFromList = (UserPermission)item.SelectedCells[0].Item;
 
             //reorgenize
-            InputModify dialog;
+            InputModifyUser dialog;
             //inputdialog for user to modify 
             if (toModifyFromList.AssignedUsers.AssignedCompany != null)
             {
-                dialog = new InputModify(toModifyFromList.AssignedUsers.MailAddress,
+                dialog = new InputModifyUser(toModifyFromList.AssignedUsers.MailAddress,
                     toModifyFromList.AccessPermission, toModifyFromList.AssignedUsers.AssignedCompany.Name);
             }
             else
             {
-                dialog = new InputModify(toModifyFromList.AssignedUsers.MailAddress,
+                dialog = new InputModifyUser(toModifyFromList.AssignedUsers.MailAddress,
                     toModifyFromList.AccessPermission);
             }
 
@@ -466,6 +468,87 @@ namespace CustomGUI.Controls
             
             dialog.Close();
             UserPermissionView.Items.Refresh();
+
+        }
+
+        private void MenuItem_AddRole(object sender, RoutedEventArgs e)
+        {
+            if (activePermission == null)
+            {
+                return;
+            }
+            //ask user about the role
+            var dialog = new InputDialog("Please enter the Role name:", "Example Role");
+            dialog.ResizeMode = ResizeMode.NoResize;
+            dialog.ShowDialog();
+            activePermission.AssignedUsers.IndustryRoles.Add(dialog.Answer);
+            dialog.Close();
+            //refresh layout
+            RoleView.Items.Refresh();
+
+        }
+
+        private void MenuItem_RoleDelete(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Get the underlying item
+            var toDeleteFromList = (string)item.SelectedCells[0].Item;
+            if (activePermission == null)
+            {
+                return;
+            }
+            //reorgenize
+            activePermission.AssignedUsers.IndustryRoles.Remove(toDeleteFromList);
+            RoleView.Items.Refresh();
+        }
+
+        private void MenuItem_RolePermissionDelete(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Get the underlying item
+            var toDeleteFromList = (RolePermission)item.SelectedCells[0].Item;
+            if (activeFolder == null)
+            {
+                return;
+            }
+            //reorgenize
+            activeFolder.RolePermissions.Remove(toDeleteFromList);
+            RolePermissionView.Items.Refresh();
+        }
+
+        private void MenuItem_RolePermissionModify(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Get the underlying item
+            var toModifyFromList = (RolePermission)item.SelectedCells[0].Item;
+            if (activeFolder == null)
+            {
+                return;
+            }
+            //reorgenize
+            var dialog = new InputModifyRole(toModifyFromList.Role, toModifyFromList.AccessPermission)
+            {
+                ResizeMode = ResizeMode.NoResize
+            };
+            dialog.ShowDialog();
+
+            //set values + refesh view
+            toModifyFromList.Role = dialog.RoleRet;
+            toModifyFromList.AccessPermission = dialog.AccessRet;
+            dialog.Close();
+            RolePermissionView.Items.Refresh();
 
         }
     }

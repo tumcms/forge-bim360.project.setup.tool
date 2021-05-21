@@ -16,7 +16,10 @@
     <Compile Update="Controls\InputFormUser.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\InputModify.xaml.cs">
+    <Compile Update="Controls\InputModifyRole.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\InputModifyUser.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -30,7 +33,10 @@
     <Page Update="Controls\InputFormUser.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\InputModify.xaml">
+    <Page Update="Controls\InputModifyRole.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\InputModifyUser.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">
