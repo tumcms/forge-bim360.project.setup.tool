@@ -60,15 +60,19 @@
 
                         <DataGrid.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Delete" />
-                                <MenuItem Header="Duplicate" />
+                                <MenuItem Header="Delete" 
+                                          Click="MenuItem_ProjectDelete"/>
+                                <MenuItem Header="Duplicate" 
+                                          Click="MenuItem_ProjectDuplicate"/>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
+
                         <DataGrid.Columns>
                             <DataGridTextColumn
                                 Header="BIM360 Projects"
                                 Binding="{Binding ProjectName}"
-                                Width="150" />
+                                Width="150"
+                                />
                         </DataGrid.Columns>
                     </DataGrid>
             </StackPanel>

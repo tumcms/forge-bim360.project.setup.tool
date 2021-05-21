@@ -172,6 +172,42 @@ namespace CustomGUI.Controls
 
         }
 
+        private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            //set active Folder 
+            if (TreeViewFolder.SelectedItem.GetType() == typeof(Folder))
+            {
+                activeFolder = (Folder)TreeViewFolder.SelectedItem;
+            }
+            else if (activeProject != null)
+            {
+                //this is needed because of the Static implimentation of the Rootfolders
+                if (((TreeViewItem)TreeViewFolder.SelectedItem).Header.ToString() == "Plans")
+                {
+                    activeFolder = activeProject.Plans;
+                }
+                else if (((TreeViewItem)TreeViewFolder.SelectedItem).Header.ToString() == "Project Files")
+                {
+                    activeFolder = activeProject.ProjectFiles;
+                }
+            }
+
+            UserPermissionView.ItemsSource = activeFolder.UserPermissions;
+            RolePermissionView.ItemsSource = activeFolder.RolePermissions;
+            RoleView.ItemsSource = null;
+
+        }
+
+        private void UserPermissionView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            activePermission = (UserPermission)UserPermissionView.SelectedItem;
+            if (activePermission != null)
+            {
+                RoleView.ItemsSource = activePermission.AssignedUsers.IndustryRoles;
+            }
+
+        }
+
         private void ProjectTypeComboBox_OnLostFocus(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(ProjectTypeComboBox.Text.ToString()))
@@ -185,31 +221,6 @@ namespace CustomGUI.Controls
             projects.Add(new Bim360Project(Namenewproject.Text));
             activeProject=projects.Last();
             ProjectsView.Items.Refresh();
-        }
-
-        private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            //set active Folder 
-            if (TreeViewFolder.SelectedItem.GetType()==typeof(Folder))
-            {
-                activeFolder = (Folder)TreeViewFolder.SelectedItem;
-            }
-            else if(activeProject!=null)
-            {
-                //this is needed because of the Static implimentation of the Rootfolders
-                if (((TreeViewItem) TreeViewFolder.SelectedItem).Header.ToString() == "Plans")
-                {
-                    activeFolder = activeProject.Plans;
-                }
-                else if(((TreeViewItem)TreeViewFolder.SelectedItem).Header.ToString() == "Project Files")
-                {
-                    activeFolder = activeProject.ProjectFiles;
-                }
-            }
-
-            UserPermissionView.ItemsSource = activeFolder.UserPermissions;
-            RolePermissionView.ItemsSource = activeFolder.RolePermissions;
-
         }
 
         private void Button_AddUserPermission(object sender, RoutedEventArgs e)
@@ -312,6 +323,7 @@ namespace CustomGUI.Controls
 
         private void MenuItem_FolderChild(object sender, RoutedEventArgs e)
         {
+            //get the selected Item
             var tmp = (MenuItem) e.Source;
             var folder= (Folder) tmp.DataContext;
             if (folder == null)
@@ -351,15 +363,44 @@ namespace CustomGUI.Controls
             TreeViewPlans.Items.Refresh();
             TreeViewProjects.Items.Refresh();
         }
-
-        private void UserPermissionView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        
+        private void MenuItem_ProjectDelete(object sender, RoutedEventArgs e)
         {
-            activePermission = (UserPermission)UserPermissionView.SelectedItem;
-            if(activePermission!=null)
+            //Get the clicked MenuItem
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Get the underlying item
+            var toDeleteFromBindedList = (Bim360Project)item.SelectedCells[0].Item;
+            //reorgenize
+            if (toDeleteFromBindedList == activeProject)
             {
-                RoleView.ItemsSource = activePermission.AssignedUsers.IndustryRoles;
+                activeProject = null;
             }
-           
+            activeFolder = null;
+            activePermission = null;
+            projects.Remove(toDeleteFromBindedList);
+            ProjectsView.Items.Refresh();
+
+        }
+        
+
+        private void MenuItem_ProjectDuplicate(object sender, RoutedEventArgs e)
+        {
+            //Get the clicked MenuItem
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Copy Itme
+            var toduplicate = (Bim360Project)item.SelectedCells[0].Item;
+            var toadd = new Bim360Project(toduplicate);
+            projects.Add(toadd);
+            ProjectsView.Items.Refresh();
+
         }
     }
 }

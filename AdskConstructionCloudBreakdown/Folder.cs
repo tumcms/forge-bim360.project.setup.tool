@@ -109,5 +109,49 @@ namespace AdskConstructionCloudBreakdown
 
             return height;
         }
+
+        public void Clone(Folder toclone)
+        {
+            this.Name = toclone.Name;
+            this.level = toclone.level;
+            this.SampleFilesDirectory = toclone.SampleFilesDirectory;
+            //iterate of UserPermission and clone elementwise
+            foreach (var iter in toclone.UserPermissions)
+            {
+                this.UserPermissions.Add(new UserPermission(
+                    iter.AssignedUsers.MailAddress,iter.AccessPermission));
+                //add all roles
+                foreach (var iterrole in iter.AssignedUsers.IndustryRoles)
+                {
+                    this.UserPermissions.Last().AssignedUsers.IndustryRoles.Add(iterrole);
+                }
+
+                //not sure if this works with the Trade
+                if (iter.AssignedUsers.AssignedCompany != null)
+                {
+                    this.UserPermissions.Last().AssignedUsers.AssignedCompany = new
+                        Company(iter.AssignedUsers.AssignedCompany.Name)
+                        {
+                            Trade = iter.AssignedUsers.AssignedCompany.Trade
+                        };
+                }
+            }
+
+            //clone Role permission
+            foreach (var iter in toclone.RolePermissions)
+            {
+                this.RolePermissions.Add(new RolePermission(
+                    iter.Role, iter.AccessPermission));
+            }
+
+            //recusive add Folder
+            foreach (var iter in toclone.Subfolders)
+            {
+                this.Subfolders.Add(new Folder());
+                this.Subfolders.Last().RootFolder = this;
+                this.Subfolders.Last().Clone(iter);
+            }
+        }
+
     }
 }

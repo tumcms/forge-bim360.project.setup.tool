@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AdskConstructionCloudBreakdown
 {
-    public class Bim360Project
+    public class Bim360Project 
     {
         public string ProjectName { get; set; }
         public ProjectTypeEnum ProjectType { get; set; }
@@ -41,6 +41,18 @@ namespace AdskConstructionCloudBreakdown
             // init arrays
             Plans = new Folder();
             ProjectFiles = new Folder();
+        }
+
+        public Bim360Project(Bim360Project tocopyproject)
+        {
+            this.ProjectName = tocopyproject.ProjectName;
+            this.ProjectType = tocopyproject.ProjectType;
+            // init arrays
+            Plans = new Folder();
+            ProjectFiles = new Folder();
+            Plans.Clone(tocopyproject.Plans);
+            ProjectFiles.Clone(tocopyproject.ProjectFiles);
+
         }
 
         /// <summary>
