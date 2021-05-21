@@ -386,7 +386,6 @@ namespace CustomGUI.Controls
 
         }
         
-
         private void MenuItem_ProjectDuplicate(object sender, RoutedEventArgs e)
         {
             //Get the clicked MenuItem
@@ -400,6 +399,73 @@ namespace CustomGUI.Controls
             var toadd = new Bim360Project(toduplicate);
             projects.Add(toadd);
             ProjectsView.Items.Refresh();
+
+        }
+
+        private void MenuItem_UserDelete(object sender, RoutedEventArgs e)
+        {
+            //Get the clicked MenuItem
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Get the underlying item
+            var toDeleteFromList = (UserPermission)item.SelectedCells[0].Item;
+            //reorgenize
+            if (toDeleteFromList == activePermission)
+            {
+                activePermission = null;
+            }
+            activeFolder.UserPermissions.Remove(toDeleteFromList);
+            UserPermissionView.Items.Refresh();
+
+        }
+
+        private void MenuItem_UserModify(object sender, RoutedEventArgs e)
+        {
+            //Get the clicked MenuItem
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Get the underlying item
+            //if(item.SelectedCells[0].Item.GetType().Equals())
+            var toModifyFromList = (UserPermission)item.SelectedCells[0].Item;
+
+            //reorgenize
+            InputModify dialog;
+            //inputdialog for user to modify 
+            if (toModifyFromList.AssignedUsers.AssignedCompany != null)
+            {
+                dialog = new InputModify(toModifyFromList.AssignedUsers.MailAddress,
+                    toModifyFromList.AccessPermission, toModifyFromList.AssignedUsers.AssignedCompany.Name);
+            }
+            else
+            {
+                dialog = new InputModify(toModifyFromList.AssignedUsers.MailAddress,
+                    toModifyFromList.AccessPermission);
+            }
+
+            dialog.ResizeMode = ResizeMode.NoResize;
+            dialog.ShowDialog();
+            //set values + refesh view
+            toModifyFromList.AssignedUsers.MailAddress = dialog.UserRet;
+            toModifyFromList.AccessPermission = dialog.AccessRet;
+            //if no Company was set -> create a new one
+            if (toModifyFromList.AssignedUsers.AssignedCompany == null && 
+                !string.IsNullOrWhiteSpace(dialog.CompanyRet))
+            {
+                toModifyFromList.AssignedUsers.AssignedCompany =new Company(dialog.CompanyRet);
+            }
+            else if (toModifyFromList.AssignedUsers.AssignedCompany != null)
+            {
+                toModifyFromList.AssignedUsers.AssignedCompany.Name = dialog.CompanyRet;
+            }
+            
+            dialog.Close();
+            UserPermissionView.Items.Refresh();
 
         }
     }

@@ -182,8 +182,10 @@
 
                         <DataGrid.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Modify" />
-                                <MenuItem Header="Delete" />
+                                <MenuItem Header="Modify" 
+                                          Click="MenuItem_UserModify"/>
+                                <MenuItem Header="Delete" 
+                                          Click="MenuItem_UserDelete"/>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>

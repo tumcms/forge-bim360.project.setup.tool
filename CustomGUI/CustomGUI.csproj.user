@@ -16,6 +16,9 @@
     <Compile Update="Controls\InputFormUser.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\InputModify.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Controls\AccProjectConfig.xaml">
@@ -25,6 +28,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\InputFormUser.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\InputModify.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">
