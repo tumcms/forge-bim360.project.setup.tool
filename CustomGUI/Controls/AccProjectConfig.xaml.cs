@@ -35,6 +35,11 @@ namespace CustomGUI.Controls
 
         private Bim360Project activeProject { set; get; }
 
+        private Folder activeFolder { set; get; }
+
+        private UserPermission activePermission { set; get; }
+
+
         public AccProjectConfig()
         {
             InitializeComponent();
@@ -59,6 +64,7 @@ namespace CustomGUI.Controls
             {
                 tobeadded.Add(Selection.SelectTrade((TradeEnum)iter));
             }
+            tobeadded.Add(string.Empty);
             TradeComboBox.ItemsSource = tobeadded;
 
 
@@ -161,8 +167,45 @@ namespace CustomGUI.Controls
             //should be right i guess
             activeProject=(Bim360Project)ProjectsView.SelectedCells[0].Item;
             TreeViewPlans.ItemsSource = activeProject.Plans.Subfolders;
-            TreeViewProjects.ItemsSource = activeProject.Plans.Subfolders;
+            TreeViewProjects.ItemsSource = activeProject.ProjectFiles.Subfolders;
             ProjectTypeComboBox.SelectedItem = Selection.SelectProjectType(activeProject.ProjectType);
+
+        }
+
+        private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            //set active Folder 
+            if (TreeViewFolder.SelectedItem.GetType() == typeof(Folder))
+            {
+                activeFolder = (Folder)TreeViewFolder.SelectedItem;
+            }
+            else if (activeProject != null)
+            {
+                //this is needed because of the Static implimentation of the Rootfolders
+                if (((TreeViewItem)TreeViewFolder.SelectedItem).Header.ToString() == "Plans")
+                {
+                    activeFolder = activeProject.Plans;
+                }
+                else if (((TreeViewItem)TreeViewFolder.SelectedItem).Header.ToString() == "Project Files")
+                {
+                    activeFolder = activeProject.ProjectFiles;
+                }
+            }
+
+            UserPermissionView.ItemsSource = activeFolder.UserPermissions;
+            RolePermissionView.ItemsSource = activeFolder.RolePermissions;
+            RoleView.ItemsSource = null;
+
+        }
+
+        private void UserPermissionView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            activePermission = (UserPermission)UserPermissionView.SelectedItem;
+            if (activePermission != null)
+            {
+                RoleView.ItemsSource = activePermission.AssignedUsers.IndustryRoles;
+            }
+
         }
 
         private void ProjectTypeComboBox_OnLostFocus(object sender, RoutedEventArgs e)
@@ -173,11 +216,340 @@ namespace CustomGUI.Controls
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_AddProject(object sender, RoutedEventArgs e)
         {
             projects.Add(new Bim360Project(Namenewproject.Text));
             activeProject=projects.Last();
             ProjectsView.Items.Refresh();
+        }
+
+        private void Button_AddUserPermission(object sender, RoutedEventArgs e)
+        {
+            //error handling
+            if (activeProject == null)
+            {
+                MessageBox.Show("Please select a Project", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+
+            }
+            if (activeFolder == null)
+            {
+                MessageBox.Show("Please select a Folder", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (FolderUserPermissionComboBox.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a Userpermission", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var tobeadd = InputUserEmail.Text.Split(';');
+            if (tobeadd.Any(iter => string.IsNullOrWhiteSpace(iter)))
+            {
+                MessageBox.Show("Please enter a valid Name.\nMaybe an ; to much?", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+
+            var inputindsrole = InputIndustryRole.Text.Split(';');
+            var roletoadd = inputindsrole.Where(iterrole => 
+                !string.IsNullOrWhiteSpace(iterrole)).ToList();
+
+
+            //add user
+            foreach (var iteruser in tobeadd)
+            {
+                var tmp = new UserPermission(iteruser, (AccessPermissionEnum) 
+                    FolderUserPermissionComboBox.SelectedItem);
+                activeFolder.UserPermissions.Add(tmp);
+                tmp.AssignedUsers.IndustryRoles=roletoadd;
+
+                //if no company was added
+                if ((string.IsNullOrWhiteSpace(InputCompanyName.Text)) ||
+                    (InputCompanyName.Text.Equals("add company name here"))) continue;
+
+                tmp.AssignedUsers.AssignedCompany = new Company(InputCompanyName.Text);
+                //assign Trade to Company
+                if (TradeComboBox.SelectionBoxItem.ToString() != "")
+                {
+                    tmp.AssignedUsers.AssignedCompany.Trade = Selection.SelectTrade(
+                        (string) TradeComboBox.SelectionBoxItem);
+                }
+
+            }
+            //refresh view
+            UserPermissionView.Items.Refresh();
+        }
+
+        private void Button_AddRolePermission(object sender, RoutedEventArgs e)
+        {
+            //error handling
+            if (activeProject == null)
+            {
+                MessageBox.Show("Please select a Project", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+
+            }
+            if (activeFolder == null)
+            {
+                MessageBox.Show("Please select a Folder", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (FolderRolePermissionComboBox.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a Rolepermission", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(InputRole.Text))
+            {
+                MessageBox.Show("Please enter a Role", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            //add role to Folder
+            var tobeadd=new RolePermission(InputRole.Text, (AccessPermissionEnum)
+                FolderRolePermissionComboBox.SelectedItem);
+            activeFolder.RolePermissions.Add(tobeadd);
+            //refresh view
+            RolePermissionView.Items.Refresh();
+
+        }
+
+        private void MenuItem_FolderChild(object sender, RoutedEventArgs e)
+        {
+            //get the selected Item
+            var tmp = (MenuItem) e.Source;
+            var folder= (Folder) tmp.DataContext;
+            if (folder == null)
+            {
+                MessageBox.Show("Please select a Project", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            var dialog = new InputDialog("Please enter the folder name:","Example Folder");
+            dialog.ResizeMode = ResizeMode.NoResize;
+            dialog.ShowDialog(); 
+            folder.AddSubFolder(dialog.Answer);
+            dialog.Close();
+            //refresh layout
+            TreeViewFolder.Items.Refresh();
+            TreeViewPlans.Items.Refresh();
+            TreeViewProjects.Items.Refresh();
+        }
+
+        private void MenuItem_FolderNeighbor(object sender, RoutedEventArgs e)
+        {
+            var tmp = (MenuItem)e.Source;
+            var folder = (Folder)tmp.DataContext;
+            if (folder == null)
+            {
+                MessageBox.Show("Please select a Project", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            var dialog = new InputDialog("Please enter the folder name:", "Example Folder");
+            dialog.ResizeMode = ResizeMode.NoResize;
+            dialog.ShowDialog();
+            folder.RootFolder.AddSubFolder(dialog.Answer);
+            dialog.Close();
+            //Refresh layout
+            TreeViewFolder.Items.Refresh();
+            TreeViewPlans.Items.Refresh();
+            TreeViewProjects.Items.Refresh();
+        }
+        
+        private void MenuItem_ProjectDelete(object sender, RoutedEventArgs e)
+        {
+            //Get the clicked MenuItem
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Get the underlying item
+            var toDeleteFromBindedList = (Bim360Project)item.SelectedCells[0].Item;
+            //reorgenize
+            if (toDeleteFromBindedList == activeProject)
+            {
+                activeProject = null;
+            }
+            activeFolder = null;
+            activePermission = null;
+            projects.Remove(toDeleteFromBindedList);
+            ProjectsView.Items.Refresh();
+
+        }
+        
+        private void MenuItem_ProjectDuplicate(object sender, RoutedEventArgs e)
+        {
+            //Get the clicked MenuItem
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Copy Itme
+            var toduplicate = (Bim360Project)item.SelectedCells[0].Item;
+            var toadd = new Bim360Project(toduplicate);
+            projects.Add(toadd);
+            ProjectsView.Items.Refresh();
+
+        }
+
+        private void MenuItem_UserDelete(object sender, RoutedEventArgs e)
+        {
+            //Get the clicked MenuItem
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Get the underlying item
+            var toDeleteFromList = (UserPermission)item.SelectedCells[0].Item;
+            //reorgenize
+            if (toDeleteFromList == activePermission)
+            {
+                activePermission = null;
+            }
+            activeFolder.UserPermissions.Remove(toDeleteFromList);
+            UserPermissionView.Items.Refresh();
+
+        }
+
+        private void MenuItem_UserModify(object sender, RoutedEventArgs e)
+        {
+            //Get the clicked MenuItem
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Get the underlying item
+            //if(item.SelectedCells[0].Item.GetType().Equals())
+            var toModifyFromList = (UserPermission)item.SelectedCells[0].Item;
+
+            //reorgenize
+            InputModifyUser dialog;
+            //inputdialog for user to modify 
+            if (toModifyFromList.AssignedUsers.AssignedCompany != null)
+            {
+                dialog = new InputModifyUser(toModifyFromList.AssignedUsers.MailAddress,
+                    toModifyFromList.AccessPermission, toModifyFromList.AssignedUsers.AssignedCompany.Name);
+            }
+            else
+            {
+                dialog = new InputModifyUser(toModifyFromList.AssignedUsers.MailAddress,
+                    toModifyFromList.AccessPermission);
+            }
+
+            dialog.ResizeMode = ResizeMode.NoResize;
+            dialog.ShowDialog();
+            //set values + refesh view
+            toModifyFromList.AssignedUsers.MailAddress = dialog.UserRet;
+            toModifyFromList.AccessPermission = dialog.AccessRet;
+            //if no Company was set -> create a new one
+            if (toModifyFromList.AssignedUsers.AssignedCompany == null && 
+                !string.IsNullOrWhiteSpace(dialog.CompanyRet))
+            {
+                toModifyFromList.AssignedUsers.AssignedCompany =new Company(dialog.CompanyRet);
+            }
+            else if (toModifyFromList.AssignedUsers.AssignedCompany != null)
+            {
+                toModifyFromList.AssignedUsers.AssignedCompany.Name = dialog.CompanyRet;
+            }
+            
+            dialog.Close();
+            UserPermissionView.Items.Refresh();
+
+        }
+
+        private void MenuItem_AddRole(object sender, RoutedEventArgs e)
+        {
+            if (activePermission == null)
+            {
+                return;
+            }
+            //ask user about the role
+            var dialog = new InputDialog("Please enter the Role name:", "Example Role");
+            dialog.ResizeMode = ResizeMode.NoResize;
+            dialog.ShowDialog();
+            activePermission.AssignedUsers.IndustryRoles.Add(dialog.Answer);
+            dialog.Close();
+            //refresh layout
+            RoleView.Items.Refresh();
+
+        }
+
+        private void MenuItem_RoleDelete(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Get the underlying item
+            var toDeleteFromList = (string)item.SelectedCells[0].Item;
+            if (activePermission == null)
+            {
+                return;
+            }
+            //reorgenize
+            activePermission.AssignedUsers.IndustryRoles.Remove(toDeleteFromList);
+            RoleView.Items.Refresh();
+        }
+
+        private void MenuItem_RolePermissionDelete(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Get the underlying item
+            var toDeleteFromList = (RolePermission)item.SelectedCells[0].Item;
+            if (activeFolder == null)
+            {
+                return;
+            }
+            //reorgenize
+            activeFolder.RolePermissions.Remove(toDeleteFromList);
+            RolePermissionView.Items.Refresh();
+        }
+
+        private void MenuItem_RolePermissionModify(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Get the underlying item
+            var toModifyFromList = (RolePermission)item.SelectedCells[0].Item;
+            if (activeFolder == null)
+            {
+                return;
+            }
+            //reorgenize
+            var dialog = new InputModifyRole(toModifyFromList.Role, toModifyFromList.AccessPermission)
+            {
+                ResizeMode = ResizeMode.NoResize
+            };
+            dialog.ShowDialog();
+
+            //set values + refesh view
+            toModifyFromList.Role = dialog.RoleRet;
+            toModifyFromList.AccessPermission = dialog.AccessRet;
+            dialog.Close();
+            RolePermissionView.Items.Refresh();
+
         }
     }
 }

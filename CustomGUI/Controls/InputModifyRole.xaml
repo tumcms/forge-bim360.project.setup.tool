@@ -1,0 +1,32 @@
+﻿<Window x:Class="CustomGUI.Controls.InputModifyRole"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Input" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+    <Grid Margin="15">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label Name="RoleName" Grid.Column="1">RoleName:</Label>
+        <TextBox Name="RoleNameAnswer" Grid.Column="1" Grid.Row="1" MinWidth="250">e</TextBox>
+
+        <Label Grid.Row="2" Name="AccessPermission" Grid.Column="1">AccessPermission</Label>
+        <ComboBox Grid.Row="3" Grid.Column="1" x:Name="ComboBoxAccess"></ComboBox>
+
+        <WrapPanel Grid.Row="6" Grid.ColumnSpan="3" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button IsDefault="True" Name="btnDialogOk" Click="btnDialogOk_Click" MinWidth="60" Margin="0,0,10,0">_Ok</Button>
+            <Button IsCancel="True" MinWidth="60">_Cancel</Button>
+        </WrapPanel>
+
+    </Grid>
+</Window>
