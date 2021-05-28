@@ -145,12 +145,16 @@
                                       Click="MenuItem_FolderNeighbor"/>
                         </ContextMenu>
 
-
-                        <!-- Recursive Folder --> 
+                        <!-- Recursive Folder -->
                         <HierarchicalDataTemplate DataType="{x:Type self:Folder}" ItemsSource="{Binding Subfolders}">
-                            <TreeViewItem Header="{Binding Name}" ContextMenu="{StaticResource FolderActions}"/>
+                            <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource FolderActions}"/>
                         </HierarchicalDataTemplate>
+
+
                     </TreeView.Resources>
+
+
+
 
                     <!--actual tree viewer activity-->
                     <TreeViewItem 
