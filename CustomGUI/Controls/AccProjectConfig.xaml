@@ -47,47 +47,46 @@
                     Margin="2" />
 
                 <DataGrid x:Name="ProjectsView"
-                              Margin="2"
-                              HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch"
-                              AutoGenerateColumns="False"
-                              CanUserResizeColumns="True"
-                              IsReadOnly="True"
-                              CanUserAddRows="True"
-                              SelectionMode="Single"
-                              SelectionChanged="ProjectsView_OnSelectionChanged"
-                              >
+                          Margin="2"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          AutoGenerateColumns="False"
+                          CanUserResizeColumns="True"
+                          IsReadOnly="True"
+                          CanUserAddRows="True"
+                          SelectionMode="Single"
+                          SelectionChanged="ProjectsView_OnSelectionChanged">
 
-                        <DataGrid.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="Delete" 
-                                          Click="MenuItem_ProjectDelete"/>
-                                <MenuItem Header="Duplicate" 
-                                          Click="MenuItem_ProjectDuplicate"/>
-                            </ContextMenu>
-                        </DataGrid.ContextMenu>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Delete"
+                                      Click="MenuItem_ProjectDelete" />
+                            <MenuItem Header="Duplicate"
+                                      Click="MenuItem_ProjectDuplicate" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
 
-                        <DataGrid.Columns>
-                            <DataGridTextColumn
-                                Header="BIM360 Projects"
-                                Binding="{Binding ProjectName}"
-                                Width="150"
-                                />
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Header="BIM360 Projects"
+                            Binding="{Binding ProjectName}"
+                            Width="150" />
+                    </DataGrid.Columns>
+                </DataGrid>
             </StackPanel>
-            <ComboBox 
+            <ComboBox
                 Grid.Row="1"
-                Margin="2" 
+                Margin="2"
                 Name="ProjectTypeComboBox"
                 LostFocus="ProjectTypeComboBox_OnLostFocus">
             </ComboBox>
             <TextBox Grid.Row="2"
-                Margin="2"
-                FontStyle="Italic"
-                BorderThickness="2"
-                Text="enter new projectname here"
-                x:Name="Namenewproject"></TextBox>
+                     Margin="2"
+                     FontStyle="Italic"
+                     BorderThickness="2"
+                     Text="enter new projectname here"
+                     x:Name="Namenewproject">
+            </TextBox>
 
             <Button Content="Add Project"
                     Grid.Column="0"
@@ -98,52 +97,58 @@
 
 
         <!--Folder breakdown -->
-        <Grid 
-            Row="0" 
+        <Grid
+            Row="0"
             Column="1"
-            Margin="2">
+            Margin="4"
+            Background="WhiteSmoke">
 
-            <Grid 
-                Margin="2"
-                VerticalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-            </Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
 
-
-            <StackPanel
-                Grid.Column="0"
-                Margin="2"
-                Background="WhiteSmoke"
-                VerticalAlignment="Stretch"
-                >
-
+            <!-- Section header -->
+            <StackPanel>
                 <TextBlock
+                    Grid.Row="0"
                     Text="Project Folder Breakdown"
                     FontSize="18"
                     Foreground="DarkGray"
                     TextAlignment="Center"
                     Margin="2" />
+            </StackPanel>
+            
+
+            <Grid
+                Grid.Row="1"
+                Margin="2"
+                VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="2"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="2"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
 
 
                 <TreeView
                     Margin="2"
-                VerticalAlignment="Stretch"
-                SelectedItemChanged="TreeView_OnSelectedItemChanged"
-                    x:Name="TreeViewFolder"
-                >
+                    Grid.Row="0"
+                    VerticalAlignment="Stretch"
+                    SelectedItemChanged="TreeView_OnSelectedItemChanged"
+                    x:Name="TreeViewFolder">
 
                     <!--Resources are used to build and style the contained items-->
                     <TreeView.Resources>
                         <ContextMenu x:Key="FolderActions">
                             <MenuItem Header="Create new folder as child"
-                                      Click="MenuItem_FolderChild"/>
+                                      Click="MenuItem_FolderChild" />
                             <MenuItem Header="Create new folder as neighbor"
-                                      Click="MenuItem_FolderNeighbor"/>
+                                      Click="MenuItem_FolderNeighbor" />
                         </ContextMenu>
+
 
                         <!-- Recursive Folder -->
                         <HierarchicalDataTemplate DataType="{x:Type self:Folder}" ItemsSource="{Binding Subfolders}">
@@ -157,21 +162,28 @@
 
 
                     <!--actual tree viewer activity-->
-                    <TreeViewItem 
-                        Header="Plans" 
+                    <TreeViewItem
+                        Header="Plans"
                         x:Name="TreeViewPlans">
                         <!-- ContextMenu="{StaticResource FolderActionsRoot}" -->
                     </TreeViewItem>
 
-                    <TreeViewItem 
+                    <TreeViewItem
                         Header="Project Files"
                         x:Name="TreeViewProjects">
                         <!--ContextMenu="{StaticResource FolderActionsRoot}" -->
                     </TreeViewItem>
 
                 </TreeView>
+
+                <GridSplitter
+                    Grid.Row="1"
+                    Height="2"
+                    HorizontalAlignment="Stretch" />
+
                 <DockPanel
-                    Dock="Bottom">
+                    Dock="Bottom"
+                    Grid.Row="2">
                     <DataGrid x:Name="UserPermissionView"
                               Margin="2"
                               HorizontalAlignment="Stretch"
@@ -181,15 +193,14 @@
                               IsReadOnly="True"
                               CanUserAddRows="False"
                               SelectionMode="Single"
-                              SelectionChanged="UserPermissionView_OnSelectionChanged"
-                    >
+                              SelectionChanged="UserPermissionView_OnSelectionChanged">
 
                         <DataGrid.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Modify" 
-                                          Click="MenuItem_UserModify"/>
-                                <MenuItem Header="Delete" 
-                                          Click="MenuItem_UserDelete"/>
+                                <MenuItem Header="Modify"
+                                          Click="MenuItem_UserModify" />
+                                <MenuItem Header="Delete"
+                                          Click="MenuItem_UserDelete" />
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>
@@ -211,12 +222,9 @@
                         </DataGrid.Columns>
 
 
-                        
-
-
                     </DataGrid>
 
-                    <DataGrid 
+                    <DataGrid
                         x:Name="RoleView"
                         Margin="2"
                         HorizontalAlignment="Stretch"
@@ -228,13 +236,12 @@
                         SelectionMode="Single">
 
 
-
                         <DataGrid.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Add" 
-                                          Click="MenuItem_AddRole"/>
-                                <MenuItem Header="Delete" 
-                                          Click="MenuItem_RoleDelete"/>
+                                <MenuItem Header="Add"
+                                          Click="MenuItem_AddRole" />
+                                <MenuItem Header="Delete"
+                                          Click="MenuItem_RoleDelete" />
                             </ContextMenu>
                         </DataGrid.ContextMenu>
 
@@ -248,8 +255,15 @@
 
                     </DataGrid>
                 </DockPanel>
+
+                <GridSplitter
+                    Grid.Row="3"
+                    Height="2"
+                    HorizontalAlignment="Stretch" />
+
                 <DockPanel
-                    Dock="Bottom">
+                    Dock="Bottom"
+                    Grid.Row="4">
                     <DataGrid x:Name="RolePermissionView"
                               Margin="2"
                               HorizontalAlignment="Stretch"
@@ -258,15 +272,14 @@
                               CanUserResizeColumns="True"
                               IsReadOnly="True"
                               CanUserAddRows="False"
-                              SelectionMode="Single"
-                    >
+                              SelectionMode="Single">
 
                         <DataGrid.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Modify" 
-                                          Click="MenuItem_RolePermissionModify"/>
-                                <MenuItem Header="Delete" 
-                                          Click="MenuItem_RolePermissionDelete"/>
+                                <MenuItem Header="Modify"
+                                          Click="MenuItem_RolePermissionModify" />
+                                <MenuItem Header="Delete"
+                                          Click="MenuItem_RolePermissionDelete" />
                             </ContextMenu>
                         </DataGrid.ContextMenu>
 
@@ -289,25 +302,24 @@
 
                 </DockPanel>
 
-            </StackPanel>
 
-
+            </Grid>
+            
 
         </Grid>
-        
+
         <!--Assign permissions-->
-        <Grid 
-            Row="0" 
+        <Grid
+            Row="0"
             Column="2"
             Margin="2"
             VerticalAlignment="Stretch">
 
             <StackPanel
-                
+
                 Margin="2"
                 Background="WhiteSmoke"
-                VerticalAlignment="Stretch"
-                >
+                VerticalAlignment="Stretch">
 
                 <TextBlock
                     Text="Permission Assignment"
@@ -330,87 +342,94 @@
                     <StackPanel Grid.Row="0">
                         <TextBlock
                             Margin="2"
-                            Text="User Assignment"></TextBlock>
-                            <TextBox 
-                                Margin="2"
-                                FontStyle="Italic"
-                                BorderThickness="2"
-                                Text="add user's mail here, separated with ;"
-                                x:Name="InputUserEmail"></TextBox>
-                       
-                        <TextBlock 
+                            Text="User Assignment">
+                        </TextBlock>
+                        <TextBox
                             Margin="2"
-                            Text="Folder user permission"></TextBlock>
-                        <ComboBox 
-                            Margin="2" 
-                            Name="FolderUserPermissionComboBox">
-                            <!--<ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding FolderPermissionComboBox.ItemsSource}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>-->
+                            FontStyle="Italic"
+                            BorderThickness="2"
+                            Text="sample1@mail.com; sample2@mail.com"
+                            ToolTip="add users' mail addressees here, separated with ;"
+                            x:Name="InputUserEmail">
+                        </TextBox>
+
+                        <TextBlock
+                            Margin="2"
+                            Text="Folder user permission">
+                        </TextBlock>
+                        <ComboBox
+                            Margin="2"
+                            Name="FolderUserPermissionComboBox"
+                            SelectedIndex="0">
+
                         </ComboBox>
                     </StackPanel>
-                        
+
                     <!-- company assignment -->
                     <StackPanel Grid.Row="1">
                         <TextBlock
                             Margin="2"
-                            Text="Industry Role"></TextBlock>
-                        <TextBox 
+                            Text="Industry Role">
+                        </TextBlock>
+                        <TextBox
                             Margin="2"
                             FontStyle="Italic"
                             BorderThickness="2"
-                            Text="add user's Role here, separated with ;"
-                            x:Name="InputIndustryRole"></TextBox>
+                            ToolTip="add user's Role here, separated with ;"
+                            x:Name="InputIndustryRole">
+                        </TextBox>
                         <TextBlock
                             Margin="2"
-                            Text="Company Assignment"></TextBlock>
-                        <TextBox 
+                            Text="Company Assignment">
+                        </TextBlock>
+                        <TextBox
                             Margin="2"
                             FontStyle="Italic"
                             BorderThickness="2"
                             Text="add company name here"
-                            x:Name="InputCompanyName"></TextBox>
-                        <TextBlock 
+                            ToolTip="Assign the users to a company"
+                            x:Name="InputCompanyName">
+                        </TextBox>
+                        <TextBlock
                             Margin="4"
-                            Text="Company Trade"></TextBlock>
-                        <ComboBox 
-                            Margin="2" 
+                            Text="Company Trade">
+                        </TextBlock>
+                        <ComboBox
+                            Margin="2"
                             Name="TradeComboBox">
                         </ComboBox>
-
-                        
-
 
 
                     </StackPanel>
 
                     <Button Grid.Row="2"
                             Margin="5"
-                            Content="Add User Permission" Click="Button_AddUserPermission"></Button>
+                            Content="Add User Permission" Click="Button_AddUserPermission">
+                    </Button>
 
 
                     <!-- Role permissions -->
                     <StackPanel Grid.Row="3">
                         <StackPanel
-                            Margin="6"></StackPanel>
+                            Margin="6">
+                        </StackPanel>
                         <TextBlock
                             Margin="2"
-                            Text="Role Assignment"></TextBlock>
-                        <TextBox 
+                            Text="Role Assignment">
+                        </TextBlock>
+                        <TextBox
                             Margin="2"
                             FontStyle="Italic"
                             BorderThickness="2"
                             Text="add role name here, separated with ;"
-                            x:Name="InputRole"></TextBox>
-                        <TextBlock 
+                            x:Name="InputRole">
+                        </TextBox>
+                        <TextBlock
                             Margin="2"
-                            Text="Folder Role permission"></TextBlock>
-                        <ComboBox 
-                            Margin="2" 
+                            Text="Folder Role permission">
+                        </TextBlock>
+                        <ComboBox
+                            Margin="2"
                             Name="FolderRolePermissionComboBox">
                             <!--<ComboBox.ItemTemplate>
                                 <DataTemplate>
@@ -422,7 +441,8 @@
                         </ComboBox>
                         <Button Grid.Row="4"
                                 Margin="5"
-                                Content="Add Role Permission" Click="Button_AddRolePermission"></Button>
+                                Content="Add Role Permission" Click="Button_AddRolePermission">
+                        </Button>
 
                     </StackPanel>
 
@@ -430,16 +450,10 @@
                 </Grid>
 
 
-
             </StackPanel>
-
-
 
 
         </Grid>
 
     </Grid>
 </UserControl>
-    
-    
-    
