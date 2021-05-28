@@ -7,11 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="img\folder_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CsvHelper" Version="27.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AdskConstructionCloudBreakdown\AdskConstructionCloudBreakdown.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="img\folder_icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

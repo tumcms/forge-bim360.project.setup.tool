@@ -152,7 +152,10 @@
 
                         <!-- Recursive Folder -->
                         <HierarchicalDataTemplate DataType="{x:Type self:Folder}" ItemsSource="{Binding Subfolders}">
-                            <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource FolderActions}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/img/folder_icon.png" Margin="0,0,5,0" Height="15" Width="15" ContextMenu="{StaticResource FolderActions}"/>
+                                <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource FolderActions}"/>
+                            </StackPanel>
                         </HierarchicalDataTemplate>
 
 

@@ -87,21 +87,6 @@
                         Height="20" Width="50" />
                 </Grid>
             </TabItem>
-            <TabItem Header="UserManagement">
-                <DataGrid x:Name="data"
-                      HorizontalAlignment="Stretch"
-                      IsReadOnly="False"
-                      SelectionMode="Single"
-                      SelectionUnit="Cell"
-                      CanUserAddRows="True"
-                      CanUserDeleteRows="True">
-                    <!-- Datagrid header-->
-                    <!-- Input könnte probleme machen-->
-                    <DataGrid.Columns>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </TabItem>
-            <!-- remove this tab-->
             <TabItem Header="ProjectConfigVersion2">
                 <!-- tell the XAML to load the user control here -->
                 <AccConfig:AccProjectConfig x:Name="AccProjectConfig" />
