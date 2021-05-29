@@ -61,7 +61,7 @@ namespace CustomGUI
 
         }
 
-
+        
 
         //Event Handling
 
@@ -203,7 +203,8 @@ namespace CustomGUI
      
         private void Upload_OnClick(object sender, RoutedEventArgs e)
         {
-
+            var Progress = new updates_upload();
+            Progress.Show();
 
             if (!Directory.Exists((".\\sample")))
             {
@@ -217,6 +218,12 @@ namespace CustomGUI
 
             //export the Projects
             AccProjectConfig.ExportBim360Projects(filename);
+
+            //Updates
+            Progress.pgb.Value = 10;
+            Progress.ProgressLabel.Content = "Build Connection";
+            // ProgressBar "refresh"
+            CallDispatch(Progress);
 
             //maybe change
             string[] input = new string[] {"-c", ClientId ,"-s", ClientSecret, "-a" ,BimId , "-p" ,
@@ -236,12 +243,23 @@ namespace CustomGUI
             ProjectUserWorkflow projectUserProcess = new ProjectUserWorkflow(options);
             AccountWorkflow accountProcess = new AccountWorkflow(options);
 
+            //Updates
+            Progress.pgb.Value = 25;
+            Progress.ProgressLabel.Content = "Convert Data from GUI";
+            // ProgressBar "refresh"
+            CallDispatch(Progress);
+
+
             // load data from custom CSV file. Filepath was set in constructor of projectProcess by pushing the options instance
-            statusbar.Text = "Read in Data from ProjectConfig";
             DataTable csvData = projectProcess.CustomGetDataFromCsv();
 
+            //Updates
+            Progress.pgb.Value = 40;
+            Progress.ProgressLabel.Content = "Uploading";
+            // ProgressBar "refresh"
+            CallDispatch(Progress);
+
             // load all existing projects from the BIM360 environment
-            statusbar.Text = "Checking projects";
             List<BimProject> projects = projectProcess.GetAllProjects();
 
 
@@ -252,7 +270,7 @@ namespace CustomGUI
             NestedFolder currentFolder = null;
 
 
-            statusbar.Text = "Formatting Data for Upload";
+            
             try
             {
                 for (int row = 0; row < csvData.Rows.Count; row++)
@@ -295,21 +313,44 @@ namespace CustomGUI
                         folders, currentFolder, currentProject, projectUserProcess);
 
                     // run the file upload if requested
-                    statusbar.Text = "Uploading...";
                     UploadFilesFromFolder(csvData, row, folderProcess, currentFolder, currentProject.id,
                         options.LocalFoldersPath);
+                    //Updates
+                    Progress.pgb.Value = 50+(50/ csvData.Rows.Count*row);
+                    Progress.ProgressLabel.Content = "Uploading";
+                    // ProgressBar "refresh"
+                    CallDispatch(Progress);
+
+
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                statusbar.Text = "Error on Formatting Data and Uploading";
+                statusbar.Text = ex.Message;
+                Progress.Close();
                 return;
             }
 
             statusbar.Text = "Upload successful";
+            Progress.Close();
             File.Delete(filename);
         }
 
+        //Progress updates
+        Action EmptyDelegate = delegate () { };
+
+        void CallDispatch(updates_upload input)
+        {
+            input.pgb.Dispatcher.Invoke(
+                EmptyDelegate,
+                System.Windows.Threading.DispatcherPriority.Background
+            );
+            input.ProgressLabel.Dispatcher.Invoke(
+                EmptyDelegate,
+                System.Windows.Threading.DispatcherPriority.Background
+            );
+
+        }
 
     }
 }

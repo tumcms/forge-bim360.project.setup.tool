@@ -364,7 +364,7 @@ namespace BimProjectSetupCommon.Workflow
                 Util.LogError($"Project can not be activated!\n" +
                     $"Rename the Project and try again!\n");
                 throw new Exception($"Project can not be activated!\n" +
-                    $"Rename the Project and try again!\n");
+                    $"Try again! If the same error occurs ->Rename the project\n");
             }
 
             TopFolderResponse content = JsonConvert.DeserializeObject<TopFolderResponse>(response.Content);
