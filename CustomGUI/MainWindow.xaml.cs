@@ -49,6 +49,7 @@ namespace CustomGUI
         private string ClientId { get; set; }
         private string ClientSecret { get; set; }
         private string BimId { get; set; }
+        private string Adminmail { get; set; }
 
 
         private string path_file =@".\Config\config.txt";
@@ -72,13 +73,14 @@ namespace CustomGUI
             window_config.Owner = this;
             window_config.Content = new ForgeConfig();
             window_config.Width = 710;
-            window_config.Height = 150;
+            window_config.SizeToContent = SizeToContent.Height;
             window_config.ResizeMode = ResizeMode.NoResize;
             window_config.ShowDialog();
 
             BimId = ((ForgeConfig) window_config.Content).BimId_Box.Text.ToString();
             ClientSecret = ((ForgeConfig) window_config.Content).ClientSecret_Box.Text.ToString();
             ClientId = ((ForgeConfig) window_config.Content).ClientId_Box.Text.ToString();
+            Adminmail = ((ForgeConfig) window_config.Content).AdminMail_Box.Text.ToString();
 
         }
 
@@ -203,31 +205,23 @@ namespace CustomGUI
      
         private void Upload_OnClick(object sender, RoutedEventArgs e)
         {
-            var Progress = new updates_upload();
-            Progress.Show();
+            var progress = new updates_upload();
+            progress.Show();
+            // convert string to stream
+            byte[] byteArray = Encoding.UTF8.GetBytes(AccProjectConfig.ExportBim360Projects());
+            MemoryStream dataset = new MemoryStream(byteArray);
+            //dataset.Position = 0;
 
-            if (!Directory.Exists((".\\sample")))
-            {
-                var tmp = ".\\sample";
-
-                Directory.CreateDirectory((".\\sample"));
-            }
-
-            //Hardcoded Name in here maybe user should be able to change
-            string filename = ".\\sample\\BIM360_Custom_Template.csv";
-
-            //export the Projects
-            AccProjectConfig.ExportBim360Projects(filename);
 
             //Updates
-            Progress.pgb.Value = 10;
-            Progress.ProgressLabel.Content = "Build Connection";
+            progress.pgb.Value = 10;
+            progress.ProgressLabel.Content = "Build Connection";
             // ProgressBar "refresh"
-            CallDispatch(Progress);
+            CallDispatch(progress);
 
             //maybe change
-            string[] input = new string[] {"-c", ClientId ,"-s", ClientSecret, "-a" ,BimId , "-p" ,
-                                           filename,"-h"," stefan.1995.huber@tum.de","-f"," .\\sample","-t",",",
+            string[] input = new string[] {"-c", ClientId ,"-s", ClientSecret, "-a" ,BimId , 
+                                        "-h", Adminmail ,"-f"," .\\sample","-t",",",
                                            "-z",",","-e","UTF-8","-d","yyyy-MM-dd"} ;
 
             
@@ -244,20 +238,22 @@ namespace CustomGUI
             AccountWorkflow accountProcess = new AccountWorkflow(options);
 
             //Updates
-            Progress.pgb.Value = 25;
-            Progress.ProgressLabel.Content = "Convert Data from GUI";
+            progress.pgb.Value = 25;
+            progress.ProgressLabel.Content = "Convert Data from GUI";
             // ProgressBar "refresh"
-            CallDispatch(Progress);
+            CallDispatch(progress);
 
 
             // load data from custom CSV file. Filepath was set in constructor of projectProcess by pushing the options instance
-            DataTable csvData = projectProcess.CustomGetDataFromCsv();
+            DataTable csvData = new DataTable();
+            csvData=ProjectWorkflow.CustomGetDataFromCsv_stream(dataset);
+       
 
             //Updates
-            Progress.pgb.Value = 40;
-            Progress.ProgressLabel.Content = "Uploading";
+            progress.pgb.Value = 40;
+            progress.ProgressLabel.Content = "Uploading";
             // ProgressBar "refresh"
-            CallDispatch(Progress);
+            CallDispatch(progress);
 
             // load all existing projects from the BIM360 environment
             List<BimProject> projects = projectProcess.GetAllProjects();
@@ -270,7 +266,7 @@ namespace CustomGUI
             NestedFolder currentFolder = null;
 
 
-            
+            //Uploading
             try
             {
                 for (int row = 0; row < csvData.Rows.Count; row++)
@@ -316,24 +312,23 @@ namespace CustomGUI
                     UploadFilesFromFolder(csvData, row, folderProcess, currentFolder, currentProject.id,
                         options.LocalFoldersPath);
                     //Updates
-                    Progress.pgb.Value = 50+(50/ csvData.Rows.Count*row);
-                    Progress.ProgressLabel.Content = "Uploading";
+                    progress.pgb.Value = 50+(50/ csvData.Rows.Count*row);
+                    progress.ProgressLabel.Content = "Uploading";
                     // ProgressBar "refresh"
-                    CallDispatch(Progress);
-
+                    CallDispatch(progress);
 
                 }
             }
             catch(Exception ex)
             {
+                //show the error
                 statusbar.Text = ex.Message;
-                Progress.Close();
+                progress.Close();
                 return;
             }
 
             statusbar.Text = "Upload successful";
-            Progress.Close();
-            File.Delete(filename);
+            progress.Close();
         }
 
         //Progress updates

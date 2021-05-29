@@ -29,6 +29,7 @@ namespace CustomGUI.Controls
             this.ClientId = ClientId_Box.Text;
             this.ClientSecret = ClientSecret_Box.Text;
             this.BimId = BimId_Box.Text;
+            this.AdminMail = AdminMail_Box.Text;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
@@ -37,6 +38,7 @@ namespace CustomGUI.Controls
         private string ClientId { get; set; }
         private string ClientSecret { get; set; }
         private string BimId { get; set; }
+        private string AdminMail { get; set; }
         private string ConfigFilePath { get; set; }
 
         public ForgeConfig()
@@ -70,6 +72,15 @@ namespace CustomGUI.Controls
                 ClientSecret_Box.Text = "";
             }
         }
+
+        private void AdminMail_Box_OnGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (AdminMail_Box.Text.Equals("AdminMail"))
+            {
+                AdminMail_Box.Text = "";
+            }
+        }
+
         private void SaveConfig_click(object sender, RoutedEventArgs e)
         {
             // run the save method
@@ -114,6 +125,8 @@ namespace CustomGUI.Controls
                         ClientSecret_Box.Text = ClientSecret;
                         BimId = reader.ReadLine();
                         BimId_Box.Text = BimId;
+                        AdminMail = reader.ReadLine();
+                        AdminMail_Box.Text = AdminMail;
                     }
                 }
             }
@@ -131,6 +144,7 @@ namespace CustomGUI.Controls
             this.ClientId = ClientId_Box.Text;
             this.ClientSecret = ClientSecret_Box.Text;
             this.BimId = BimId_Box.Text;
+            this.AdminMail = AdminMail_Box.Text;
 
             if (!File.Exists(filePath))
             {
@@ -152,6 +166,7 @@ namespace CustomGUI.Controls
                     sr.WriteLine(this.ClientId);
                     sr.WriteLine(this.ClientSecret);
                     sr.WriteLine(this.BimId);
+                    sr.WriteLine(this.AdminMail);
                 }
 
                 
@@ -170,5 +185,7 @@ namespace CustomGUI.Controls
             }
 
         }
+
+       
     }
 }

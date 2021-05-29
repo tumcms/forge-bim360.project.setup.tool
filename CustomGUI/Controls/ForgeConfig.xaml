@@ -8,7 +8,7 @@
              Name="ConfigControl"
              Loaded="Config_OnLoaded"
              Initialized="ConfigControl_Initialized"
-             >
+>
 
     <Grid Background="#FFE5E5E5">
         <Grid.ColumnDefinitions>
@@ -17,6 +17,7 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -56,6 +57,17 @@
             FontSize="16"
             FontWeight="Bold" />
 
+        <TextBlock
+            HorizontalAlignment="Left"
+            Grid.Column="0"
+            Grid.Row="3"
+            Margin="1"
+            Text="AdminMail"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            FontSize="16"
+            FontWeight="Bold" />
+
         <TextBox
             x:Name="ClientId_Box"
             Grid.Column="1"
@@ -90,10 +102,23 @@
             VerticalAlignment="Top"
             GotKeyboardFocus="BimId_GotKeyboardFocus" />
 
+        <TextBox
+            x:Name="AdminMail_Box"
+            Grid.Column="1"
+            Grid.Row="3"
+            HorizontalAlignment="Stretch"
+            Margin="1"
+            Text="Admin_Mail"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            GotKeyboardFocus="AdminMail_Box_OnGotKeyboardFocus" 
+        />
+
+
         <Button x:Name="saveconf"
                 Content="Save Config"
                 Grid.Column="0"
-                Grid.Row="3"
+                Grid.Row="4"
                 Grid.ColumnSpan="2"
                 Margin="2"
                 HorizontalAlignment="Stretch"

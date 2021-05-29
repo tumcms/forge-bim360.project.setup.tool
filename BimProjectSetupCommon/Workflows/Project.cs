@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
+using System.IO;
 using Autodesk.Forge.BIM360.Serialization;
 using BimProjectSetupCommon.Helpers;
 
@@ -40,6 +41,12 @@ namespace BimProjectSetupCommon.Workflow
         public DataTable CustomGetDataFromCsv()
         {
             return CsvReader.CustomReadDataFromCSV();
+        }
+
+        public static DataTable CustomGetDataFromCsv_stream(Stream input)
+        {
+            return CsvReader.ReadFile(input);
+            
         }
 
         /// <summary>

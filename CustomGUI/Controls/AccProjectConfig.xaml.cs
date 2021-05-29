@@ -161,6 +161,35 @@ namespace CustomGUI.Controls
             }
 
         }
+
+
+        public string ExportBim360Projects()
+        {
+            
+            string retu=new string("");
+            MemoryStream stream = new MemoryStream();
+            using (var streamWriter = new StreamWriter(stream))
+            {
+                //maybe the CultureInfo needs to be changed
+                using (var csv = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
+                {
+                    //Maps the Header of the CSV Data to the class attributes
+                    var tmp = SerializationParser.ExportBim360ToCSV(projects);
+                    csv.Context.RegisterClassMap<UserDataExport>();
+                    csv.WriteRecords(tmp);
+
+                    // convert stream to string
+                    stream.Position = 0;
+                    StreamReader reader = new StreamReader(stream);
+                    retu = reader.ReadToEnd().ToString();
+                }
+            }
+
+            return retu;
+        }
+
+
+
         //change active project
         private void ProjectsView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
