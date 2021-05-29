@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.IO;
@@ -20,7 +22,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AdskConstructionCloudBreakdown;
+using Autodesk.Forge.BIM360.Serialization;
+using BimProjectSetupAPI.Workflows;
+using BimProjectSetupCommon;
+using BimProjectSetupCommon.Helpers;
+using BimProjectSetupCommon.Workflow;
 using CustomGUI.Controls;
+using File = System.IO.File;
+using static CustomBIMFromCSV.Tools;
+
 
 namespace CustomGUI
 {
@@ -35,7 +45,10 @@ namespace CustomGUI
         //one instand of a class contains data of a row in the CSV file
         //Global Data
         List<UserData> usermanag = new List<UserData>();
-        private ObservableCollection<Bim360Project> projects;
+
+        private string ClientId { get; set; }
+        private string ClientSecret { get; set; }
+        private string BimId { get; set; }
 
 
         private string path_file =@".\Config\config.txt";
@@ -45,12 +58,6 @@ namespace CustomGUI
         public MainWindow()
         {
             InitializeComponent();
-            
-            // sample data from recently introduced class structure mirroring key aspects of the BIM360 environment
-            projects = CreateSampleStructure();
-
-
-            //AccProjectConfig.ProjectsView.ItemsSource = projects;
 
         }
 
@@ -68,6 +75,10 @@ namespace CustomGUI
             window_config.Height = 150;
             window_config.ResizeMode = ResizeMode.NoResize;
             window_config.ShowDialog();
+
+            BimId = ((ForgeConfig) window_config.Content).BimId_Box.Text.ToString();
+            ClientSecret = ((ForgeConfig) window_config.Content).ClientSecret_Box.Text.ToString();
+            ClientId = ((ForgeConfig) window_config.Content).ClientId_Box.Text.ToString();
 
         }
 
@@ -167,43 +178,137 @@ namespace CustomGUI
                     }
                 }
             }
+
+            var filePath =@".\Config\config.txt";
+            //Get Last Config from Login Data
+            if (File.Exists(@".\Config\config.txt"))
+            {
+                using (FileStream fs = File.OpenRead(filePath))
+                {
+                    using (StreamReader reader = new StreamReader(fs))
+                    {
+                        ClientId = reader.ReadLine();
+                        ClientSecret = reader.ReadLine();
+                        BimId = reader.ReadLine();
+                    }
+                }
+            }
+
         }
         private void Csvpathexp_OnInitialized(object? sender, EventArgs e)
         {
             csvpathexp.Text = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
 
-        /// <summary>
-        /// Loading some test data for test purposes. To be deleted before deploying!
-        /// </summary>
-        /// <returns></returns>
-        private ObservableCollection<Bim360Project> CreateSampleStructure()
+     
+        private void Upload_OnClick(object sender, RoutedEventArgs e)
         {
-            var project1 = new Bim360Project("MyProject01")
+
+
+            if (!Directory.Exists((".\\sample")))
             {
-                ProjectType = ProjectTypeEnum.Office
-            };
+                var tmp = ".\\sample";
+
+                Directory.CreateDirectory((".\\sample"));
+            }
+
+            //Hardcoded Name in here maybe user should be able to change
+            string filename = ".\\sample\\BIM360_Custom_Template.csv";
+
+            //export the Projects
+            AccProjectConfig.ExportBim360Projects(filename);
+
+            //maybe change
+            string[] input = new string[] {"-c", ClientId ,"-s", ClientSecret, "-a" ,BimId , "-p" ,
+                                           filename,"-h"," stefan.1995.huber@tum.de","-f"," .\\sample","-t",",",
+                                           "-z",",","-e","UTF-8","-d","yyyy-MM-dd"} ;
+
+            
+            // Delete previous versions of log.txt
+            System.IO.File.Delete("Log/logInfo.txt");
+            System.IO.File.Delete("Log/logImportant.txt");
+
+            AppOptions options = AppOptions.Parse(input);
+            // options.AccountRegion = "EU"; 
+            
+            ProjectWorkflow projectProcess = new ProjectWorkflow(options);
+            FolderWorkflow folderProcess = new FolderWorkflow(options);
+            ProjectUserWorkflow projectUserProcess = new ProjectUserWorkflow(options);
+            AccountWorkflow accountProcess = new AccountWorkflow(options);
+
+            // load data from custom CSV file. Filepath was set in constructor of projectProcess by pushing the options instance
+            statusbar.Text = "Read in Data from ProjectConfig";
+            DataTable csvData = projectProcess.CustomGetDataFromCsv();
+
+            // load all existing projects from the BIM360 environment
+            statusbar.Text = "Checking projects";
+            List<BimProject> projects = projectProcess.GetAllProjects();
 
 
-            project1.Plans=new Folder("Level1");
-            project1.ProjectFiles=(new Folder("Level1"));
-            project1.ProjectFiles.Subfolders.Add(new Folder("Level1"));
+            List<BimCompany> companies = null;
+            BimProject currentProject = null;
+            List<HqUser> projectUsers = null;
+            List<NestedFolder> folders = null;
+            NestedFolder currentFolder = null;
 
-            var project2 = new Bim360Project("MyProject02")
+
+            statusbar.Text = "Formatting Data for Upload";
+            try
             {
-                ProjectType = ProjectTypeEnum.Office
-            };
+                for (int row = 0; row < csvData.Rows.Count; row++)
+                {
+                    string projectName = csvData.Rows[row]["project_name"].ToString();
 
+                    // check if the current row defines the start point for another project (project_name column must be set)
+                    if (!string.IsNullOrEmpty(projectName))
+                    {
+                        Util.LogImportant($"\nCurrent project: {projectName}");
 
-            project2.Plans=(new Folder("Level2"));
-            project2.ProjectFiles=(new Folder("Level3"));
-            project2.ProjectFiles.Subfolders.Add(new Folder("Level4"));
+                        // check if the requested project name is already present inside BIM360
+                        currentProject = projects.Find(x => x.name == projectName);
 
-            return new ObservableCollection<Bim360Project>() {project1, project2};
+                        if (currentProject == null)
+                        {
+                            // create the project
+                            projects = projectProcess.CustomCreateProject(csvData, row, projectName, projectProcess);
 
+                            // set the current project variable to the recently created project
+                            currentProject = projects.Find(x => x.name == projectName);
+
+                            // verify the initialization of the new project
+                            CheckProjectCreated(currentProject, projectName);
+                        }
+
+                        // create the folder structure
+                        folders = folderProcess.CustomGetFolderStructure(currentProject);
+
+                        // add the companies
+                        companies = accountProcess.CustomUpdateCompanies(csvData, row, accountProcess);
+
+                        // create or update the project users
+                        projectUsers = projectUserProcess.CustomUpdateProjectUsers(csvData, row, companies,
+                            currentProject, projectUserProcess);
+                    }
+
+                    // assign permissions
+                    currentFolder = CreateFoldersAndAssignPermissions(csvData, row, projectUsers, folderProcess,
+                        folders, currentFolder, currentProject, projectUserProcess);
+
+                    // run the file upload if requested
+                    statusbar.Text = "Uploading...";
+                    UploadFilesFromFolder(csvData, row, folderProcess, currentFolder, currentProject.id,
+                        options.LocalFoldersPath);
+                }
+            }
+            catch
+            {
+                statusbar.Text = "Error on Formatting Data and Uploading";
+                return;
+            }
+
+            statusbar.Text = "Upload successful";
+            File.Delete(filename);
         }
-
-
 
 
     }

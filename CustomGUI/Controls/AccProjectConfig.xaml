@@ -62,7 +62,9 @@
                             <MenuItem Header="Delete"
                                       Click="MenuItem_ProjectDelete" />
                             <MenuItem Header="Duplicate"
-                                      Click="MenuItem_ProjectDuplicate" />
+                                      Click="MenuItem_ProjectDuplicate"/>
+                            <MenuItem Header="Rename"
+                                      Click="MenuItem_ProjectRename"/>
                         </ContextMenu>
                     </DataGrid.ContextMenu>
 
@@ -148,6 +150,10 @@
                             <MenuItem Header="Create new folder as neighbor"
                                       Click="MenuItem_FolderNeighbor" />
                         </ContextMenu>
+                        <ContextMenu x:Key="RootActions">
+                            <MenuItem Header="Create new folder as child"
+                                      Click="MenuItem_RootFolderChild" />
+                        </ContextMenu>
 
 
                         <!-- Recursive Folder -->
@@ -167,14 +173,14 @@
                     <!--actual tree viewer activity-->
                     <TreeViewItem
                         Header="Plans"
-                        x:Name="TreeViewPlans">
-                        <!-- ContextMenu="{StaticResource FolderActionsRoot}" -->
+                        x:Name="TreeViewPlans"
+                        ContextMenu="{StaticResource RootActions}">
                     </TreeViewItem>
 
                     <TreeViewItem
                         Header="Project Files"
-                        x:Name="TreeViewProjects">
-                        <!--ContextMenu="{StaticResource FolderActionsRoot}" -->
+                        x:Name="TreeViewProjects"
+                        ContextMenu="{StaticResource RootActions}">
                     </TreeViewItem>
 
                 </TreeView>

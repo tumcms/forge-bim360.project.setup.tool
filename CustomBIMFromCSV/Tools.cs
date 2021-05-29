@@ -13,9 +13,9 @@ using BimProjectSetupAPI.Workflows;
 
 namespace CustomBIMFromCSV
 {
-    internal static class Tools
+    public static class Tools
     {
-        internal static NestedFolder CreateFoldersAndAssignPermissions(DataTable table, int rowIndex, List<HqUser> projectUsers, FolderWorkflow folderProcess, List<NestedFolder> folders, NestedFolder currentFolder, BimProject project, ProjectUserWorkflow projectUserProcess)
+        public static NestedFolder CreateFoldersAndAssignPermissions(DataTable table, int rowIndex, List<HqUser> projectUsers, FolderWorkflow folderProcess, List<NestedFolder> folders, NestedFolder currentFolder, BimProject project, ProjectUserWorkflow projectUserProcess)
         {
             bool isUserAtRow = !string.IsNullOrEmpty(table.Rows[rowIndex]["user_email"].ToString());
             bool isRoleAtRow = !string.IsNullOrEmpty(table.Rows[rowIndex]["role_permission"].ToString());
@@ -73,7 +73,7 @@ namespace CustomBIMFromCSV
             return currentFolder;
         }
 
-        internal static void UploadFilesFromFolder(DataTable table, int rowIndex, FolderWorkflow folderProcess, NestedFolder currentFolder, string projectId, string localFoldersPath)
+        public static void UploadFilesFromFolder(DataTable table, int rowIndex, FolderWorkflow folderProcess, NestedFolder currentFolder, string projectId, string localFoldersPath)
         {
 
             bool isFolderAtRow = !string.IsNullOrEmpty(table.Rows[rowIndex]["local_folder"].ToString());
@@ -378,7 +378,7 @@ namespace CustomBIMFromCSV
             return resultFolder;
         }
 
-        internal static void CheckProjectCreated(BimProject project, string projectName)
+        public static void CheckProjectCreated(BimProject project, string projectName)
         {
             if (project == null)
             {

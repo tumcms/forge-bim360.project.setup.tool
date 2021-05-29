@@ -165,11 +165,13 @@ namespace CustomGUI.Controls
         private void ProjectsView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //should be right i guess
-            activeProject=(Bim360Project)ProjectsView.SelectedCells[0].Item;
-            TreeViewPlans.ItemsSource = activeProject.Plans.Subfolders;
-            TreeViewProjects.ItemsSource = activeProject.ProjectFiles.Subfolders;
-            ProjectTypeComboBox.SelectedItem = Selection.SelectProjectType(activeProject.ProjectType);
-
+            if (ProjectsView.SelectedCells[0].Item.GetType() == typeof(Bim360Project))
+            {
+                activeProject = (Bim360Project) ProjectsView.SelectedCells[0].Item;
+                TreeViewPlans.ItemsSource = activeProject.Plans.Subfolders;
+                TreeViewProjects.ItemsSource = activeProject.ProjectFiles.Subfolders;
+                ProjectTypeComboBox.SelectedItem = Selection.SelectProjectType(activeProject.ProjectType);
+            }
         }
 
         private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -191,7 +193,7 @@ namespace CustomGUI.Controls
                     activeFolder = activeProject.ProjectFiles;
                 }
             }
-
+            
             UserPermissionView.ItemsSource = activeFolder.UserPermissions;
             RolePermissionView.ItemsSource = activeFolder.RolePermissions;
             RoleView.ItemsSource = null;
@@ -384,7 +386,23 @@ namespace CustomGUI.Controls
             activeFolder = null;
             activePermission = null;
             projects.Remove(toDeleteFromBindedList);
+            //If last Project is deletet remove all other reference to it
+            if (projects.Count==0)
+            {
+                activeProject = null;
+                activeFolder = null;
+                activePermission = null;
+                TreeViewFolder.ItemsSource = null;
+                TreeViewFolder.Items.Refresh();
+                TreeViewPlans.ItemsSource = null;
+                TreeViewPlans.Items.Refresh();
+                TreeViewProjects.ItemsSource = null;
+                TreeViewProjects.Items.Refresh();
+                RolePermissionView.ItemsSource = null;
+                RolePermissionView.Items.Refresh();
+            }
             ProjectsView.Items.Refresh();
+
 
         }
         
@@ -550,6 +568,72 @@ namespace CustomGUI.Controls
             dialog.Close();
             RolePermissionView.Items.Refresh();
 
+        }
+
+        private void MenuItem_ProjectRename(object sender, RoutedEventArgs e)
+        {
+            //Get the clicked MenuItem
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (DataGrid)contextMenu.PlacementTarget;
+            //Get the underlying item
+            //if(item.SelectedCells[0].Item.GetType().Equals())
+            var toModifyFromList = (Bim360Project)item.SelectedCells[0].Item;
+            if (toModifyFromList == null)
+            {
+                MessageBox.Show("Please select a Project", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            var dialog = new InputDialog("Please enter the new Project name:", "Example Project");
+            dialog.ResizeMode = ResizeMode.NoResize;
+            dialog.ShowDialog();
+            toModifyFromList.ProjectName=dialog.Answer;
+            dialog.Close();
+            //refresh layout
+            ProjectsView.Items.Refresh();
+
+        }
+
+        private void MenuItem_RootFolderChild(object sender, RoutedEventArgs e)
+        {
+            if (activeProject == null)
+            {
+                MessageBox.Show("Please select a Project", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            var menuItem = (MenuItem)sender;
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            //Find the placementTarget
+            var item = (TreeViewItem)contextMenu.PlacementTarget;
+            //Get the underlying item
+            Folder folder;
+            if (item.Header.ToString() == "Plans")
+            {
+                folder = activeProject.Plans;
+            }else if (item.Header.ToString() == "Project Files")
+            {
+                folder = activeProject.ProjectFiles;
+            }
+            else
+            {
+                //this should never happen
+                return;
+            }
+            
+            var dialog = new InputDialog("Please enter the folder name:", "Example Folder");
+            dialog.ResizeMode = ResizeMode.NoResize;
+            dialog.ShowDialog();
+            folder.AddSubFolder(dialog.Answer);
+            dialog.Close();
+            //refresh layout
+            TreeViewFolder.Items.Refresh();
+            TreeViewPlans.Items.Refresh();
+            TreeViewProjects.Items.Refresh();
         }
     }
 }

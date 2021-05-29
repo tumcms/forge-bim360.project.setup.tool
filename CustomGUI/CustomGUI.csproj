@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="img\folder_icon.png" />
+    <None Remove="img\upload.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,10 +17,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AdskConstructionCloudBreakdown\AdskConstructionCloudBreakdown.csproj" />
+    <ProjectReference Include="..\BimProjectSetupCommon\BimProjectSetupCommon.csproj" />
+    <ProjectReference Include="..\CustomBIMFromCSV\CustomBIMFromCSV.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="img\folder_icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="img\upload.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

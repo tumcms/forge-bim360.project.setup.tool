@@ -32,6 +32,7 @@
                 <!-- Here Export infos -->
             </MenuItem>
             <MenuItem Header="About"></MenuItem>
+            <MenuItem Header="Upload" x:Name="upload" Click="Upload_OnClick"/>
         </Menu>
 
         <TabControl Grid.Row="1">
@@ -85,7 +86,11 @@
                         Margin="634,78,0,0"
                         Click="buttonexport_Click"
                         Height="20" Width="50" />
+
                 </Grid>
+
+                
+
             </TabItem>
             <TabItem Header="ProjectConfigVersion2">
                 <!-- tell the XAML to load the user control here -->
@@ -94,7 +99,7 @@
         </TabControl>
 
         <!--Footer-->
-        <DockPanel Grid.Row="2">
+        <DockPanel Grid.Row="2" HorizontalAlignment="Right" Width="1100">
             <TextBox
                 Margin="2"
                 Name="statusbar"
