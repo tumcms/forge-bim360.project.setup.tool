@@ -459,6 +459,13 @@ namespace CustomGUI.Controls
             var contextMenu = (ContextMenu)menuItem.Parent;
             //Find the placementTarget
             var item = (DataGrid)contextMenu.PlacementTarget;
+            //errorhandling
+            if (!item.SelectedCells.Any())
+            {
+                MessageBox.Show("No User to delete", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             //Get the underlying item
             var toDeleteFromList = (UserPermission)item.SelectedCells[0].Item;
             //reorgenize
@@ -479,6 +486,12 @@ namespace CustomGUI.Controls
             var contextMenu = (ContextMenu)menuItem.Parent;
             //Find the placementTarget
             var item = (DataGrid)contextMenu.PlacementTarget;
+            if (!item.SelectedCells.Any())
+            {
+                MessageBox.Show("No User to modify", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             //Get the underlying item
             //if(item.SelectedCells[0].Item.GetType().Equals())
             var toModifyFromList = (UserPermission)item.SelectedCells[0].Item;
@@ -528,6 +541,14 @@ namespace CustomGUI.Controls
             var dialog = new InputDialog("Please enter the Role name:", "Example Role");
             dialog.ResizeMode = ResizeMode.NoResize;
             dialog.ShowDialog();
+            //remove empty Role
+            foreach (var iter in activePermission.AssignedUsers.IndustryRoles.ToList())
+            {
+                if (string.IsNullOrWhiteSpace(iter))
+                {
+                    activePermission.AssignedUsers.IndustryRoles.Remove(iter);
+                }
+            }
             activePermission.AssignedUsers.IndustryRoles.Add(dialog.Answer);
             dialog.Close();
             //refresh layout
@@ -542,6 +563,13 @@ namespace CustomGUI.Controls
             var contextMenu = (ContextMenu)menuItem.Parent;
             //Find the placementTarget
             var item = (DataGrid)contextMenu.PlacementTarget;
+            //errorhandling
+            if (!item.SelectedCells.Any())
+            {
+                MessageBox.Show("No Role to delete", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             //Get the underlying item
             var toDeleteFromList = (string)item.SelectedCells[0].Item;
             if (activePermission == null)
@@ -555,11 +583,19 @@ namespace CustomGUI.Controls
 
         private void MenuItem_RolePermissionDelete(object sender, RoutedEventArgs e)
         {
+            
             var menuItem = (MenuItem)sender;
             //Get the ContextMenu to which the menuItem belongs
             var contextMenu = (ContextMenu)menuItem.Parent;
             //Find the placementTarget
             var item = (DataGrid)contextMenu.PlacementTarget;
+            //if no Role is in the view
+            if (!item.SelectedCells.Any())
+            {
+                MessageBox.Show("No Rule to delete", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             //Get the underlying item
             var toDeleteFromList = (RolePermission)item.SelectedCells[0].Item;
             if (activeFolder == null)
@@ -578,6 +614,13 @@ namespace CustomGUI.Controls
             var contextMenu = (ContextMenu)menuItem.Parent;
             //Find the placementTarget
             var item = (DataGrid)contextMenu.PlacementTarget;
+            //if no Role is in the view
+            if (!item.SelectedCells.Any())
+            {
+                MessageBox.Show("No Rule to modify", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             //Get the underlying item
             var toModifyFromList = (RolePermission)item.SelectedCells[0].Item;
             if (activeFolder == null)
