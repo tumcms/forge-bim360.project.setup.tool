@@ -7,7 +7,12 @@
         mc:Ignorable="d"
         Title="ProgressBar Demo" SizeToContent="Height" Width="525">
     <StackPanel>
-        <Label Name="ProgressLabel"> Exporting</Label>
+        <StackPanel>
+            <Grid>
+                <Image Source="/img/upload.png" Height="20" Width="20"  HorizontalAlignment="Left"/>
+                <Label Name="ProgressLabel" HorizontalAlignment="Left" Margin="20,0,0,0">Exporting</Label>
+            </Grid>
+        </StackPanel>
         <ProgressBar Name="pgb" Height="20" Minimum="0" Maximum="100" Margin="5"/>
     </StackPanel>
 </Window>
