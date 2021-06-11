@@ -80,7 +80,15 @@ namespace BimProjectSetupCommon.Helpers
                         {
                             if (colIndex < result.Columns.Count)
                             {
-                                row[colIndex++] = value;
+                                if (value == "\"")
+                                {
+                                    row[colIndex++] = "";
+                                }
+                                else
+                                {
+                                    row[colIndex++] = value;
+                                }
+                                
                             }
                         }
 
@@ -109,6 +117,89 @@ namespace BimProjectSetupCommon.Helpers
             }
             return result;
         }
+
+        internal static DataTable ReadFile(Stream filePath)
+        {
+            DataTable result = new DataTable();
+            Log.Info("Reading file: from Memory");
+            Separator = ',';
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                string line;
+                int lineIndex = 0;
+
+                while (null != (line = reader.ReadLine()))
+                {
+                    List<string> values = ParseLine(line);
+                    if (values == null || values.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    // load header
+                    if (lineIndex == 0)
+                    {
+                        foreach (string value in values)
+                        {
+                            string columnName = value;
+
+                            if (true == result.Columns.Contains(columnName))
+                            {
+                                columnName = columnName + "_1";
+                            }
+                            DataColumn col = new DataColumn(columnName, typeof(string));
+
+                            result.Columns.Add(col);
+                        }
+                    }
+                    // load data
+                    else
+                    {
+                        DataRow row = result.NewRow();
+                        int colIndex = 0;
+
+                        foreach (string value in values)
+                        {
+                            if (colIndex < result.Columns.Count)
+                            {
+                                if (value == "\"")
+                                {
+                                    row[colIndex++] = "";
+                                }
+                                else
+                                {
+                                    row[colIndex++] = value;
+                                }
+
+                            }
+                        }
+
+                        // check if the current row has the same length as the imported header
+                        var lenHeader = result.Columns.Count;
+                        var lenCurrentRow = row.ItemArray.Length;
+
+                        if (lenHeader - lenCurrentRow != 0)
+                        {
+                            var e = new Exception("Error in CSV File. Length of provided header and current row does not match. ");
+                            throw e;
+                        }
+
+                        //Test if last entry is bugged and replace
+                        //Hotfix works for now 
+                        if (row.ItemArray[lenCurrentRow - 1].GetType() != "".GetType())
+                        {
+                            row[lenCurrentRow - 1] = "";
+                        }
+
+                        result.Rows.Add(row);
+                    }
+                    lineIndex++;
+                }
+                Log.Info("- total lines read from the csv file: " + (lineIndex - 1).ToString());
+            }
+            return result;
+        }
+
         internal static DataTable ReadFile(string filePath, char separator, Encoding encoding)
         {
             if (separator != char.MinValue)
@@ -122,6 +213,8 @@ namespace BimProjectSetupCommon.Helpers
             DataTable result = ReadFile(filePath);
             return result;
         }
+
+
         internal static DataTable CustomReadDataFromCSV()
         {
 
@@ -231,7 +324,7 @@ namespace BimProjectSetupCommon.Helpers
 
                     if (isFirstTimeCompany)
                     {
-                        Util.LogError($"Each company must have a company trade assinged to it. See row number {i + 2} in the CSV-File.\n");
+                        Util.LogError($"Each company must have a company trade assigned to it. See row number {i + 2} in the CSV-File.\n");
                         isError = true;
                     }
                 }
