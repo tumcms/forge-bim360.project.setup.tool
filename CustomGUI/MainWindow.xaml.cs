@@ -294,14 +294,11 @@ namespace CustomGUI
             var dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = false;
             dialog.Multiselect = false;
-            dialog.ShowDialog();
-            try
+            if (Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel ==
+                dialog.ShowDialog())
             {
-                var tmp = dialog.FileName;
-            }
-            catch (Exception ex)
-            {
-                statusbar.Text = ex.Message;
+
+                statusbar.Text = "canceled";
                 return;
             }
 
