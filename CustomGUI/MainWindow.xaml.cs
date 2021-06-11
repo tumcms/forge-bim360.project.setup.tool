@@ -294,10 +294,10 @@ namespace CustomGUI
             var dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = false;
             dialog.Multiselect = false;
+            //if use canceled the selection
             if (Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel ==
                 dialog.ShowDialog())
             {
-
                 statusbar.Text = "canceled";
                 return;
             }
