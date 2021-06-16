@@ -24,82 +24,22 @@
             Grid.Row="0"
             Margin="2">
             <MenuItem x:Name="Config" Header="Config" Click="Config_Click" />
-                
-            <MenuItem Header="Import">
-                <MenuItem Header="View Project Information" />
+
+            <MenuItem Header="Import" Click="Import_OnClick">
             </MenuItem>
-            <MenuItem Header="Export">
-                <!-- Here Export infos -->
+            <MenuItem Header="Export" Click="Export_OnClick">
             </MenuItem>
-            <MenuItem Header="About"></MenuItem>
             <MenuItem Header="Upload" x:Name="upload" Click="Upload_OnClick"/>
+            <MenuItem Header="About" Click="About_OnClick"></MenuItem>
         </Menu>
 
-        <TabControl Grid.Row="1">
-            <TabItem Header="CSV Toolkit">
-                <Grid Background="#FFE5E5E5">
-                    <TextBlock HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
-                           Margin="40,27,0,0"
-                           Text="Import CSV Data:"
-                           TextWrapping="Wrap"
-                           FontSize="16"
-                           FontWeight="Bold" />
-
-                    <TextBox x:Name="csvpath"
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Top"
-                         Margin="207,31,0,0"
-                         Text="C:\Users\Example1\example.csv"
-                         TextWrapping="Wrap"
-                         Width="400"
-                         GotKeyboardFocus="csvpath_GotKeyboardFocus" />
-
-                    <Button x:Name="buttonimport"
-                        Content="Import"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Margin="633,30,0,0"
-                        Click="buttonimport_Click"
-                        Height="20" Width="50" />
-
-                    <TextBlock HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
-                           Margin="40,77,0,0"
-                           Text="Export CSV Data:"
-                           TextWrapping="Wrap"
-                           FontSize="16"
-                           FontWeight="Bold" />
-
-                    <TextBox x:Name="csvpathexp"
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Top"
-                         Margin="207,79,0,0"
-                         TextWrapping="Wrap"
-                         Width="400"
-                         Initialized="Csvpathexp_OnInitialized"/>
-
-                    <Button x:Name="buttonexport"
-                        Content="Export"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Margin="634,78,0,0"
-                        Click="buttonexport_Click"
-                        Height="20" Width="50" />
-
-                </Grid>
-
-                
-
-            </TabItem>
-            <TabItem Header="ProjectConfigVersion2">
-                <!-- tell the XAML to load the user control here -->
+        <DockPanel Grid.Row="1">
+            <!-- tell the XAML to load the user control here -->
                 <AccConfig:AccProjectConfig x:Name="AccProjectConfig" />
-            </TabItem>
-        </TabControl>
+        </DockPanel>
 
         <!--Footer-->
-        <DockPanel Grid.Row="2" HorizontalAlignment="Right" Width="1100">
+        <DockPanel Grid.Row="2">
             <TextBox
                 Margin="2"
                 Name="statusbar"

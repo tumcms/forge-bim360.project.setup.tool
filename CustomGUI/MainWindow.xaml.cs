@@ -1,27 +1,9 @@
-﻿using CsvHelper;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing.Printing;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using AdskConstructionCloudBreakdown;
 using Autodesk.Forge.BIM360.Serialization;
 using BimProjectSetupAPI.Workflows;
 using BimProjectSetupCommon;
@@ -30,6 +12,7 @@ using BimProjectSetupCommon.Workflow;
 using CustomGUI.Controls;
 using File = System.IO.File;
 using static CustomBIMFromCSV.Tools;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 
 namespace CustomGUI
@@ -51,9 +34,10 @@ namespace CustomGUI
         private string BimId { get; set; }
         private string Adminmail { get; set; }
 
-
         private string path_file =@".\Config\config.txt";
         private string path_last =@".\Config\last.txt";
+
+
 
 
         public MainWindow()
@@ -87,76 +71,6 @@ namespace CustomGUI
 
         //UserManagement
 
-
-        //CSVToolkit
-
-        //Remove input if use click on it
-        private void csvpath_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-
-            if (csvpath.Text.Equals("C:\\Users\\Example1\\example.csv"))
-            {
-                csvpath.Text = "";
-            }
-        }
-
-
-        private void buttonimport_Click(object sender, RoutedEventArgs e)
-        {
-            //move to conifg
-            if (!File.Exists(csvpath.Text)){
-                statusbar.Text = "Import failed! File not found!";
-                return;
-            }
-
-            //Load CSV into Mainwindow
-            if (AccProjectConfig.LoadBim360Projects(csvpath.Text))
-            {
-                statusbar.Text = "Import successful!";
-                //Write config into txt
-                using (FileStream fs = File.OpenWrite(path_last))
-                {
-                    using (var sr = new StreamWriter(fs))
-                    {
-                        //Delete the content of the file
-                        sr.Write(string.Empty);
-                        sr.WriteLine(csvpath.Text);
-                    }
-                }
-            }
-            else
-            {
-                statusbar.Text = "Import failed! Unknown CSV Config or File not found!";
-            }
-
-        }
-
-
-        private void buttonexport_Click(object sender, RoutedEventArgs e)
-        {
-            //move to conifg
-            if (File.Exists(csvpathexp.Text))
-            {
-                statusbar.Text = "Export Failed! File already exists!";
-            }
-
-            if (!Directory.Exists((csvpathexp.Text)))
-            {
-                var tmp = csvpathexp.Text;
-
-                Directory.CreateDirectory((csvpathexp.Text));
-            }
-
-            //Hardcoded Name in here maybe user should be able to change
-            string filename = "\\BIM360_Custom_Template.csv";
-
-            //export the Projects
-            AccProjectConfig.ExportBim360Projects(csvpathexp.Text+ filename);
-
-            statusbar.Text = "Export successful";
-
-        }
-
         private void MainWindow_OnInitialized(object? sender, EventArgs e)
         {
             //create history
@@ -166,19 +80,6 @@ namespace CustomGUI
                 Directory.CreateDirectory(path_last.Remove(path_last.LastIndexOf("\\")));
                 var tmp = File.Create(path_last);
                 tmp.Close();
-            }
-            else
-            {
-                if (File.Exists(path_last))
-                {
-                    using (FileStream fs = File.OpenRead(path_last))
-                    {
-                        using (StreamReader reader = new StreamReader(fs))
-                        {
-                            csvpath.Text = reader.ReadLine();
-                        }
-                    }
-                }
             }
 
             var filePath =@".\Config\config.txt";
@@ -192,17 +93,15 @@ namespace CustomGUI
                         ClientId = reader.ReadLine();
                         ClientSecret = reader.ReadLine();
                         BimId = reader.ReadLine();
+                        Adminmail = reader.ReadLine();
                     }
                 }
             }
 
         }
-        private void Csvpathexp_OnInitialized(object? sender, EventArgs e)
-        {
-            csvpathexp.Text = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        }
 
-     
+
+        //Upload
         private void Upload_OnClick(object sender, RoutedEventArgs e)
         {
             var progress = new updates_upload();
@@ -331,6 +230,100 @@ namespace CustomGUI
             progress.Close();
         }
 
+        private void About_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException("Just look into the git");
+        }
+
+        private void Export_OnClick(object sender, RoutedEventArgs e)
+        {
+            //maybe change
+            string filename = "\\BIM360_Custom_Template.csv";
+
+            //window for user to enter data
+            var dialog = new InputDialog("Please enter the path for exporting the CSV:",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+            dialog.ResizeMode = ResizeMode.NoResize;
+            dialog.ShowDialog();
+            if (dialog.DialogResult != true)
+            {
+                return;
+            }
+            var exportpath = dialog.Answer;
+            //move to conifg
+            if (File.Exists(exportpath + filename))
+            {
+                statusbar.Text = "Export Failed! File already exists!";
+                return;
+            }
+
+            if (!Directory.Exists((exportpath)))
+            {
+                try
+                {
+                    Directory.CreateDirectory(exportpath);
+                }
+                catch (Exception ex)
+                {
+                    statusbar.Text = ex.Message;
+                    return;
+                }
+            }
+
+            //Hardcoded Name in here maybe user should be able to change
+
+
+            //export the Projects
+            try
+            {
+                AccProjectConfig.ExportBim360Projects(exportpath + filename);
+            }
+            catch (Exception ex)
+            {
+                statusbar.Text = ex.Message;
+                return;
+            }
+            statusbar.Text = "Export successful";
+
+            dialog.Close();
+        }
+
+        private void Import_OnClick(object sender, RoutedEventArgs e)
+        {
+            //Folderbrowser
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = false;
+            dialog.Multiselect = false;
+            //if use canceled the selection
+            if (Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel ==
+                dialog.ShowDialog())
+            {
+                statusbar.Text = "canceled";
+                return;
+            }
+
+            //Load CSV into Mainwindow
+            if (AccProjectConfig.LoadBim360Projects(dialog.FileName))
+            {
+                statusbar.Text = "Import successful!";
+                using (FileStream fs = File.OpenWrite(path_last))
+                {
+                    using (var sr = new StreamWriter(fs))
+                    {
+                        //Delete the content of the file
+                        sr.Write(string.Empty);
+                        sr.WriteLine(dialog.FileName);
+                    }
+                }
+            }
+            else
+            {
+                statusbar.Text = "Import failed! Unknown CSV Config or File not found!";
+            }
+
+
+        }
+
         //Progress updates
         Action EmptyDelegate = delegate () { };
 
@@ -347,5 +340,7 @@ namespace CustomGUI
 
         }
 
+
     }
 }
+

@@ -8,7 +8,7 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              Initialized="AccProjectConfig_OnInitialized"
-             >
+             Height="Auto">
     <Grid>
 
         <Grid.RowDefinitions>
@@ -51,6 +51,7 @@
                           Margin="2"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch"
+                          Width="Auto"
                           AutoGenerateColumns="False"
                           CanUserResizeColumns="True"
                           IsReadOnly="True"

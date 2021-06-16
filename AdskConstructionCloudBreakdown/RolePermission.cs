@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace AdskConstructionCloudBreakdown
+﻿namespace AdskConstructionCloudBreakdown
 {
     public class RolePermission : Permission
     {

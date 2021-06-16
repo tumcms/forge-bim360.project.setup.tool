@@ -76,8 +76,13 @@ namespace AdskConstructionCloudBreakdown
             }
             catch
             {
-                throw new Exception("Unknown ProjectType found" + input +
-                                    "\nsee -> https://forge.autodesk.com/en/docs/bim360/v1/overview/parameters/");
+                if (!string.IsNullOrWhiteSpace(input))
+                {
+                    throw new Exception("Unknown ProjectType found" + input +
+                                        "\nsee -> https://forge.autodesk.com/en/docs/bim360/v1/overview/parameters/");
+                }
+                //std return project
+                return ProjectTypeEnum.Office;
             }
         }
 

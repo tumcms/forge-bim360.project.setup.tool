@@ -1,13 +1,7 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.Data;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text;
 using CsvHelper;
-using CsvHelper.Configuration;
 using CustomGUI;
 
 namespace AdskConstructionCloudBreakdown
@@ -351,7 +345,6 @@ namespace AdskConstructionCloudBreakdown
         }
 
         //helpful function dont know if this is the right place for it
-
         public static void AddUserPermission(UserData addto, UserPermission from )
         {
             if (from.AssignedUsers == null)

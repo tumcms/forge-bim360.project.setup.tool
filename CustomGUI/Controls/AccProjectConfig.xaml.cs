@@ -1,23 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using AdskConstructionCloudBreakdown;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace CustomGUI.Controls
 {
@@ -26,10 +17,6 @@ namespace CustomGUI.Controls
     /// </summary>
     public partial class AccProjectConfig : UserControl 
     {
-
-
-
-
         protected List<Bim360Project> projects { get; set; }
         private string csvpath { get; set; }
 
@@ -38,6 +25,7 @@ namespace CustomGUI.Controls
         private Folder activeFolder { set; get; }
 
         private UserPermission activePermission { set; get; }
+
 
 
         public AccProjectConfig()
@@ -74,6 +62,7 @@ namespace CustomGUI.Controls
         {
             //read last Path
             string path_last = @".\Config\last.txt";
+
             if (File.Exists(path_last))
             {
                 using (FileStream fs = File.OpenRead(path_last))
@@ -91,6 +80,13 @@ namespace CustomGUI.Controls
             }
         }
 
+        #region Import / Export
+        //Export / Import of Projects 
+        /// <summary>
+        /// Export currently only supports 10 Subfolder
+        /// </summary>
+        /// <param name="filepath"></param>
+        /// <returns></returns>
         public Boolean LoadBim360Projects(string filepath)
         {
             if (File.Exists(filepath))
@@ -156,12 +152,14 @@ namespace CustomGUI.Controls
                     //Maps the Header of the CSV Data to the class attributes
                     var tmp = SerializationParser.ExportBim360ToCSV(projects);
                     csv.Context.RegisterClassMap<UserDataExport>();
-                    csv.WriteRecords(tmp);
+                    if (tmp != null)
+                    {
+                        csv.WriteRecords(tmp);
+                    }
                 }
             }
 
         }
-
 
         public string ExportBim360Projects()
         {
@@ -176,6 +174,10 @@ namespace CustomGUI.Controls
                     //Maps the Header of the CSV Data to the class attributes
                     var tmp = SerializationParser.ExportBim360ToCSV(projects);
                     csv.Context.RegisterClassMap<UserDataExport>();
+                    if (tmp == null)
+                    {
+                        return retu;
+                    }
                     csv.WriteRecords(tmp);
 
                     // convert stream to string
@@ -187,10 +189,10 @@ namespace CustomGUI.Controls
 
             return retu;
         }
+        #endregion
 
-
-
-        //change active project
+        #region Userinteraction functions
+        //GUI User Interactions
         private void ProjectsView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //should be right i guess
@@ -205,6 +207,12 @@ namespace CustomGUI.Controls
 
         private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
+            if (activeProject == null)
+            {
+                MessageBox.Show("No Project selected", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             //set active Folder 
             if (TreeViewFolder.SelectedItem.GetType() == typeof(Folder))
             {
@@ -241,9 +249,12 @@ namespace CustomGUI.Controls
 
         private void ProjectTypeComboBox_OnLostFocus(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(ProjectTypeComboBox.Text.ToString()))
+            if (activeProject != null)
             {
-                activeProject.ProjectType = Selection.SelectProjectType(ProjectTypeComboBox.Text.ToString());
+                if (string.IsNullOrEmpty(ProjectTypeComboBox.Text.ToString()))
+                {
+                    activeProject.ProjectType = Selection.SelectProjectType(ProjectTypeComboBox.Text.ToString());
+                }
             }
         }
 
@@ -367,8 +378,11 @@ namespace CustomGUI.Controls
             }
             var dialog = new InputDialog("Please enter the folder name:","Example Folder");
             dialog.ResizeMode = ResizeMode.NoResize;
-            dialog.ShowDialog(); 
-            folder.AddSubFolder(dialog.Answer);
+            dialog.ShowDialog();
+            if (dialog.DialogResult==true)
+            {
+                folder.AddSubFolder(dialog.Answer);
+            }
             dialog.Close();
             //refresh layout
             TreeViewFolder.Items.Refresh();
@@ -389,7 +403,10 @@ namespace CustomGUI.Controls
             var dialog = new InputDialog("Please enter the folder name:", "Example Folder");
             dialog.ResizeMode = ResizeMode.NoResize;
             dialog.ShowDialog();
-            folder.RootFolder.AddSubFolder(dialog.Answer);
+            if (dialog.DialogResult == true)
+            {
+                folder.RootFolder.AddSubFolder(dialog.Answer);
+            }
             dialog.Close();
             //Refresh layout
             TreeViewFolder.Items.Refresh();
@@ -541,15 +558,20 @@ namespace CustomGUI.Controls
             var dialog = new InputDialog("Please enter the Role name:", "Example Role");
             dialog.ResizeMode = ResizeMode.NoResize;
             dialog.ShowDialog();
-            //remove empty Role
-            foreach (var iter in activePermission.AssignedUsers.IndustryRoles.ToList())
+            if (dialog.DialogResult == true)
             {
-                if (string.IsNullOrWhiteSpace(iter))
+                //remove empty Role
+                foreach (var iter in activePermission.AssignedUsers.IndustryRoles.ToList())
                 {
-                    activePermission.AssignedUsers.IndustryRoles.Remove(iter);
+                    if (string.IsNullOrWhiteSpace(iter))
+                    {
+                        activePermission.AssignedUsers.IndustryRoles.Remove(iter);
+                    }
                 }
+
+                activePermission.AssignedUsers.IndustryRoles.Add(dialog.Answer);
             }
-            activePermission.AssignedUsers.IndustryRoles.Add(dialog.Answer);
+
             dialog.Close();
             //refresh layout
             RoleView.Items.Refresh();
@@ -633,10 +655,13 @@ namespace CustomGUI.Controls
                 ResizeMode = ResizeMode.NoResize
             };
             dialog.ShowDialog();
+            if (dialog.DialogResult == true)
+            {
+                //set values + refesh view
+                toModifyFromList.Role = dialog.RoleRet;
+                toModifyFromList.AccessPermission = dialog.AccessRet;
+            }
 
-            //set values + refesh view
-            toModifyFromList.Role = dialog.RoleRet;
-            toModifyFromList.AccessPermission = dialog.AccessRet;
             dialog.Close();
             RolePermissionView.Items.Refresh();
 
@@ -662,7 +687,10 @@ namespace CustomGUI.Controls
             var dialog = new InputDialog("Please enter the new Project name:", "Example Project");
             dialog.ResizeMode = ResizeMode.NoResize;
             dialog.ShowDialog();
-            toModifyFromList.ProjectName=dialog.Answer;
+            if (dialog.DialogResult == true)
+            {
+                toModifyFromList.ProjectName = dialog.Answer;
+            }
             dialog.Close();
             //refresh layout
             ProjectsView.Items.Refresh();
@@ -700,12 +728,18 @@ namespace CustomGUI.Controls
             var dialog = new InputDialog("Please enter the folder name:", "Example Folder");
             dialog.ResizeMode = ResizeMode.NoResize;
             dialog.ShowDialog();
-            folder.AddSubFolder(dialog.Answer);
+            if (dialog.DialogResult == true)
+            {
+                folder.AddSubFolder(dialog.Answer);
+            }
+
             dialog.Close();
             //refresh layout
             TreeViewFolder.Items.Refresh();
             TreeViewPlans.Items.Refresh();
             TreeViewProjects.Items.Refresh();
         }
+
+        #endregion
     }
 }
