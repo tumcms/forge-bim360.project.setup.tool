@@ -131,12 +131,12 @@ namespace CustomGUI
 
             AppOptions options = AppOptions.Parse(input);
             // options.AccountRegion = "EU"; 
-            
+            options.AdminRole = "Project Manager";
+
             ProjectWorkflow projectProcess = new ProjectWorkflow(options);
             System.Threading.Thread.Sleep(1000);
             // load all existing projects from the BIM360 environment
             List<BimProject> projects = projectProcess.GetAllProjects();
-
 
             FolderWorkflow folderProcess = new FolderWorkflow(options);
             ProjectUserWorkflow projectUserProcess = new ProjectUserWorkflow(options);
@@ -197,7 +197,7 @@ namespace CustomGUI
                             CheckProjectCreated(currentProject, projectName);
                         }
 
-                        //here check whats wrong
+                        //activate all services
                         ServiceWorkflow serviceProcess = new ServiceWorkflow(options);
                         var listname = new string[]{ "admin" , "doc_manage", "pm", "fng" ,
                             "collab", "cost", "gng", "glue", "plan", "field" };
@@ -206,6 +206,10 @@ namespace CustomGUI
                         {
                             serviceList.Add(new ServiceActivation());
                             serviceList.Last().service_type = iter;
+                            serviceList.Last().project_name = projectName;
+                            //test hardcoded Test company name needs to be enter or find out
+                            serviceList.Last().company = "University Research";
+                            serviceList.Last().email = Adminmail;
                         }
                         serviceProcess.ActivateServicesProcess(new List<BimProject> (new BimProject[]{currentProject}), serviceList);
 
