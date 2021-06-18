@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CsvHelper;
 using CustomGUI;
+using MissingFieldException = CsvHelper.MissingFieldException;
 
 namespace AdskConstructionCloudBreakdown
 {
@@ -30,9 +31,13 @@ namespace AdskConstructionCloudBreakdown
                 UserData tmp;
                 try
                 {
-                    tmp  = input.GetRecord<UserData>();
+                    tmp = input.GetRecord<UserData>();
                 }
-                catch(BadDataException)
+                catch (BadDataException)
+                {
+                    return null;
+                }
+                catch (Exception)
                 {
                     return null;
                 }
@@ -299,6 +304,11 @@ namespace AdskConstructionCloudBreakdown
                 {
                     AddAllSubFolder(output, subfolder);
                 }
+                //error Handling adding somewhere in Addallsubfolder a unused rowe
+                if (iter.Plans.Subfolders.Count!=0)
+                {
+                    output.Remove(output.Last());
+                }
 
                 //Add folder structure under Project Files
                 output.Add(new UserData());
@@ -334,6 +344,11 @@ namespace AdskConstructionCloudBreakdown
                 foreach (var subfolder in iter.ProjectFiles.Subfolders)
                 {
                     AddAllSubFolder(output, subfolder);
+                }
+                //error Handling adding somewhere in Addallsubfolder a unused rowe
+                if (iter.ProjectFiles.Subfolders.Count != 0)
+                {
+                    output.Remove(output.Last());
                 }
 
                 //Create an empty row

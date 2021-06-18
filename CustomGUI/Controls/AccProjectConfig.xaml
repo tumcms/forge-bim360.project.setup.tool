@@ -151,6 +151,10 @@
                                       Click="MenuItem_FolderChild" />
                             <MenuItem Header="Create new folder as neighbor"
                                       Click="MenuItem_FolderNeighbor" />
+                            <MenuItem Header="Rename"
+                                      Click="MenuItem_RenameFolder" />
+                            <MenuItem Header="Remove"
+                                      Click="MenuItem_RemoveFolder" />
                         </ContextMenu>
                         <ContextMenu x:Key="RootActions">
                             <MenuItem Header="Create new folder as child"

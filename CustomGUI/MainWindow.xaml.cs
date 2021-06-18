@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using Autodesk.Forge.BIM360.Serialization;
@@ -132,6 +133,11 @@ namespace CustomGUI
             // options.AccountRegion = "EU"; 
             
             ProjectWorkflow projectProcess = new ProjectWorkflow(options);
+            System.Threading.Thread.Sleep(1000);
+            // load all existing projects from the BIM360 environment
+            List<BimProject> projects = projectProcess.GetAllProjects();
+
+
             FolderWorkflow folderProcess = new FolderWorkflow(options);
             ProjectUserWorkflow projectUserProcess = new ProjectUserWorkflow(options);
             AccountWorkflow accountProcess = new AccountWorkflow(options);
@@ -154,8 +160,7 @@ namespace CustomGUI
             // ProgressBar "refresh"
             CallDispatch(progress);
 
-            // load all existing projects from the BIM360 environment
-            List<BimProject> projects = projectProcess.GetAllProjects();
+            
 
 
             List<BimCompany> companies = null;
@@ -191,6 +196,19 @@ namespace CustomGUI
                             // verify the initialization of the new project
                             CheckProjectCreated(currentProject, projectName);
                         }
+
+                        //here check whats wrong
+                        ServiceWorkflow serviceProcess = new ServiceWorkflow(options);
+                        var listname = new string[]{ "admin" , "doc_manage", "pm", "fng" ,
+                            "collab", "cost", "gng", "glue", "plan", "field" };
+                        var serviceList = new List<ServiceActivation>();
+                        foreach (var iter in listname)
+                        {
+                            serviceList.Add(new ServiceActivation());
+                            serviceList.Last().service_type = iter;
+                        }
+                        serviceProcess.ActivateServicesProcess(new List<BimProject> (new BimProject[]{currentProject}), serviceList);
+
 
                         // create the folder structure
                         folders = folderProcess.CustomGetFolderStructure(currentProject);
