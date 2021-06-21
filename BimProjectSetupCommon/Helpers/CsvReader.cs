@@ -197,6 +197,12 @@ namespace BimProjectSetupCommon.Helpers
                 }
                 Log.Info("- total lines read from the csv file: " + (lineIndex - 1).ToString());
             }
+
+            //debug check
+            CustomCheckRequiredColumns(result);
+
+            CustomCheckRequiredRows(result);
+
             return result;
         }
 

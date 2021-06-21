@@ -103,7 +103,7 @@ namespace CustomGUI.Controls
                             csvconfig = new CsvConfiguration(CultureInfo.CurrentCulture)
                             {
                                 HeaderValidated = null,
-                                MissingFieldFound = null
+                                MissingFieldFound = null,
                             };
                         }
                         else
@@ -112,7 +112,7 @@ namespace CustomGUI.Controls
                             csvconfig = new CsvConfiguration(CultureInfo.InvariantCulture)
                             {
                                 HeaderValidated = null,
-                                MissingFieldFound = null
+                                MissingFieldFound = null,
                             };
                         }
 
@@ -128,7 +128,6 @@ namespace CustomGUI.Controls
                             //Sort in Data if read was successful
                             if (output != null)
                             {
-                                //ToDo: sort data into Frontend
                                 projects = output;
                                 ProjectsView.ItemsSource = projects;
                                 return true;
@@ -169,17 +168,24 @@ namespace CustomGUI.Controls
             using (var streamWriter = new StreamWriter(stream))
             {
                 //maybe the CultureInfo needs to be changed
+                //change that everything should get written
+                //CsvConfiguration test = new CsvConfiguration()
                 using (var csv = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
                 {
                     //Maps the Header of the CSV Data to the class attributes
                     var tmp = SerializationParser.ExportBim360ToCSV(projects);
-                    csv.Context.RegisterClassMap<UserDataExport>();
                     if (tmp == null)
                     {
                         return retu;
                     }
+                    //this is realy dirty but i have to try it
+                    for (int i=0;i<50;i++)
+                    {
+                        tmp.Add(new UserData());
+                    }
+                    csv.Context.RegisterClassMap<UserDataExport>();
+                    //csv.WriteHeader<UserData>();
                     csv.WriteRecords(tmp);
-
                     // convert stream to string
                     stream.Position = 0;
                     StreamReader reader = new StreamReader(stream);
@@ -261,7 +267,8 @@ namespace CustomGUI.Controls
         private void Button_AddProject(object sender, RoutedEventArgs e)
         {
             projects.Add(new Bim360Project(Namenewproject.Text));
-            activeProject=projects.Last();
+            ProjectsView.ItemsSource = projects;
+            activeProject =projects.Last();
             ProjectsView.Items.Refresh();
         }
 
@@ -305,7 +312,7 @@ namespace CustomGUI.Controls
             //add user
             foreach (var iteruser in tobeadd)
             {
-                var tmp = new UserPermission(iteruser, (AccessPermissionEnum) 
+                var tmp = new UserPermission(iteruser.Trim(), (AccessPermissionEnum) 
                     FolderUserPermissionComboBox.SelectedItem);
                 activeFolder.UserPermissions.Add(tmp);
                 tmp.AssignedUsers.IndustryRoles=roletoadd;
@@ -740,6 +747,56 @@ namespace CustomGUI.Controls
             TreeViewProjects.Items.Refresh();
         }
 
+        private void MenuItem_RemoveFolder(object sender, RoutedEventArgs e)
+        {
+            var tmp = (MenuItem)e.Source;
+            var folder = (Folder)tmp.DataContext;
+            if (folder == null)
+            {
+                MessageBox.Show("Please select a Project", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            //just to make sure
+            if (MessageBox.Show("Are you sure?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            {
+                return;
+            }
+
+            folder.RootFolder.Subfolders.Remove(folder);
+            //Refresh layout
+            TreeViewFolder.Items.Refresh();
+            TreeViewPlans.Items.Refresh();
+            TreeViewProjects.Items.Refresh();
+        }
+        private void MenuItem_RenameFolder(object sender, RoutedEventArgs e)
+        {
+            //get data form context
+            var tmp = (MenuItem)e.Source;
+            var folder = (Folder)tmp.DataContext;
+            if (folder == null)
+            {
+                MessageBox.Show("Please select a Project", "Error"
+                    , MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            //Userinteraction
+            var dialog = new InputDialog("Please enter the folder name:", "Example Folder");
+            dialog.ResizeMode = ResizeMode.NoResize;
+            dialog.ShowDialog();
+            if (dialog.DialogResult == true)
+            {
+                folder.Name = dialog.Answer.Trim();
+            }
+            dialog.Close();
+            //Refresh layout
+            TreeViewFolder.Items.Refresh();
+            TreeViewPlans.Items.Refresh();
+            TreeViewProjects.Items.Refresh();
+        }
+
         #endregion
+
+
     }
 }
