@@ -14,6 +14,8 @@ using CustomGUI.Controls;
 using File = System.IO.File;
 using static CustomBIMFromCSV.Tools;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using CustomGUI.Service;
+
 
 
 namespace CustomGUI
@@ -197,22 +199,7 @@ namespace CustomGUI
                             CheckProjectCreated(currentProject, projectName);
                         }
 
-                        //activate all services
-                        ServiceWorkflow serviceProcess = new ServiceWorkflow(options);
-                        var listname = new string[]{ "admin" , "doc_manage", "pm", "fng" ,
-                            "collab", "cost", "gng", "glue", "plan", "field" };
-                        var serviceList = new List<ServiceActivation>();
-                        foreach (var iter in listname)
-                        {
-                            serviceList.Add(new ServiceActivation());
-                            serviceList.Last().service_type = iter;
-                            serviceList.Last().project_name = projectName;
-                            //test hardcoded Test company name needs to be enter or find out
-                            serviceList.Last().company = "University Research";
-                            serviceList.Last().email = Adminmail;
-                        }
-                        serviceProcess.ActivateServicesProcess(new List<BimProject> (new BimProject[]{currentProject}), serviceList);
-
+                        
 
                         // create the folder structure
                         folders = folderProcess.CustomGetFolderStructure(currentProject);
@@ -223,6 +210,72 @@ namespace CustomGUI
                         // create or update the project users
                         projectUsers = projectUserProcess.CustomUpdateProjectUsers(csvData, row, companies,
                             currentProject, projectUserProcess);
+
+                        //activate all services
+                        ServiceWorkflow serviceProcess = new ServiceWorkflow(options);
+
+                        //check what servers needs to be activated
+                        if (Servicetab.CheckBoxservices.IsChecked == true)
+                        {
+                            #region Add Services
+                            var listname = new List<string>();
+                            listname.Add("admin");
+                            listname.Add("doc_manage");
+                            if (Servicetab.CheckBoxpm.IsChecked == true)
+                            {
+                                listname.Add("pm");
+                            }
+                            if (Servicetab.CheckBoxfng.IsChecked == true)
+                            {
+                                listname.Add("fng");
+                            }
+                            if (Servicetab.CheckBoxcollab.IsChecked == true)
+                            {
+                                listname.Add("collab");
+                            }
+                            if (Servicetab.CheckBoxcost.IsChecked == true)
+                            {
+                                listname.Add("cost");
+                            }
+                            if (Servicetab.CheckBoxgng.IsChecked == true)
+                            {
+                                listname.Add("gng");
+                            }
+                            if (Servicetab.CheckBoxglue.IsChecked == true)
+                            {
+                                listname.Add("glue");
+                            }
+                            if (Servicetab.CheckBoxplan.IsChecked == true)
+                            {
+                                listname.Add("plan");
+                            }
+                            if (Servicetab.CheckBoxfield.IsChecked == true)
+                            {
+                                listname.Add("field");
+                            }
+                            if (Servicetab.CheckBoxassete.IsChecked == true)
+                            {
+                                listname.Add("assets");
+                            }
+                            #endregion
+
+                            var serviceList = new List<ServiceActivation>();
+                            foreach (var iter in listname)
+                            {
+                                serviceList.Add(new ServiceActivation());
+                                serviceList.Last().service_type = iter;
+                                serviceList.Last().project_name = projectName;
+                                //test hardcoded Test company name needs to be enter or find out
+                                serviceList.Last().company = Servicetab.Company.Text.Trim();
+                                serviceList.Last().email = Adminmail;
+                            }
+
+                            serviceProcess.ActivateServicesProcess(
+                                new List<BimProject>(new BimProject[] {currentProject}), serviceList);
+
+                        }
+
+
                     }
 
                     // assign permissions

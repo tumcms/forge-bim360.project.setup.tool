@@ -31,7 +31,7 @@ namespace CustomGUI.Controls
         public AccProjectConfig()
         {
             InitializeComponent();
-
+            projects = new List<Bim360Project>();
 
             //combobox Value assignment
             FolderUserPermissionComboBox.ItemsSource = Enum.GetValues(typeof(AdskConstructionCloudBreakdown.AccessPermissionEnum));
@@ -178,7 +178,7 @@ namespace CustomGUI.Controls
                     {
                         return retu;
                     }
-                    //this is realy dirty but i have to try it
+                    //this is really dirty but it works for now
                     for (int i=0;i<50;i++)
                     {
                         tmp.Add(new UserData());
