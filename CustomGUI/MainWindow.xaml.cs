@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
+using AdskConstructionCloudBreakdown;
 using Autodesk.Forge.BIM360.Serialization;
 using BimProjectSetupAPI.Workflows;
 using BimProjectSetupCommon;
@@ -15,7 +17,7 @@ using File = System.IO.File;
 using static CustomBIMFromCSV.Tools;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using CustomGUI.Service;
-
+using Folder = AdskConstructionCloudBreakdown.Folder;
 
 
 namespace CustomGUI
@@ -101,6 +103,11 @@ namespace CustomGUI
                 }
             }
 
+        }
+
+        private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            AccProjectConfig.ProjectsView.Items.Refresh();
         }
 
 
@@ -399,6 +406,100 @@ namespace CustomGUI
 
         }
 
+        private void GetTemplete_OnClick(object sender, RoutedEventArgs e)
+        {
+            var progress = new updates_upload();
+            progress.Show();
+
+            //Updates
+            progress.pgb.Value = 10;
+            progress.ProgressLabel.Content = "Build Connection";
+            // ProgressBar "refresh"
+            CallDispatch(progress);
+
+            string[] input = new string[] {"-c", ClientId ,"-s", ClientSecret, "-a" ,BimId ,
+                "-h", Adminmail ,"-f"," .\\sample","-t",",",
+                "-z",",","-e","UTF-8","-d","yyyy-MM-dd"};
+
+            AppOptions options = AppOptions.Parse(input);
+            // options.AccountRegion = "EU"; 
+            options.AdminRole = "Project Manager";
+
+            ProjectWorkflow projectProcess = new ProjectWorkflow(options);
+            FolderWorkflow folderProcess = new FolderWorkflow(options);
+            System.Threading.Thread.Sleep(1000);
+            // load all existing projects from the BIM360 environment
+            List<BimProject> projects = projectProcess.GetAllProjects();
+
+            //Updates
+            progress.pgb.Value = 30;
+            progress.ProgressLabel.Content = "Download Project";
+            // ProgressBar "refresh"
+            CallDispatch(progress);
+
+            BimProject currentProject = null;
+
+            // get project from bim360
+            try
+            {
+                currentProject = projects.Find(x => x.name == TextBoxTemplate.Text.Trim());
+            }
+            catch (Exception)
+            {
+                statusbar.Text = "No Project with the name:" + TextBoxTemplate.Text.Trim() + " found!";
+                return;
+            }
+            if (currentProject == null)
+            {
+                return;
+            }
+
+            var nestedfolders = folderProcess.CustomGetFolderStructure(currentProject);
+            foreach (var iterfolder in nestedfolders)
+            {
+               
+
+            }
+
+            progress.pgb.Value = 50;
+            progress.ProgressLabel.Content = "Converte to local Project 0/2";
+            // ProgressBar "refresh"
+            CallDispatch(progress);
+
+
+            var newproject = new Bim360Project(TextBoxTemplate.Text.Trim());
+            newproject.ProjectType = Selection.SelectProjectType(currentProject.project_type);
+            var roots = new List<Folder>();
+            //hier rekursive alle ordner finden
+            foreach (var iterfolder in nestedfolders)
+            {
+                roots.Add(getNestedFolder(iterfolder));
+                progress.pgb.Value = 70;
+                progress.ProgressLabel.Content = "Converte to local Project 1/2";
+                // ProgressBar "refresh"
+                CallDispatch(progress);
+            }
+            //here hardcoded plan and projectfiles need to be changed in the furtuer if  ACC comes
+            if (roots[0].Name == "Plans")
+            {
+                newproject.Plans = roots[0];
+                newproject.ProjectFiles = roots[1];
+            }
+            else
+            {
+                newproject.Plans = roots[1];
+                newproject.ProjectFiles = roots[0];
+            }
+
+            AccProjectConfig.ProjectsView.ItemsSource = AccProjectConfig.projects;
+            AccProjectConfig.projects.Add(newproject);
+            AccProjectConfig.ProjectsView.Items.Refresh();
+            progress.Close();
+            statusbar.Text = "Import successful";
+
+        }
+
+
         //Progress updates
         Action EmptyDelegate = delegate () { };
 
@@ -415,7 +516,22 @@ namespace CustomGUI
 
         }
 
+        //translate Nestedfolder into Folder of C# Code
+        private Folder getNestedFolder(NestedFolder roots)
+        {
+            var currentfolder = new Folder(roots.name);
+            var subfolder = new List<Folder>();
+            foreach (var iterfolder in roots.childrenFolders)
+            {
+                currentfolder.AddSubFolder(getNestedFolder(iterfolder));
 
+            }
+
+            return currentfolder;
+        }
+
+
+        
     }
 }
 

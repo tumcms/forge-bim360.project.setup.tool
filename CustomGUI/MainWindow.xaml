@@ -33,13 +33,39 @@
             <MenuItem Header="Upload" x:Name="upload" Click="Upload_OnClick"/>
             <MenuItem Header="About" Click="About_OnClick"></MenuItem>
         </Menu>
-        <TabControl Grid.Row="1">
+        <TabControl Grid.Row="1" SelectionChanged="Selector_OnSelectionChanged">
             <TabItem Header="UserManagement">
                 <!-- tell the XAML to load the user control here -->
                     <AccConfig:AccProjectConfig x:Name="AccProjectConfig" />
             </TabItem>
             <TabItem Header="Service">
                 <Service:Service x:Name="Servicetab"/>
+            </TabItem>
+            <TabItem Header="OnlineTemplate">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.2*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+
+
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <DockPanel >
+                        <TextBlock VerticalAlignment="Center" Text="Please enter Name of a Project to get the Template:  "/>
+                    </DockPanel>
+                    <DockPanel Grid.Column="1">
+                        <TextBox Height="20" Text="Example Project" x:Name="TextBoxTemplate"/>
+                    </DockPanel>
+                    <DockPanel Grid.Row="1" Grid.Column="1">
+                        <Button Click="GetTemplete_OnClick" Height="50" Width="100">Get Template</Button>
+                    </DockPanel>
+
+                </Grid>
             </TabItem>
         </TabControl>
         <!--Footer-->
