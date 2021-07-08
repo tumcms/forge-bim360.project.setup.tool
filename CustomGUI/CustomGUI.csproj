@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="27.0.2" />
-    <PackageReference Include="Windows7APICodePack-Shell" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
