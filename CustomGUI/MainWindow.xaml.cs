@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
+using AdskConstructionCloudBreakdown;
 using Autodesk.Forge.BIM360.Serialization;
 using BimProjectSetupAPI.Workflows;
 using BimProjectSetupCommon;
@@ -14,6 +16,8 @@ using CustomGUI.Controls;
 using File = System.IO.File;
 using static CustomBIMFromCSV.Tools;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using CustomGUI.Service;
+using Folder = AdskConstructionCloudBreakdown.Folder;
 
 
 namespace CustomGUI
@@ -99,6 +103,11 @@ namespace CustomGUI
                 }
             }
 
+        }
+
+        private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            AccProjectConfig.ProjectsView.Items.Refresh();
         }
 
 
@@ -197,22 +206,7 @@ namespace CustomGUI
                             CheckProjectCreated(currentProject, projectName);
                         }
 
-                        //activate all services
-                        ServiceWorkflow serviceProcess = new ServiceWorkflow(options);
-                        var listname = new string[]{ "admin" , "doc_manage", "pm", "fng" ,
-                            "collab", "cost", "gng", "glue", "plan", "field" };
-                        var serviceList = new List<ServiceActivation>();
-                        foreach (var iter in listname)
-                        {
-                            serviceList.Add(new ServiceActivation());
-                            serviceList.Last().service_type = iter;
-                            serviceList.Last().project_name = projectName;
-                            //test hardcoded Test company name needs to be enter or find out
-                            serviceList.Last().company = "University Research";
-                            serviceList.Last().email = Adminmail;
-                        }
-                        serviceProcess.ActivateServicesProcess(new List<BimProject> (new BimProject[]{currentProject}), serviceList);
-
+                        
 
                         // create the folder structure
                         folders = folderProcess.CustomGetFolderStructure(currentProject);
@@ -223,6 +217,72 @@ namespace CustomGUI
                         // create or update the project users
                         projectUsers = projectUserProcess.CustomUpdateProjectUsers(csvData, row, companies,
                             currentProject, projectUserProcess);
+
+                        //activate all services
+                        ServiceWorkflow serviceProcess = new ServiceWorkflow(options);
+
+                        //check what servers needs to be activated
+                        if (Servicetab.CheckBoxservices.IsChecked == true)
+                        {
+                            #region Add Services
+                            var listname = new List<string>();
+                            listname.Add("admin");
+                            listname.Add("doc_manage");
+                            if (Servicetab.CheckBoxpm.IsChecked == true)
+                            {
+                                listname.Add("pm");
+                            }
+                            if (Servicetab.CheckBoxfng.IsChecked == true)
+                            {
+                                listname.Add("fng");
+                            }
+                            if (Servicetab.CheckBoxcollab.IsChecked == true)
+                            {
+                                listname.Add("collab");
+                            }
+                            if (Servicetab.CheckBoxcost.IsChecked == true)
+                            {
+                                listname.Add("cost");
+                            }
+                            if (Servicetab.CheckBoxgng.IsChecked == true)
+                            {
+                                listname.Add("gng");
+                            }
+                            if (Servicetab.CheckBoxglue.IsChecked == true)
+                            {
+                                listname.Add("glue");
+                            }
+                            if (Servicetab.CheckBoxplan.IsChecked == true)
+                            {
+                                listname.Add("plan");
+                            }
+                            if (Servicetab.CheckBoxfield.IsChecked == true)
+                            {
+                                listname.Add("field");
+                            }
+                            if (Servicetab.CheckBoxassete.IsChecked == true)
+                            {
+                                listname.Add("assets");
+                            }
+                            #endregion
+
+                            var serviceList = new List<ServiceActivation>();
+                            foreach (var iter in listname)
+                            {
+                                serviceList.Add(new ServiceActivation());
+                                serviceList.Last().service_type = iter;
+                                serviceList.Last().project_name = projectName;
+                                //test hardcoded Test company name needs to be enter or find out
+                                serviceList.Last().company = Servicetab.Company.Text.Trim();
+                                serviceList.Last().email = Adminmail;
+                            }
+
+                            serviceProcess.ActivateServicesProcess(
+                                new List<BimProject>(new BimProject[] {currentProject}), serviceList);
+
+                        }
+
+
                     }
 
                     // assign permissions
@@ -346,6 +406,100 @@ namespace CustomGUI
 
         }
 
+        private void GetTemplete_OnClick(object sender, RoutedEventArgs e)
+        {
+            var progress = new updates_upload();
+            progress.Show();
+
+            //Updates
+            progress.pgb.Value = 10;
+            progress.ProgressLabel.Content = "Build Connection";
+            // ProgressBar "refresh"
+            CallDispatch(progress);
+
+            string[] input = new string[] {"-c", ClientId ,"-s", ClientSecret, "-a" ,BimId ,
+                "-h", Adminmail ,"-f"," .\\sample","-t",",",
+                "-z",",","-e","UTF-8","-d","yyyy-MM-dd"};
+
+            AppOptions options = AppOptions.Parse(input);
+            // options.AccountRegion = "EU"; 
+            options.AdminRole = "Project Manager";
+
+            ProjectWorkflow projectProcess = new ProjectWorkflow(options);
+            FolderWorkflow folderProcess = new FolderWorkflow(options);
+            System.Threading.Thread.Sleep(1000);
+            // load all existing projects from the BIM360 environment
+            List<BimProject> projects = projectProcess.GetAllProjects();
+
+            //Updates
+            progress.pgb.Value = 30;
+            progress.ProgressLabel.Content = "Download Project";
+            // ProgressBar "refresh"
+            CallDispatch(progress);
+
+            BimProject currentProject = null;
+
+            // get project from bim360
+            try
+            {
+                currentProject = projects.Find(x => x.name == TextBoxTemplate.Text.Trim());
+            }
+            catch (Exception)
+            {
+                statusbar.Text = "No Project with the name:" + TextBoxTemplate.Text.Trim() + " found!";
+                return;
+            }
+            if (currentProject == null)
+            {
+                return;
+            }
+
+            var nestedfolders = folderProcess.CustomGetFolderStructure(currentProject);
+            foreach (var iterfolder in nestedfolders)
+            {
+               
+
+            }
+
+            progress.pgb.Value = 50;
+            progress.ProgressLabel.Content = "Converte to local Project 0/2";
+            // ProgressBar "refresh"
+            CallDispatch(progress);
+
+
+            var newproject = new Bim360Project(TextBoxTemplate.Text.Trim());
+            newproject.ProjectType = Selection.SelectProjectType(currentProject.project_type);
+            var roots = new List<Folder>();
+            //hier rekursive alle ordner finden
+            foreach (var iterfolder in nestedfolders)
+            {
+                roots.Add(getNestedFolder(iterfolder));
+                progress.pgb.Value = 70;
+                progress.ProgressLabel.Content = "Converte to local Project 1/2";
+                // ProgressBar "refresh"
+                CallDispatch(progress);
+            }
+            //here hardcoded plan and projectfiles need to be changed in the furtuer if  ACC comes
+            if (roots[0].Name == "Plans")
+            {
+                newproject.Plans = roots[0];
+                newproject.ProjectFiles = roots[1];
+            }
+            else
+            {
+                newproject.Plans = roots[1];
+                newproject.ProjectFiles = roots[0];
+            }
+
+            AccProjectConfig.ProjectsView.ItemsSource = AccProjectConfig.projects;
+            AccProjectConfig.projects.Add(newproject);
+            AccProjectConfig.ProjectsView.Items.Refresh();
+            progress.Close();
+            statusbar.Text = "Import successful";
+
+        }
+
+
         //Progress updates
         Action EmptyDelegate = delegate () { };
 
@@ -362,7 +516,22 @@ namespace CustomGUI
 
         }
 
+        //translate Nestedfolder into Folder of C# Code
+        private Folder getNestedFolder(NestedFolder roots)
+        {
+            var currentfolder = new Folder(roots.name);
+            var subfolder = new List<Folder>();
+            foreach (var iterfolder in roots.childrenFolders)
+            {
+                currentfolder.AddSubFolder(getNestedFolder(iterfolder));
 
+            }
+
+            return currentfolder;
+        }
+
+
+        
     }
 }
 

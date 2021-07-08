@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         
         xmlns:AccConfig="clr-namespace:CustomGUI.Controls"
-        
+        xmlns:Service="clr-namespace:CustomGUI.Service"
+
         mc:Ignorable="d"
         Title="ACC_projectSetup Wizard" Height="550" Width="1100"
         MinHeight="550" MinWidth="800"
@@ -32,12 +33,41 @@
             <MenuItem Header="Upload" x:Name="upload" Click="Upload_OnClick"/>
             <MenuItem Header="About" Click="About_OnClick"></MenuItem>
         </Menu>
+        <TabControl Grid.Row="1" SelectionChanged="Selector_OnSelectionChanged">
+            <TabItem Header="UserManagement">
+                <!-- tell the XAML to load the user control here -->
+                    <AccConfig:AccProjectConfig x:Name="AccProjectConfig" />
+            </TabItem>
+            <TabItem Header="Service">
+                <Service:Service x:Name="Servicetab"/>
+            </TabItem>
+            <TabItem Header="OnlineTemplate">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.2*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
 
-        <DockPanel Grid.Row="1">
-            <!-- tell the XAML to load the user control here -->
-                <AccConfig:AccProjectConfig x:Name="AccProjectConfig" />
-        </DockPanel>
 
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <DockPanel >
+                        <TextBlock VerticalAlignment="Center" Text="Please enter Name of a Project to get the Template:  "/>
+                    </DockPanel>
+                    <DockPanel Grid.Column="1">
+                        <TextBox Height="20" Text="Example Project" x:Name="TextBoxTemplate"/>
+                    </DockPanel>
+                    <DockPanel Grid.Row="1" Grid.Column="1">
+                        <Button Click="GetTemplete_OnClick" Height="50" Width="100">Get Template</Button>
+                    </DockPanel>
+
+                </Grid>
+            </TabItem>
+        </TabControl>
         <!--Footer-->
         <DockPanel Grid.Row="2">
             <TextBox

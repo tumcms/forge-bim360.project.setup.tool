@@ -17,7 +17,7 @@ namespace CustomGUI.Controls
     /// </summary>
     public partial class AccProjectConfig : UserControl 
     {
-        protected List<Bim360Project> projects { get; set; }
+        public List<Bim360Project> projects { get; set; }
         private string csvpath { get; set; }
 
         private Bim360Project activeProject { set; get; }
@@ -31,7 +31,7 @@ namespace CustomGUI.Controls
         public AccProjectConfig()
         {
             InitializeComponent();
-
+            projects = new List<Bim360Project>();
 
             //combobox Value assignment
             FolderUserPermissionComboBox.ItemsSource = Enum.GetValues(typeof(AdskConstructionCloudBreakdown.AccessPermissionEnum));
@@ -178,7 +178,7 @@ namespace CustomGUI.Controls
                     {
                         return retu;
                     }
-                    //this is realy dirty but i have to try it
+                    //this is really dirty but it works for now
                     for (int i=0;i<50;i++)
                     {
                         tmp.Add(new UserData());
@@ -431,6 +431,10 @@ namespace CustomGUI.Controls
             var item = (DataGrid)contextMenu.PlacementTarget;
             //Get the underlying item
             var toDeleteFromBindedList = (Bim360Project)item.SelectedCells[0].Item;
+            if (toDeleteFromBindedList == null)
+            {
+                return;
+            }
             //reorgenize
             if (toDeleteFromBindedList == activeProject)
             {
@@ -469,6 +473,10 @@ namespace CustomGUI.Controls
             var item = (DataGrid)contextMenu.PlacementTarget;
             //Copy Itme
             var toduplicate = (Bim360Project)item.SelectedCells[0].Item;
+            if (toduplicate == null)
+            {
+                return;
+            }
             var toadd = new Bim360Project(toduplicate);
             projects.Add(toadd);
             ProjectsView.Items.Refresh();
