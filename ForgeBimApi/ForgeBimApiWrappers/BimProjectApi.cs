@@ -158,7 +158,6 @@ namespace Autodesk.Forge.BIM360
         public IRestResponse PostUsersImport(string projectId, string userId, List<ProjectUser> users, string accountId = null)
         {
             var request = new RestRequest(Method.POST);
-            //request.Resource = "hq/v2/accounts/{AccountId}/projects/{ProjectId}/users/import";
             request.Resource = Urls["projects_projectId_users_import"];
             if(accountId == null)
             {
@@ -180,6 +179,37 @@ namespace Autodesk.Forge.BIM360
             request.AddHeader("authorization", $"Bearer {Token}");
             request.AddHeader("content-type", ContentType);
             request.AddHeader("x-user-id", userId);
+
+            IRestResponse response = ExecuteRequest(request);
+            return response;
+        }
+
+        public IRestResponse PatchUser(string projectId, string adminUserId, string userId, ProjectUser user, string accountId = null)
+        {
+            var request = new RestRequest(Method.PATCH);
+            request.Resource = Urls["projects_projectId_user_patch"];
+            if (accountId == null)
+            {
+                request.AddParameter("AccountId", options.ForgeBimAccountId, ParameterType.UrlSegment);
+            }
+            else
+            {
+                request.AddParameter("AccountId", accountId, ParameterType.UrlSegment);
+            }
+
+            request.AddParameter("ProjectId", projectId, ParameterType.UrlSegment);
+            request.AddParameter("UserId", userId, ParameterType.UrlSegment);
+
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.NullValueHandling = NullValueHandling.Ignore;
+            user.email = null;
+            string serviceString = JsonConvert.SerializeObject(user, settings);
+            request.AddParameter("application/json", serviceString, ParameterType.RequestBody);
+
+            request.AddHeader("cache-control", "no-cache");
+            request.AddHeader("authorization", $"Bearer {Token}");
+            request.AddHeader("content-type", ContentType);
+            request.AddHeader("x-user-id", adminUserId);
 
             IRestResponse response = ExecuteRequest(request);
             return response;
@@ -221,14 +251,12 @@ namespace Autodesk.Forge.BIM360
         /// </summary>
         /// <param name="result">List of all BimProject objects</param>
         /// <returns>IRestResponse that indicates the status of the call</returns>
-        public IRestResponse GetProjects(out List<BimProject> result)
+        public IRestResponse GetProjects(out List<BimProject> result, string sortProp = "updated_at", int limit = 100, int offset = 0 )
         {
-            int limit = 100 ;
             Log.Info($"Querying Projects from AccountID '{options.ForgeBimAccountId}'");
             result = new List<BimProject>();
             List<BimProject> projects;
             IRestResponse response = null;
-            int offset = 0;
             do
             {
                 projects = null;
@@ -239,8 +267,9 @@ namespace Autodesk.Forge.BIM360
                     request.Resource = Urls["projects"];
                     request.AddParameter("AccountId", options.ForgeBimAccountId, ParameterType.UrlSegment);
                     request.AddHeader("authorization", $"Bearer {Token}");
+                    request.AddParameter("sort", sortProp, ParameterType.QueryString);
                     request.AddParameter("limit", limit, ParameterType.QueryString);
-                    request.AddParameter("offset", offset, ParameterType.QueryString);                    
+                    request.AddParameter("offset", offset, ParameterType.QueryString);
 
                     response = ExecuteRequest(request);
                     

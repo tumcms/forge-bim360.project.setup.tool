@@ -19,6 +19,7 @@
 using NLog;
 using System;
 using System.Reflection;
+using BimProjectSetupAPI.Workflows;
 using BimProjectSetupCommon;
 using BimProjectSetupCommon.Workflow;
 
@@ -78,12 +79,19 @@ namespace Autodesk.BimProjectSetup
             }
             if (options.ProjectUserFilePath != null)
             {
-                projectUserProcess.AddProjectUsersFromCsvProcess();
+                if (options.UpdateProjectUsers)
+                {
+                    projectUserProcess.UpdateProjectUsersFromCsvProcess();
+                }
+                else
+                {
+                    projectUserProcess.AddProjectUsersFromCsvProcess();
+                }
             }
         }
         internal static void PrintHelp()
         {
-            Console.WriteLine("Usage: Autodesk.BimProjectSetup [-p] [-x] [-u] [-c] [-s] [-a] [-b] [-t] [-z] [-e] [-d] [-r] [-h] [--CF] [--EU]");
+            Console.WriteLine("Usage: Autodesk.BimProjectSetup [-p] [-x] [-u] [-c] [-s] [-a] [-b] [-t] [-z] [-e] [-d] [-r] [-h] [--CF] [--EU] [--UP]");
             Console.WriteLine("  -p        Path to CSV input file for project creation");
             Console.WriteLine("  -x        Path to CSV input file for service activation");
             Console.WriteLine("  -u        Path to CSV input file with project user information");
@@ -100,6 +108,7 @@ namespace Autodesk.BimProjectSetup
             // Switches
             Console.WriteLine("  --CF      Copy folders");
             Console.WriteLine("  --EU      Use the EU region account");
+            Console.WriteLine("  --UP      Update Project User Access, Companies, or Roles");
             Console.WriteLine("At least one path to an input file must be provided with the -p or -x options");
         }
         internal static void PrintHeader()

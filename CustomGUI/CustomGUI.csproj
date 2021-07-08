@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="img\folder_icon.png" />
+    <None Remove="img\upload.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="27.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AdskConstructionCloudBreakdown\AdskConstructionCloudBreakdown.csproj" />
+    <ProjectReference Include="..\BimProjectSetupCommon\BimProjectSetupCommon.csproj" />
+    <ProjectReference Include="..\CustomBIMFromCSV\CustomBIMFromCSV.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="img\folder_icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+</Project>
