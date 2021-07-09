@@ -129,14 +129,18 @@ namespace CustomGUI
             CallDispatch(progress);
 
             //maybe change
-            string[] input = new string[] {"-c", ClientId ,"-s", ClientSecret, "-a" ,BimId , 
-                                        "-h", Adminmail ,"-f"," .\\sample","-t",",",
-                                           "-z",",","-e","UTF-8","-d","yyyy-MM-dd"} ;
+            string[] input = new string[]
+            {
+                "-c", ClientId, "-s", ClientSecret, "-a", BimId,
+                "-h", Adminmail, "-f", " .\\sample", "-t", ",",
+                "-z", ",", "-e", "UTF-8", "-d", "yyyy-MM-dd"
+            };
 
-            
+
             // Delete previous versions of log.txt
             System.IO.File.Delete("Log/logInfo.txt");
             System.IO.File.Delete("Log/logImportant.txt");
+
 
             AppOptions options = AppOptions.Parse(input);
             // options.AccountRegion = "EU"; 
@@ -150,6 +154,8 @@ namespace CustomGUI
             FolderWorkflow folderProcess = new FolderWorkflow(options);
             ProjectUserWorkflow projectUserProcess = new ProjectUserWorkflow(options);
             AccountWorkflow accountProcess = new AccountWorkflow(options);
+        
+
 
             //Updates
             progress.pgb.Value = 25;
@@ -314,7 +320,7 @@ namespace CustomGUI
 
         private void About_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException("Just look into the git");
+            statusbar.Text="Just look into the git";
         }
 
         private void Export_OnClick(object sender, RoutedEventArgs e)

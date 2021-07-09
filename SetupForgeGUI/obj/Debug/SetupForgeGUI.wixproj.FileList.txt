@@ -1,0 +1,7 @@
+obj\Debug\Product.wixobj
+D:\Uni\hiwi\Bim360\SetupForgeGUI\bin\Debug\cab1.cab
+obj\Debug\SetupForgeGUI.wixproj.BindContentsFileListnull.txt
+obj\Debug\SetupForgeGUI.wixproj.BindOutputsFileListnull.txt
+obj\Debug\SetupForgeGUI.wixproj.BindBuiltOutputsFileListnull.txt
+D:\Uni\hiwi\Bim360\SetupForgeGUI\bin\Debug\BIM360-Setup-Wizard.msi
+D:\Uni\hiwi\Bim360\SetupForgeGUI\bin\Debug\BIM360-Setup-Wizard.wixpdb
