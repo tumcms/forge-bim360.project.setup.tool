@@ -89,7 +89,7 @@ namespace BimProjectSetupCommon.Helpers
         {
             Console.WriteLine(logMessage);
 
-            using (StreamWriter w = File.AppendText("Log/logInfo.txt"))
+            using (StreamWriter w = File.AppendText("%APPDARA%/Bim360Interface/Log/logInfo.txt"))
             {
                 w.WriteLine(logMessage);
             }
@@ -100,12 +100,12 @@ namespace BimProjectSetupCommon.Helpers
             Console.WriteLine(logMessage);
             System.Console.ResetColor();
 
-            using (StreamWriter w = File.AppendText("Log/logInfo.txt"))
+            using (StreamWriter w = File.AppendText("%APPDARA%/Bim360Interface/Log/logInfo.txt"))
             {
                 w.WriteLine(logMessage);
             }
 
-            using (StreamWriter w = File.AppendText("Log/logImportant.txt"))
+            using (StreamWriter w = File.AppendText("%APPDARA%/Bim360Interface/Log/logImportant.txt"))
             {
                 w.WriteLine($" - {logMessage}\n");
             }
@@ -117,12 +117,12 @@ namespace BimProjectSetupCommon.Helpers
             Console.WriteLine(logMessage);
             System.Console.ResetColor();
 
-            using (StreamWriter w = File.AppendText("Log/logInfo.txt"))
+            using (StreamWriter w = File.AppendText("%APPDARA%/Bim360Interface/Log/logInfo.txt"))
             {
                 w.WriteLine(logMessage);
             }
 
-            using (StreamWriter w = File.AppendText("Log/logImportant.txt"))
+            using (StreamWriter w = File.AppendText("%APPDARA%/Bim360Interface/Log/logImportant.txt"))
             {
                 w.WriteLine($" - {logMessage}\n");
             }
