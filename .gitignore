@@ -153,3 +153,5 @@ Bim360Install/bin/
 Bim360Install/Images/
 Bim360Install/obj/Debug/Bim360Install.wapproj.CoreCompileInputs.cache
 Bim360Install/obj/
+*.cache
+*.force

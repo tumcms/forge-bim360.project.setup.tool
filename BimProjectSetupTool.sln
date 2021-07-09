@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdskConstructionCloudBreakd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACC_classStructureTester", "ACC_classStructureTester\ACC_classStructureTester.csproj", "{DEF722A3-B05E-4096-A37C-72180B0BD20A}"
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "SetupForgeGUI", "SetupForgeGUI\SetupForgeGUI.wixproj", "{5A51C49B-6978-4740-B40E-0FCE61FC5085}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -163,6 +165,18 @@ Global
 		{DEF722A3-B05E-4096-A37C-72180B0BD20A}.Release|ARM64.ActiveCfg = Release|Any CPU
 		{DEF722A3-B05E-4096-A37C-72180B0BD20A}.Release|x64.ActiveCfg = Release|Any CPU
 		{DEF722A3-B05E-4096-A37C-72180B0BD20A}.Release|x86.ActiveCfg = Release|Any CPU
+		{5A51C49B-6978-4740-B40E-0FCE61FC5085}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{5A51C49B-6978-4740-B40E-0FCE61FC5085}.Debug|ARM.ActiveCfg = Debug|x86
+		{5A51C49B-6978-4740-B40E-0FCE61FC5085}.Debug|ARM64.ActiveCfg = Debug|x86
+		{5A51C49B-6978-4740-B40E-0FCE61FC5085}.Debug|x64.ActiveCfg = Debug|x86
+		{5A51C49B-6978-4740-B40E-0FCE61FC5085}.Debug|x86.ActiveCfg = Debug|x86
+		{5A51C49B-6978-4740-B40E-0FCE61FC5085}.Debug|x86.Build.0 = Debug|x86
+		{5A51C49B-6978-4740-B40E-0FCE61FC5085}.Release|Any CPU.ActiveCfg = Release|x86
+		{5A51C49B-6978-4740-B40E-0FCE61FC5085}.Release|ARM.ActiveCfg = Release|x86
+		{5A51C49B-6978-4740-B40E-0FCE61FC5085}.Release|ARM64.ActiveCfg = Release|x86
+		{5A51C49B-6978-4740-B40E-0FCE61FC5085}.Release|x64.ActiveCfg = Release|x86
+		{5A51C49B-6978-4740-B40E-0FCE61FC5085}.Release|x86.ActiveCfg = Release|x86
+		{5A51C49B-6978-4740-B40E-0FCE61FC5085}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,3 @@
+D:\Uni\hiwi\Bim360\SetupForgeGUI\bin\Debug\cab1.cab
+D:\Uni\hiwi\Bim360\SetupForgeGUI\bin\Debug\BIM360-Setup-Wizard.msi
+D:\Uni\hiwi\Bim360\SetupForgeGUI\bin\Debug\BIM360-Setup-Wizard.wixpdb
