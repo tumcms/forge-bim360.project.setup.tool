@@ -36,7 +36,7 @@ namespace CustomGUI.Controls
         {
             InitializeComponent();
             this.DataContext = this;
-            ConfigFilePath = @".\Config\config.txt";
+            ConfigFilePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Bim360Interface\Config\config.txt";
         }
 
         #region Callback functions from Frontend
