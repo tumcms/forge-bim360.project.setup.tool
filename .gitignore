@@ -155,3 +155,11 @@ Bim360Install/obj/Debug/Bim360Install.wapproj.CoreCompileInputs.cache
 Bim360Install/obj/
 *.cache
 *.force
+bin/Release/
+CustomBIMFromCSV/bin/Release/
+SetupForgeGUI/obj/Release/
+CustomBIMFromCSV/obj/Release/
+BimProjectSetupCommon/obj/Release/
+BimProjectSetupCLI/obj/Release/
+SetupForgeGUI/bin/Release/
+ForgeBimApi/obj/Release/
