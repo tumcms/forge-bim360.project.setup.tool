@@ -39,7 +39,7 @@
                     <AccConfig:AccProjectConfig x:Name="AccProjectConfig" />
             </TabItem>
             <TabItem Header="Service">
-                <Service:Service x:Name="Servicetab"/>
+                <Service:Service x:Name="ServiceTab"/>
             </TabItem>
             <TabItem Header="OnlineTemplate">
                 <Grid>
@@ -58,11 +58,11 @@
                     <DockPanel >
                         <TextBlock VerticalAlignment="Center" Text="Please enter Name of a Project to get the Template:  "/>
                     </DockPanel>
-                    <DockPanel Grid.Column="1">
+                    <DockPanel Grid.Row="0" Grid.Column="1">
                         <TextBox Height="20" Text="Example Project" x:Name="TextBoxTemplate"/>
                     </DockPanel>
                     <DockPanel Grid.Row="1" Grid.Column="1">
-                        <Button Click="GetTemplete_OnClick" Height="50" Width="100">Get Template</Button>
+                        <Button Click="GetTemplate_OnClick" Height="50" Width="100">Get Template</Button>
                     </DockPanel>
 
                 </Grid>

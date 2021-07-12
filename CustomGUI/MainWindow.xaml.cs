@@ -15,8 +15,7 @@ using BimProjectSetupCommon.Workflow;
 using CustomGUI.Controls;
 using File = System.IO.File;
 using static CustomBIMFromCSV.Tools;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using CustomGUI.Service;
+using Microsoft.Win32;
 using Folder = AdskConstructionCloudBreakdown.Folder;
 
 
@@ -27,32 +26,28 @@ namespace CustomGUI
     /// </summary>
     public partial class MainWindow : Window
     {
-
-
-        //Classes for Datagrids
-        //one instand of a class contains data of a row in the CSV file
+        
         //Global Data
         List<UserData> usermanag = new List<UserData>();
 
         private string ClientId { get; set; }
         private string ClientSecret { get; set; }
         private string BimId { get; set; }
-        private string Adminmail { get; set; }
+        private string AdminMail { get; set; }
 
         private string path_file = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+ @"\Bim360Interface\Config\config.txt";
         private string path_last = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Bim360Interface\Config\last.txt";
 
-        
-
+       
+        /// <summary>
+        /// Initializer for main window
+        /// </summary>
 
         public MainWindow()
         {
             InitializeComponent();
-
         }
-
         
-
         //Event Handling
 
         //Config subwindow
@@ -69,11 +64,9 @@ namespace CustomGUI
             BimId = ((ForgeConfig) window_config.Content).BimId_Box.Text.ToString();
             ClientSecret = ((ForgeConfig) window_config.Content).ClientSecret_Box.Text.ToString();
             ClientId = ((ForgeConfig) window_config.Content).ClientId_Box.Text.ToString();
-            Adminmail = ((ForgeConfig) window_config.Content).AdminMail_Box.Text.ToString();
-
+            AdminMail = ((ForgeConfig) window_config.Content).AdminMail_Box.Text.ToString();
         }
-
-
+        
         //UserManagement
 
         private void MainWindow_OnInitialized(object? sender, EventArgs e)
@@ -98,7 +91,7 @@ namespace CustomGUI
                         ClientId = reader.ReadLine();
                         ClientSecret = reader.ReadLine();
                         BimId = reader.ReadLine();
-                        Adminmail = reader.ReadLine();
+                        AdminMail = reader.ReadLine();
                     }
                 }
             }
@@ -110,8 +103,13 @@ namespace CustomGUI
             AccProjectConfig.ProjectsView.Items.Refresh();
         }
 
+        #region Buttons and userinteractions
 
-        //Upload
+        /// <summary>
+        /// runs the upload to the BIM360 environment
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Upload_OnClick(object sender, RoutedEventArgs e)
         {
             var progress = new updates_upload();
@@ -128,13 +126,14 @@ namespace CustomGUI
             // ProgressBar "refresh"
             CallDispatch(progress);
 
-            //maybe change
+            //input for upload
             string[] input = new string[]
             {
                 "-c", ClientId, "-s", ClientSecret, "-a", BimId,
                 "-h", Adminmail, "-f", " .\\sample", "-t", ",",
                 "-z", ",", "-e", "UTF-8", "-d", "yyyy-MM-dd"
             };
+
 
 
             // Delete previous versions of log.txt
@@ -162,29 +161,23 @@ namespace CustomGUI
             progress.ProgressLabel.Content = "Convert Data from GUI";
             // ProgressBar "refresh"
             CallDispatch(progress);
-
-
+            
             // load data from custom CSV file. Filepath was set in constructor of projectProcess by pushing the options instance
             DataTable csvData = new DataTable();
             csvData=ProjectWorkflow.CustomGetDataFromCsv_stream(dataset);
        
-
             //Updates
             progress.pgb.Value = 40;
             progress.ProgressLabel.Content = "Uploading";
             // ProgressBar "refresh"
             CallDispatch(progress);
-
             
-
-
             List<BimCompany> companies = null;
             BimProject currentProject = null;
             List<HqUser> projectUsers = null;
             List<NestedFolder> folders = null;
             NestedFolder currentFolder = null;
-
-
+            
             //Uploading
             try
             {
@@ -228,45 +221,45 @@ namespace CustomGUI
                         ServiceWorkflow serviceProcess = new ServiceWorkflow(options);
 
                         //check what servers needs to be activated
-                        if (Servicetab.CheckBoxservices.IsChecked == true)
+                        if (ServiceTab.CheckBoxservices.IsChecked == true)
                         {
                             #region Add Services
                             var listname = new List<string>();
                             listname.Add("admin");
                             listname.Add("doc_manage");
-                            if (Servicetab.CheckBoxpm.IsChecked == true)
+                            if (ServiceTab.CheckBoxpm.IsChecked == true)
                             {
                                 listname.Add("pm");
                             }
-                            if (Servicetab.CheckBoxfng.IsChecked == true)
+                            if (ServiceTab.CheckBoxfng.IsChecked == true)
                             {
                                 listname.Add("fng");
                             }
-                            if (Servicetab.CheckBoxcollab.IsChecked == true)
+                            if (ServiceTab.CheckBoxcollab.IsChecked == true)
                             {
                                 listname.Add("collab");
                             }
-                            if (Servicetab.CheckBoxcost.IsChecked == true)
+                            if (ServiceTab.CheckBoxcost.IsChecked == true)
                             {
                                 listname.Add("cost");
                             }
-                            if (Servicetab.CheckBoxgng.IsChecked == true)
+                            if (ServiceTab.CheckBoxgng.IsChecked == true)
                             {
                                 listname.Add("gng");
                             }
-                            if (Servicetab.CheckBoxglue.IsChecked == true)
+                            if (ServiceTab.CheckBoxglue.IsChecked == true)
                             {
                                 listname.Add("glue");
                             }
-                            if (Servicetab.CheckBoxplan.IsChecked == true)
+                            if (ServiceTab.CheckBoxplan.IsChecked == true)
                             {
                                 listname.Add("plan");
                             }
-                            if (Servicetab.CheckBoxfield.IsChecked == true)
+                            if (ServiceTab.CheckBoxfield.IsChecked == true)
                             {
                                 listname.Add("field");
                             }
-                            if (Servicetab.CheckBoxassete.IsChecked == true)
+                            if (ServiceTab.CheckBoxassete.IsChecked == true)
                             {
                                 listname.Add("assets");
                             }
@@ -279,8 +272,8 @@ namespace CustomGUI
                                 serviceList.Last().service_type = iter;
                                 serviceList.Last().project_name = projectName;
                                 //test hardcoded Test company name needs to be enter or find out
-                                serviceList.Last().company = Servicetab.Company.Text.Trim();
-                                serviceList.Last().email = Adminmail;
+                                serviceList.Last().company = ServiceTab.Company.Text.Trim();
+                                serviceList.Last().email = AdminMail;
                             }
 
                             serviceProcess.ActivateServicesProcess(
@@ -320,51 +313,33 @@ namespace CustomGUI
 
         private void About_OnClick(object sender, RoutedEventArgs e)
         {
-            statusbar.Text="Just look into the git";
+            this.statusbar.Text = "check out www.github.com/tumcms for more information!";
         }
 
+        /// <summary>
+        /// exposes a saveFileDialog window to the user to store the current configuration
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Export_OnClick(object sender, RoutedEventArgs e)
         {
-            //maybe change
-            string filename = "\\BIM360_Custom_Template.csv";
-
-            //window for user to enter data
-            var dialog = new InputDialog("Please enter the path for exporting the CSV:",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-            dialog.ResizeMode = ResizeMode.NoResize;
-            dialog.ShowDialog();
-            if (dialog.DialogResult != true)
+            var browser = new SaveFileDialog
             {
-                return;
-            }
-            var exportpath = dialog.Answer;
-            //move to conifg
-            if (File.Exists(exportpath + filename))
-            {
-                statusbar.Text = "Export Failed! File already exists!";
-                return;
-            }
+                FileName = "BIM360_Custom_Template.csv",
+                RestoreDirectory = true,
+                Title = "Saving configuration file...",
+                Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*"
+            };
 
-            if (!Directory.Exists((exportpath)))
-            {
-                try
-                {
-                    Directory.CreateDirectory(exportpath);
-                }
-                catch (Exception ex)
-                {
-                    statusbar.Text = ex.Message;
-                    return;
-                }
-            }
+            browser.ShowDialog();
 
-            //Hardcoded Name in here maybe user should be able to change
-
+            // specify path
+            var path = Path.GetFullPath(browser.FileName);
 
             //export the Projects
             try
             {
-                AccProjectConfig.ExportBim360Projects(exportpath + filename);
+                AccProjectConfig.ExportBim360Projects(path);
             }
             catch (Exception ex)
             {
@@ -373,25 +348,28 @@ namespace CustomGUI
             }
             statusbar.Text = "Export successful";
 
-            dialog.Close();
         }
 
+        /// <summary>
+        /// provides a user dialog to load a csv file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Import_OnClick(object sender, RoutedEventArgs e)
         {
-            //Folderbrowser
-            var dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = false;
-            dialog.Multiselect = false;
-            //if use canceled the selection
-            if (Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel ==
-                dialog.ShowDialog())
+            var browser = new OpenFileDialog
             {
-                statusbar.Text = "canceled";
-                return;
-            }
+                Multiselect = false, 
+                Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*"
+        };
+
+            // show browser
+            browser.ShowDialog();
+
+            var fileName = browser.FileName;
 
             //Load CSV into Mainwindow
-            if (AccProjectConfig.LoadBim360Projects(dialog.FileName))
+            if (AccProjectConfig.LoadBim360Projects(fileName))
             {
                 statusbar.Text = "Import successful!";
                 using (FileStream fs = File.OpenWrite(path_last))
@@ -400,7 +378,7 @@ namespace CustomGUI
                     {
                         //Delete the content of the file
                         sr.Write(string.Empty);
-                        sr.WriteLine(dialog.FileName);
+                        sr.WriteLine(fileName);
                     }
                 }
             }
@@ -412,7 +390,12 @@ namespace CustomGUI
 
         }
 
-        private void GetTemplete_OnClick(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GetTemplate_OnClick(object sender, RoutedEventArgs e)
         {
             var progress = new updates_upload();
             progress.Show();
@@ -424,7 +407,7 @@ namespace CustomGUI
             CallDispatch(progress);
 
             string[] input = new string[] {"-c", ClientId ,"-s", ClientSecret, "-a" ,BimId ,
-                "-h", Adminmail ,"-f"," .\\sample","-t",",",
+                "-h", AdminMail ,"-f"," .\\sample","-t",",",
                 "-z",",","-e","UTF-8","-d","yyyy-MM-dd"};
 
             AppOptions options = AppOptions.Parse(input);
@@ -509,6 +492,10 @@ namespace CustomGUI
         //Progress updates
         Action EmptyDelegate = delegate () { };
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
         void CallDispatch(updates_upload input)
         {
             input.pgb.Dispatcher.Invoke(
@@ -522,22 +509,26 @@ namespace CustomGUI
 
         }
 
-        //translate Nestedfolder into Folder of C# Code
+        #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="roots"></param>
+        /// <returns></returns>
         private Folder getNestedFolder(NestedFolder roots)
         {
-            var currentfolder = new Folder(roots.name);
-            var subfolder = new List<Folder>();
+            var currentFolder = new Folder(roots.name);
+            
             foreach (var iterfolder in roots.childrenFolders)
             {
-                currentfolder.AddSubFolder(getNestedFolder(iterfolder));
+                currentFolder.AddSubFolder(getNestedFolder(iterfolder));
 
             }
 
-            return currentfolder;
+            return currentFolder;
         }
 
-
-        
     }
 }
 
