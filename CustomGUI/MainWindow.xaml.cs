@@ -35,13 +35,14 @@ namespace CustomGUI
         private string BimId { get; set; }
         private string AdminMail { get; set; }
 
-        private string path_file =@".\Config\config.txt";
-        private string path_last =@".\Config\last.txt";
+        private string path_file = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+ @"\Bim360Interface\Config\config.txt";
+        private string path_last = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Bim360Interface\Config\last.txt";
 
-        
+       
         /// <summary>
         /// Initializer for main window
         /// </summary>
+
         public MainWindow()
         {
             InitializeComponent();
@@ -125,15 +126,20 @@ namespace CustomGUI
             // ProgressBar "refresh"
             CallDispatch(progress);
 
-            //maybe change
-            string[] input = new string[] {"-c", ClientId ,"-s", ClientSecret, "-a" ,BimId , 
-                                        "-h", AdminMail ,"-f"," .\\sample","-t",",",
-                                           "-z",",","-e","UTF-8","-d","yyyy-MM-dd"} ;
+            //input for upload
+            string[] input = new string[]
+            {
+                "-c", ClientId, "-s", ClientSecret, "-a", BimId,
+                "-h", Adminmail, "-f", " .\\sample", "-t", ",",
+                "-z", ",", "-e", "UTF-8", "-d", "yyyy-MM-dd"
+            };
 
-            
+
+
             // Delete previous versions of log.txt
-            System.IO.File.Delete("Log/logInfo.txt");
-            System.IO.File.Delete("Log/logImportant.txt");
+            System.IO.File.Delete("%APPDATA%/Bim360InterfaceLog/logInfo.txt");
+            System.IO.File.Delete("%APPDATA%/Bim360InterfaceLog/logImportant.txt");
+
 
             AppOptions options = AppOptions.Parse(input);
             // options.AccountRegion = "EU"; 
@@ -147,6 +153,8 @@ namespace CustomGUI
             FolderWorkflow folderProcess = new FolderWorkflow(options);
             ProjectUserWorkflow projectUserProcess = new ProjectUserWorkflow(options);
             AccountWorkflow accountProcess = new AccountWorkflow(options);
+        
+
 
             //Updates
             progress.pgb.Value = 25;

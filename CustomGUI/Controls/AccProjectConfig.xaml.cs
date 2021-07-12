@@ -61,7 +61,7 @@ namespace CustomGUI.Controls
         private void AccProjectConfig_OnInitialized(object? sender, EventArgs e)
         {
             //read last Path
-            string path_last = @".\Config\last.txt";
+            string path_last = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+ @"\Bim360Interface\Config\last.txt";
 
             if (File.Exists(path_last))
             {

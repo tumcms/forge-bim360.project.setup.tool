@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"><?define CustomBIMFromCSV_TargetDir=$(var.CustomBIMFromCSV.TargetDir)?><?define CustomGUI_TargetDir=$(var.CustomGUI.TargetDir)?><?define ForgeBimApi_TargetDir=$(var.ForgeBimApi.TargetDir)?><?define BimProjectSetupCommon_TargetDir=$(var.BimProjectSetupCommon.TargetDir)?><?define AdskConstructionCloudBreakdown_TargetDir=$(var.AdskConstructionCloudBreakdown.TargetDir)?><?define BimProjectSetupCLI_TargetDir=$(var.BimProjectSetupCLI.TargetDir)?>
+	<Product Id="1b9b8390-ca7d-4d3f-85a0-3f183b4f6e7e" Name="BIM360-Interface" Language="1033" Version="1.0.0.0" Manufacturer="TUM-CMS" UpgradeCode="a4ab819f-b2e1-4f18-a561-6139474f6c06">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <!--Here is the GUI of the Programm-->
+    <!--<UIRef Id="WixUI_Minimal" />-->
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate />
+
+		<Feature Id="ProductFeature" Title="BIM360-Interface" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="ApplicationShortcutDesktop" />
+			<ComponentGroupRef Id="ProgramFilesFolder_files" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="BIM360-Interface" />
+			</Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="BIM360-Interface" />
+      </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop" />
+		</Directory>
+	</Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="b76bfd3b-08ca-4018-ae39-c89a2c3595b1">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="BIM360-Interface" Target="[INSTALLFOLDER]CustomGUI.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="ApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\TUM-CMS\BIM360-Interface" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="ApplicationShortcutDesktop" Guid="cde1e030-eb64-49a5-b7b8-400b379c2d1a">
+        <Shortcut Id="ApplicationDesktopShortcut" Name="BIM360-Interface" Target="[INSTALLFOLDER]CustomGUI.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\TUM-CMS\BIM360-Interface" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+</Fragment>
+
+
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <!-- </Component> -->
+			<Component Id="CustomBIMFromCSV.exe" Guid="83d88671-98bb-431e-aa7f-3ca76bb44332">
+			  <File Id="CustomBIMFromCSV.exe" Name="CustomBIMFromCSV.exe" Source="$(var.CustomBIMFromCSV_TargetDir)CustomBIMFromCSV.exe" />
+			</Component>
+			<Component Id="CustomBIMFromCSV.exe.config" Guid="d7a6a893-9844-4fe5-803f-93601df8ffa4">
+			  <File Id="CustomBIMFromCSV.exe.config" Name="CustomBIMFromCSV.exe.config" Source="$(var.CustomBIMFromCSV_TargetDir)CustomBIMFromCSV.exe.config" />
+			</Component>
+			<Component Id="CustomGUI.runtimeconfig.json" Guid="0c907355-f83e-4de2-95be-fc5279ebc7bc">
+			  <File Id="CustomGUI.runtimeconfig.json" Name="CustomGUI.runtimeconfig.json" Source="$(var.CustomGUI_TargetDir)CustomGUI.runtimeconfig.json" />
+			</Component>
+			<Component Id="Microsoft.WindowsAPICodePack.dll" Guid="33c3056b-cbb9-470c-ac33-415c6b9908e7">
+			  <File Id="Microsoft.WindowsAPICodePack.dll" Name="Microsoft.WindowsAPICodePack.dll" Source="$(var.CustomGUI_TargetDir)Microsoft.WindowsAPICodePack.dll" />
+			</Component>
+			<Component Id="Autodesk.Forge.dll" Guid="9c035244-3bc6-4c0c-8bf1-5f4392048fdc">
+			  <File Id="Autodesk.Forge.dll" Name="Autodesk.Forge.dll" Source="$(var.CustomGUI_TargetDir)Autodesk.Forge.dll" />
+			</Component>
+			<Component Id="Newtonsoft.Json.dll" Guid="b12c4bd9-3006-42b7-b0ec-3c391bdff780">
+			  <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.CustomGUI_TargetDir)Newtonsoft.Json.dll" />
+			</Component>
+			<Component Id="CsvHelper.dll" Guid="d6ca322e-e190-4e81-b08f-82f9c80a8b53">
+			  <File Id="CsvHelper.dll" Name="CsvHelper.dll" Source="$(var.CustomGUI_TargetDir)CsvHelper.dll" />
+			</Component>
+			<Component Id="Microsoft.WindowsAPICodePack.Shell.dll" Guid="5a644791-d1d1-4bd9-8e26-1ae3ff1baf93">
+			  <File Id="Microsoft.WindowsAPICodePack.Shell.dll" Name="Microsoft.WindowsAPICodePack.Shell.dll" Source="$(var.CustomGUI_TargetDir)Microsoft.WindowsAPICodePack.Shell.dll" />
+			</Component>
+			<Component Id="Autodesk.Forge.BIM360.dll" Guid="6a61c8b6-de23-46a7-8658-eb2cbb7219cc">
+			  <File Id="Autodesk.Forge.BIM360.dll" Name="Autodesk.Forge.BIM360.dll" Source="$(var.ForgeBimApi_TargetDir)Autodesk.Forge.BIM360.dll" />
+			</Component>
+			<Component Id="Autodesk.BimProjectSetup.Common.dll" Guid="7843d748-ca8e-44f7-b9cb-b39e6c08c72c">
+			  <File Id="Autodesk.BimProjectSetup.Common.dll" Name="Autodesk.BimProjectSetup.Common.dll" Source="$(var.BimProjectSetupCommon_TargetDir)Autodesk.BimProjectSetup.Common.dll" />
+			</Component>
+			<Component Id="AdskConstructionCloudBreakdown.dll" Guid="ae34e8cc-37ae-421a-9555-0b1b8df78c48">
+			  <File Id="AdskConstructionCloudBreakdown.dll" Name="AdskConstructionCloudBreakdown.dll" Source="$(var.AdskConstructionCloudBreakdown_TargetDir)AdskConstructionCloudBreakdown.dll" />
+			</Component>
+			<Component Id="CustomGUI.dll" Guid="67d17fd1-bb8a-4f0b-8cff-9ca68ad08ea6">
+			  <File Id="CustomGUI.dll" Name="CustomGUI.dll" Source="$(var.CustomGUI_TargetDir)CustomGUI.dll" />
+			</Component>
+      <Component Id="CustomGUI.exe" Guid="58fc7e6b-4903-4eb1-9ba7-ab1465e44431">
+        <File Id="CustomGUI.exe" Name="CustomGUI.exe" Source="$(var.CustomGUI_TargetDir)CustomGUI.exe" />
+      </Component>
+      <Component Id="Autodesk.BimProjectSetup.exe" Guid="516be9be-9915-4adf-967e-3d43a8ad786a">
+        <File Id="Autodesk.BimProjectSetup.exe" Name="Autodesk.BimProjectSetup.exe" Source="$(var.BimProjectSetupCLI_TargetDir)Autodesk.BimProjectSetup.exe" />
+      </Component>
+      <Component Id="Autodesk.BimProjectSetup.exe.config" Guid="f4a4d001-fbec-4647-a2a9-68ef2718bd2e">
+        <File Id="Autodesk.BimProjectSetup.exe.config" Name="Autodesk.BimProjectSetup.exe.config" Source="$(var.BimProjectSetupCLI_TargetDir)Autodesk.BimProjectSetup.exe.config" />
+      </Component>
+      <Component Id="RestSharp.dll" Guid="cfc3d44b-9f80-4d85-8819-b65b1d93bffe">
+        <File Id="RestSharp.dll" Name="RestSharp.dll" Source="$(var.CustomBIMFromCSV_TargetDir)RestSharp.dll" />
+      </Component>
+      <Component Id="NLog.dll" Guid="64f8e23e-11b5-475a-80b0-80f8e2429ddc">
+        <File Id="NLog.dll" Name="NLog.dll" Source="$(var.CustomBIMFromCSV_TargetDir)NLog.dll" />
+      </Component>
+      <Component Id="NLog.config" Guid="75eaaed8-e300-491a-86c7-228f85d80a56">
+        <File Id="NLog.config" Name="NLog.config" Source="$(var.BimProjectSetupCLI_TargetDir)NLog.config" />
+      </Component>
+		</ComponentGroup>
+	</Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProgramFilesFolder_files" Directory="ProgramFilesFolder">
+      <Component Id="Log_LogImportant.txt" Guid="98821513-a9f9-4151-89f3-63309329e4c5">
+        <File Id="Log_LogImportant.txt" Name="LogImportant.txt" Source="$(var.CustomBIMFromCSV_TargetDir)Log\LogImportant.txt" />
+      </Component>
+      <Component Id="Log_LogInfo.txt" Guid="d72f9687-8e98-4737-b2d0-4393de1474e7">
+        <File Id="Log_LogInfo.txt" Name="LogInfo.txt" Source="$(var.CustomBIMFromCSV_TargetDir)Log\LogInfo.txt" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
